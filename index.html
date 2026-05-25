@@ -6,9 +6,25 @@
   <title>ShiftPlatter</title>
 
   <script
+  const firebaseConfig = {
+  apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
+  authDomain: "shifplatter-e0449.firebaseapp.com",
+  databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "shifplatter-e0449",
+  storageBucket: "shifplatter-e0449.firebasestorage.app",
+  messagingSenderId: "873786528833",
+  appId: "1:873786528833:web:4f21b56ab3a7089052a2c0"
+};
+    firebase.initializeApp(firebaseConfig);
 
+const db = firebase.firestore();
+const storage = firebase.storage();
+</script>
   <style>
     body{
+      <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
       margin:0;
       padding:0;
       font-family:Arial;
@@ -147,22 +163,7 @@
 
 <script>
 
-  // FIREBASE CONFIG
-  const firebaseConfig = {
 
-    apiKey: "PASTE_API_KEY",
-    authDomain: "PASTE_AUTH_DOMAIN",
-    databaseURL: "PASTE_DATABASE_URL",
-    projectId: "PASTE_PROJECT_ID",
-    storageBucket: "PASTE_STORAGE_BUCKET",
-    messagingSenderId: "PASTE_MESSAGING_ID",
-    appId: "PASTE_APP_ID"
-
-  };
-
-  firebase.initializeApp(firebaseConfig);
-
-  const db = firebase.database();
 
   let currentUser = "";
   let currentEmail = "";
