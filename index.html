@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ShiftPlatter</title>
 
   <!-- FIREBASE -->
@@ -112,6 +112,10 @@
       background:black;
     }
 
+    .admin-title{
+      margin-top:30px;
+    }
+
   </style>
 
 </head>
@@ -192,16 +196,16 @@
 
   </div>
 
-  <!-- ADMIN DATABASE -->
-  <div class="card hidden" id="adminDatabase">
+  <!-- ADMIN DASHBOARD -->
+  <div class="card hidden" id="adminDashboard">
 
-    <h2>📊 Admin Dashboard</h2>
+    <h2 class="admin-title">📊 Admin Dashboard</h2>
 
-    <div id="adminData"></div>
+    <div id="adminRatings"></div>
 
   </div>
 
-  <!-- GALLERY -->
+  <!-- FOOD GALLERY -->
   <div id="gallery"></div>
 
 </div>
@@ -211,13 +215,19 @@
   // FIREBASE CONFIG
   const firebaseConfig = {
 
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    databaseURL: "YOUR_DATABASE_URL",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
+
+    authDomain: "shifplatter-e0449.firebaseapp.com",
+
+    databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+    projectId: "shifplatter-e0449",
+
+    storageBucket: "shifplatter-e0449.firebasestorage.app",
+
+    messagingSenderId: "873786528833",
+
+    appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
 
   };
 
@@ -266,7 +276,7 @@
         .remove("hidden");
 
       document
-        .getElementById("adminDatabase")
+        .getElementById("adminDashboard")
         .classList
         .remove("hidden");
 
@@ -286,7 +296,7 @@
 
   }
 
-  // ADMIN UPLOAD FOOD
+  // UPLOAD FOOD
   function uploadFood(){
 
     const restaurant = document
@@ -306,9 +316,9 @@
       .files[0];
 
     if(
-      !restaurant || 
-      !foodname || 
-      !details || 
+      !restaurant ||
+      !foodname ||
+      !details ||
       !file
     ){
 
@@ -327,7 +337,7 @@
         foodname,
         details,
         image:e.target.result,
-        ratingsData:[]
+        ratings:[]
 
       };
 
@@ -354,12 +364,16 @@
       const data = snapshot.val();
 
       const gallery = document.getElementById("gallery");
+
       const tracker = document.getElementById("trackerContainer");
-      const adminData = document.getElementById("adminData");
+
+      const adminRatings = document.getElementById("adminRatings");
 
       gallery.innerHTML = "";
+
       tracker.innerHTML = "";
-      adminData.innerHTML = "";
+
+      adminRatings.innerHTML = "";
 
       if(!data){
 
@@ -379,9 +393,9 @@
 
         let total = 0;
 
-        if(item.ratingsData){
+        if(item.ratings){
 
-          item.ratingsData.forEach((r)=>{
+          item.ratings.forEach((r)=>{
 
             total += r.rating;
 
@@ -391,9 +405,9 @@
 
         let avg = 0;
 
-        if(item.ratingsData && item.ratingsData.length > 0){
+        if(item.ratings && item.ratings.length > 0){
 
-          avg = total / item.ratingsData.length;
+          avg = total / item.ratings.length;
 
         }
 
@@ -452,33 +466,26 @@
 
             <div class="tracker">
 
-              <div 
-                class="tracker-fill"
+              <div class="tracker-fill"
                 style="width:${avg*20}%">
               </div>
 
             </div>
 
-            <p>
-              ⭐ Overall Rating:
-              ${avg.toFixed(1)}/5
-            </p>
+            <p>⭐ Overall Rating: ${avg.toFixed(1)}/5</p>
 
-            <p>
-              Total Ratings:
-              ${item.ratingsData ? item.ratingsData.length : 0}
-            </p>
+            <p>Total Ratings: ${item.ratings ? item.ratings.length : 0}</p>
 
           </div>
 
         `;
 
-        // ADMIN DATA
-        if(isAdmin && item.ratingsData){
+        // ADMIN VIEW
+        if(isAdmin && item.ratings){
 
-          item.ratingsData.forEach((r)=>{
+          item.ratings.forEach((r)=>{
 
-            adminData.innerHTML += `
+            adminRatings.innerHTML += `
 
               <div class="card">
 
@@ -514,6 +521,7 @@
     stars.forEach((star)=>{
 
       star.innerHTML = "☆";
+
       star.classList.remove("active");
 
     });
@@ -521,6 +529,7 @@
     for(let i=0;i<rating;i++){
 
       stars[i].innerHTML = "★";
+
       stars[i].classList.add("active");
 
     }
@@ -529,13 +538,13 @@
 
       const item = snapshot.val();
 
-      if(!item.ratingsData){
+      if(!item.ratings){
 
-        item.ratingsData = [];
+        item.ratings = [];
 
       }
 
-      const alreadyRated = item.ratingsData.find((r)=>{
+      const alreadyRated = item.ratings.find((r)=>{
 
         return r.email === currentEmail;
 
@@ -544,11 +553,12 @@
       if(alreadyRated){
 
         alert("You already rated this food");
+
         return;
 
       }
 
-      item.ratingsData.push({
+      item.ratings.push({
 
         user:currentUser,
         email:currentEmail,
