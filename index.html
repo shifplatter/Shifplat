@@ -127,9 +127,9 @@
       <span onclick="togglePassword()" style="position:absolute; right:15px; top:22px; cursor:pointer; font-size:14px; color:#555;">👁️</span>
     </div>
 
-    <input type="text" id="viewerName" placeholder="Enter Your Name" />
+    <input type="email" id="viewerEmail" placeholder="Enter Your Email Address" />
 
-    <input type="email" id="viewerEmail" placeholder="Enter Your Email" />
+    
 
     <button onclick="loginUser()">Enter Food Gallery</button>
   </div>
@@ -152,7 +152,7 @@
     <button onclick="uploadFood()">Upload Food</button>
 
     <div style="margin-top:20px; color:#555; font-size:14px;">
-      📊 Admin can track all ratings and uploaded food history.
+      📊 Only admin can upload images, food details, and access user rating analytics.
     </div>
   </div>
 
@@ -164,6 +164,11 @@
     </div>
   </div>
 
+  <div id="trackerSection" class="upload-box" style="display:none;">
+    <h2>📈 Ratings Tracker</h2>
+    <div id="trackerData"></div>
+  </div>
+
   <div id="gallerySection" style="display:none;">
     <h2 style="margin-bottom:20px;">📸 Public Food Gallery</h2>
 
@@ -173,8 +178,8 @@
 </div>
 
 <script>
-  const ADMIN_USERNAME = 'SHIFPATTER';
-  const ADMIN_PASSWORD = 'SHIVIK@2030';
+  const ADMIN_USERNAME = 'SHIFPLATTER';
+  const ADMIN_PASSWORD = 'Shivik@2030';
 
   let isAdmin = false;
   let allRatingsData = [];
@@ -222,11 +227,10 @@
   function loginUser() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const name = document.getElementById('viewerName').value;
     const email = document.getElementById('viewerEmail').value;
 
-    if (!name || !email) {
-      alert('Please enter name and email');
+    if (!email) {
+      alert('Please enter your email address');
       return;
     }
 
@@ -240,14 +244,16 @@
     }
 
     loggedInViewer = {
-      name,
+      name: username || 'User',
       email
     };
 
     document.getElementById('gallerySection').style.display = 'block';
+    document.getElementById('trackerSection').style.display = 'block';
     document.getElementById('loginPage').style.display = 'none';
 
     renderGallery();
+    renderPublicTracker();
   }
 
   
@@ -280,6 +286,40 @@
     };
 
     reader.readAsDataURL(imageInput.files[0]);
+  }
+
+  function renderPublicTracker() {
+    const tracker = document.getElementById('trackerData');
+
+    tracker.innerHTML = uploadedFoods
+      .map(item => {
+        const average = item.ratings.length
+          ? (
+              item.ratings.reduce((a, b) => a + b, 0) /
+              item.ratings.length
+            ).toFixed(1)
+          : 0;
+
+        return `
+          <div style="background:white; padding:15px; border-radius:16px; margin-bottom:15px;">
+            <h3>${item.food}</h3>
+            <p>${item.restaurant}</p>
+
+            <div style="margin-top:10px; background:#eee; border-radius:12px; overflow:hidden; height:18px;">
+              <div style="width:${average * 20}%; background:black; height:18px;"></div>
+            </div>
+
+            <div class="rating-text">
+              ⭐ Overall Rating: ${average}/5
+            </div>
+
+            <div class="rating-text">
+              👥 Total Ratings: ${item.ratings.length}
+            </div>
+          </div>
+        `;
+      })
+      .join('');
   }
 
   function renderAdminTracker() {
