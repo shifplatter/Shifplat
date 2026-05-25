@@ -112,7 +112,7 @@
 
 <header>
   <h1>🍔 Shift Platter</h1>
-  <p>Rate your favorite photos</p>
+  <p>Rate your favorite photos and rate your likes to the photos</p>
 </header>
 
 <div class="container">
@@ -122,7 +122,10 @@
 
     <input type="text" id="username" placeholder="Admin Username" />
 
-    <input type="password" id="password" placeholder="Admin Password" />
+    <div style="position:relative;">
+      <input type="password" id="password" placeholder="Admin Password" style="padding-right:50px;" />
+      <span onclick="togglePassword()" style="position:absolute; right:15px; top:22px; cursor:pointer; font-size:14px; color:#555;">👁️</span>
+    </div>
 
     <button onclick="loginAdmin()">Login as Admin</button>
   </div>
@@ -148,10 +151,20 @@
 </div>
 
 <script>
-  const ADMIN_USERNAME = 'Shifplatter';
+  const ADMIN_USERNAME = 'SHIFPLATTER';
   const ADMIN_PASSWORD = 'Shivik@2030';
 
   let uploadedFoods = [];
+
+  function togglePassword() {
+    const passwordInput = document.getElementById('password');
+
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+    } else {
+      passwordInput.type = 'password';
+    }
+  }
 
   function loginAdmin() {
     const username = document.getElementById('username').value;
