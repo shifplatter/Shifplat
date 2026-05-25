@@ -148,61 +148,66 @@
 
   </div>
 
-  <!-- ADMIN PANEL -->
-  <div class="card hidden" id="adminPanel">
+  <!-- MAIN APP -->
+  <div id="mainApp" class="hidden">
 
-    <div class="plus">➕</div>
+    <!-- ADMIN PANEL -->
+    <div class="card hidden" id="adminPanel">
 
-    <h2>Upload Food</h2>
+      <div class="plus">➕</div>
 
-    <input 
-      type="text" 
-      id="restaurant" 
-      placeholder="Restaurant Name"
-    >
+      <h2>Upload Food</h2>
 
-    <input 
-      type="text" 
-      id="foodname" 
-      placeholder="Food Name"
-    >
+      <input 
+        type="text" 
+        id="restaurant" 
+        placeholder="Restaurant Name"
+      >
 
-    <textarea 
-      id="details" 
-      placeholder="Food Details"
-    ></textarea>
+      <input 
+        type="text" 
+        id="foodname" 
+        placeholder="Food Name"
+      >
 
-    <input 
-      type="file" 
-      id="imageInput"
-    >
+      <textarea 
+        id="details" 
+        placeholder="Food Details"
+      ></textarea>
 
-    <button onclick="uploadFood()">
-      Upload Food
-    </button>
+      <input 
+        type="file" 
+        id="imageInput"
+      >
+
+      <button onclick="uploadFood()">
+        Upload Food
+      </button>
+
+    </div>
+
+    <!-- TRACKER -->
+    <div class="card">
+
+      <h2>📈 Ratings Tracker</h2>
+
+      <div id="trackerContainer"></div>
+
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div class="card hidden" id="adminDashboard">
+
+      <h2>📊 Admin Dashboard</h2>
+
+      <div id="adminRatings"></div>
+
+    </div>
+
+    <!-- FOOD GALLERY -->
+    <div id="gallery"></div>
 
   </div>
-
-  <!-- TRACKER -->
-  <div class="card hidden" id="trackerPage">
-
-    <h2>📈 Ratings Tracker</h2>
-
-    <div id="trackerContainer"></div>
-
-  </div>
-
-  <!-- ADMIN DASHBOARD -->
-  <div class="card hidden" id="adminDashboard">
-
-    <h2>📊 Admin Dashboard</h2>
-
-    <div id="adminRatings"></div>
-
-  </div>
-
-  <!-- FOOD GALLERY -->
-  <div id="gallery"></div>
 
 </div>
 
@@ -219,7 +224,7 @@
 
     projectId: "shifplatter-e0449",
 
-    storageBucket: "shifplatter-e0449.firebasestorage.app",
+    storageBucket: "shifplatter-e0449.appspot.com",
 
     messagingSenderId: "873786528833",
 
@@ -251,11 +256,13 @@
     if(!username || !email){
 
       alert("Please enter username and email");
+
       return;
 
     }
 
     currentUser = username;
+
     currentEmail = email;
 
     // ADMIN LOGIN
@@ -278,22 +285,24 @@
 
     }
 
+    // HIDE LOGIN
     document
       .getElementById("loginPage")
-      .classList
-      .add("hidden");
+      .style
+      .display = "none";
 
+    // SHOW MAIN APP
     document
-      .getElementById("trackerPage")
+      .getElementById("mainApp")
       .classList
       .remove("hidden");
 
-    // LOAD DATA FOR EVERYONE
+    // LOAD ALL FOODS
     loadFoods();
 
   }
 
-  // ADMIN UPLOAD FOOD
+  // UPLOAD FOOD
   function uploadFood(){
 
     const restaurant = document
@@ -320,6 +329,7 @@
     ){
 
       alert("Please fill all fields");
+
       return;
 
     }
@@ -331,21 +341,28 @@
       const foodData = {
 
         restaurant: restaurant,
+
         foodname: foodname,
+
         details: details,
+
         image: e.target.result,
+
         ratings: []
 
       };
 
-      db.ref("foods").push(foodData);
+      db.ref("foods").push(foodData)
+      .then(()=>{
 
-      alert("Food Uploaded Successfully");
+        alert("Food Uploaded Successfully");
 
-      document.getElementById("restaurant").value = "";
-      document.getElementById("foodname").value = "";
-      document.getElementById("details").value = "";
-      document.getElementById("imageInput").value = "";
+        document.getElementById("restaurant").value = "";
+        document.getElementById("foodname").value = "";
+        document.getElementById("details").value = "";
+        document.getElementById("imageInput").value = "";
+
+      });
 
     };
 
@@ -375,9 +392,13 @@
       if(!data){
 
         gallery.innerHTML = `
+
           <div class="card">
+
             <p>No food uploaded yet.</p>
+
           </div>
+
         `;
 
         return;
@@ -388,14 +409,12 @@
 
         const item = data[id];
 
-        // CREATE RATINGS ARRAY
         if(!item.ratings){
 
           item.ratings = [];
 
         }
 
-        // CALCULATE AVERAGE
         let total = 0;
 
         item.ratings.forEach((r)=>{
@@ -412,51 +431,46 @@
 
         }
 
-        // FOOD CARD
-        gallery.innerHTML += `
+        // CREATE FOOD CARD
+        const foodCard = document.createElement("div");
 
-          <div class="card">
+        foodCard.className = "card";
 
-            <img src="${item.image}">
+        foodCard.innerHTML = `
 
-            <h2>${item.foodname}</h2>
+          <img src="${item.image}">
 
-            <h4>${item.restaurant}</h4>
+          <h2>${item.foodname}</h2>
 
-            <p>${item.details}</p>
+          <h4>${item.restaurant}</h4>
 
-            <div class="stars">
+          <p>${item.details}</p>
 
-              <span class="star"
-                onclick="rateFood('${id}',1,this)">
-                ☆
-              </span>
+          <div class="stars">
 
-              <span class="star"
-                onclick="rateFood('${id}',2,this)">
-                ☆
-              </span>
-
-              <span class="star"
-                onclick="rateFood('${id}',3,this)">
-                ☆
-              </span>
-
-              <span class="star"
-                onclick="rateFood('${id}',4,this)">
-                ☆
-              </span>
-
-              <span class="star"
-                onclick="rateFood('${id}',5,this)">
-                ☆
-              </span>
-
-            </div>
+            <span class="star">☆</span>
+            <span class="star">☆</span>
+            <span class="star">☆</span>
+            <span class="star">☆</span>
+            <span class="star">☆</span>
 
           </div>
 
         `;
+
+        const stars = foodCard.querySelectorAll(".star");
+
+        stars.forEach((star,index)=>{
+
+          star.addEventListener("click", function(){
+
+            rateFood(id,index + 1,stars);
+
+          });
+
+        });
+
+        gallery.appendChild(foodCard);
 
         // TRACKER
         tracker.innerHTML += `
@@ -520,13 +534,8 @@
   }
 
   // RATE FOOD
-  function rateFood(foodId,rating,element){
+  function rateFood(foodId,rating,stars){
 
-    const parent = element.parentElement;
-
-    const stars = parent.querySelectorAll(".star");
-
-    // RESET STARS
     stars.forEach((star)=>{
 
       star.innerHTML = "☆";
@@ -535,7 +544,6 @@
 
     });
 
-    // FILL STARS
     for(let i=0;i<rating;i++){
 
       stars[i].innerHTML = "★";
@@ -554,7 +562,6 @@
 
       }
 
-      // CHECK ALREADY RATED
       const alreadyRated = item.ratings.find((r)=>{
 
         return r.email === currentEmail;
@@ -569,7 +576,6 @@
 
       }
 
-      // SAVE RATING
       item.ratings.push({
 
         user: currentUser,
@@ -578,7 +584,6 @@
 
       });
 
-      // UPDATE DATABASE
       db.ref("foods/" + foodId).set(item);
 
       alert("Rating Submitted");
