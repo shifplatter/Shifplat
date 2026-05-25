@@ -144,9 +144,21 @@
     <button onclick="uploadFood()">Upload Food</button>
   </div>
 
-  <h2 style="margin-bottom:20px;">📸 Public Food Gallery</h2>
+  <div id="userLogin" class="upload-box">
+    <h2>👤 User Login</h2>
+
+    <input type="text" id="viewerName" placeholder="Enter Your Name" />
+
+    <input type="email" id="viewerEmail" placeholder="Enter Your Email" />
+
+    <button onclick="loginViewer()">Enter Food Gallery</button>
+  </div>
+
+  <div id="gallerySection" style="display:none;">
+    <h2 style="margin-bottom:20px;">📸 Public Food Gallery</h2>
 
   <div class="gallery" id="gallery"></div>
+  </div>
 
 </div>
 
@@ -155,6 +167,7 @@
   const ADMIN_PASSWORD = 'Shivik@2030';
 
   let uploadedFoods = [];
+  let loggedInViewer = null;
 
   function togglePassword() {
     const passwordInput = document.getElementById('password');
@@ -164,6 +177,24 @@
     } else {
       passwordInput.type = 'password';
     }
+  }
+
+  function loginViewer() {
+    const name = document.getElementById('viewerName').value;
+    const email = document.getElementById('viewerEmail').value;
+
+    if (!name || !email) {
+      alert('Please enter name and email');
+      return;
+    }
+
+    loggedInViewer = {
+      name,
+      email
+    };
+
+    document.getElementById('gallerySection').style.display = 'block';
+    document.getElementById('userLogin').style.display = 'none';
   }
 
   function loginAdmin() {
@@ -199,6 +230,7 @@
       const imageUrl = e.target.result;
 
       const foodData = {
+        viewers: [],
         restaurant,
         food,
         details,
@@ -259,8 +291,16 @@
             📊 Average Rating: <b>${averageRating}</b>
           </div>
 
+          <div style="margin-top:12px; background:#eee; border-radius:12px; overflow:hidden; height:18px;">
+            <div style="width:${averageRating === 'No Ratings' ? 0 : averageRating * 20}%; background:black; height:18px;"></div>
+          </div>
+
           <div class="rating-text">
             👥 Total Ratings: <b>${item.ratings.length}</b>
+          </div>
+
+          <div class="rating-text">
+            🔒 User names are hidden from public viewers
           </div>
         </div>
       `;
@@ -270,6 +310,12 @@
       stars.forEach((star, starIndex) => {
         star.addEventListener('click', () => {
           item.ratings.push(starIndex + 1);
+
+          item.viewers.push({
+            name: loggedInViewer.name,
+            email: loggedInViewer.email,
+            rating: starIndex + 1
+          });
 
           renderGallery();
         });
