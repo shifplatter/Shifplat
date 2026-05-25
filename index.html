@@ -112,10 +112,6 @@
       background:black;
     }
 
-    .admin-title{
-      margin-top:30px;
-    }
-
   </style>
 
 </head>
@@ -199,7 +195,7 @@
   <!-- ADMIN DASHBOARD -->
   <div class="card hidden" id="adminDashboard">
 
-    <h2 class="admin-title">📊 Admin Dashboard</h2>
+    <h2>📊 Admin Dashboard</h2>
 
     <div id="adminRatings"></div>
 
@@ -292,11 +288,12 @@
       .classList
       .remove("hidden");
 
+    // LOAD DATA FOR EVERYONE
     loadFoods();
 
   }
 
-  // UPLOAD FOOD
+  // ADMIN UPLOAD FOOD
   function uploadFood(){
 
     const restaurant = document
@@ -333,11 +330,11 @@
 
       const foodData = {
 
-        restaurant,
-        foodname,
-        details,
-        image:e.target.result,
-        ratings:[]
+        restaurant: restaurant,
+        foodname: foodname,
+        details: details,
+        image: e.target.result,
+        ratings: []
 
       };
 
@@ -387,25 +384,29 @@
 
       }
 
-      for(let id in data){
+      Object.keys(data).forEach((id)=>{
 
         const item = data[id];
 
-        let total = 0;
+        // CREATE RATINGS ARRAY
+        if(!item.ratings){
 
-        if(item.ratings){
-
-          item.ratings.forEach((r)=>{
-
-            total += r.rating;
-
-          });
+          item.ratings = [];
 
         }
 
+        // CALCULATE AVERAGE
+        let total = 0;
+
+        item.ratings.forEach((r)=>{
+
+          total += Number(r.rating);
+
+        });
+
         let avg = 0;
 
-        if(item.ratings && item.ratings.length > 0){
+        if(item.ratings.length > 0){
 
           avg = total / item.ratings.length;
 
@@ -466,22 +467,29 @@
 
             <div class="tracker">
 
-              <div class="tracker-fill"
+              <div 
+                class="tracker-fill"
                 style="width:${avg*20}%">
               </div>
 
             </div>
 
-            <p>⭐ Overall Rating: ${avg.toFixed(1)}/5</p>
+            <p>
+              ⭐ Overall Rating:
+              ${avg.toFixed(1)}/5
+            </p>
 
-            <p>Total Ratings: ${item.ratings ? item.ratings.length : 0}</p>
+            <p>
+              Total Ratings:
+              ${item.ratings.length}
+            </p>
 
           </div>
 
         `;
 
-        // ADMIN VIEW
-        if(isAdmin && item.ratings){
+        // ADMIN DASHBOARD
+        if(isAdmin){
 
           item.ratings.forEach((r)=>{
 
@@ -505,7 +513,7 @@
 
         }
 
-      }
+      });
 
     });
 
@@ -518,6 +526,7 @@
 
     const stars = parent.querySelectorAll(".star");
 
+    // RESET STARS
     stars.forEach((star)=>{
 
       star.innerHTML = "☆";
@@ -526,6 +535,7 @@
 
     });
 
+    // FILL STARS
     for(let i=0;i<rating;i++){
 
       stars[i].innerHTML = "★";
@@ -544,6 +554,7 @@
 
       }
 
+      // CHECK ALREADY RATED
       const alreadyRated = item.ratings.find((r)=>{
 
         return r.email === currentEmail;
@@ -558,14 +569,16 @@
 
       }
 
+      // SAVE RATING
       item.ratings.push({
 
-        user:currentUser,
-        email:currentEmail,
-        rating:rating
+        user: currentUser,
+        email: currentEmail,
+        rating: rating
 
       });
 
+      // UPDATE DATABASE
       db.ref("foods/" + foodId).set(item);
 
       alert("Rating Submitted");
