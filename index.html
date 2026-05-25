@@ -111,14 +111,24 @@
 <body>
 
 <header>
-  <h1>🍔 Food Rating App</h1>
-  <p>Upload food photos and let people rate them</p>
+  <h1>🍔 Shift Platter</h1>
+  <p>Rate your favorite photos</p>
 </header>
 
 <div class="container">
 
-  <div class="upload-box">
-    <h2>➕ Upload Food Photo</h2>
+  <div id="loginPage" class="upload-box">
+    <h2>🔐 Admin Login</h2>
+
+    <input type="text" id="username" placeholder="Admin Username" />
+
+    <input type="password" id="password" placeholder="Admin Password" />
+
+    <button onclick="loginAdmin()">Login as Admin</button>
+  </div>
+
+  <div id="adminPanel" class="upload-box" style="display:none;">
+    <h2>➕ Admin Upload Panel</h2>
 
     <input type="text" id="restaurant" placeholder="Restaurant Name" />
 
@@ -131,11 +141,34 @@
     <button onclick="uploadFood()">Upload Food</button>
   </div>
 
+  <h2 style="margin-bottom:20px;">📸 Public Food Gallery</h2>
+
   <div class="gallery" id="gallery"></div>
 
 </div>
 
 <script>
+  const ADMIN_USERNAME = 'Shifplatter';
+  const ADMIN_PASSWORD = 'Shivik@2030';
+
+  let uploadedFoods = [];
+
+  function loginAdmin() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if (
+      username.toUpperCase() === ADMIN_USERNAME &&
+      password === ADMIN_PASSWORD
+    ) {
+      alert('Admin Login Successful');
+      document.getElementById('adminPanel').style.display = 'block';
+      document.getElementById('loginPage').style.display = 'none';
+    } else {
+      alert('Invalid Admin Credentials');
+    }
+  }
+
   function uploadFood() {
     const restaurant = document.getElementById('restaurant').value;
     const food = document.getElementById('food').value;
@@ -152,19 +185,53 @@
     reader.onload = function(e) {
       const imageUrl = e.target.result;
 
+      const foodData = {
+        restaurant,
+        food,
+        details,
+        imageUrl,
+        ratings: []
+      };
+
+      uploadedFoods.unshift(foodData);
+
+      renderGallery();
+
+      document.getElementById('restaurant').value = '';
+      document.getElementById('food').value = '';
+      document.getElementById('details').value = '';
+      document.getElementById('imageUpload').value = '';
+    };
+
+    reader.readAsDataURL(imageInput.files[0]);
+  }
+
+  function renderGallery() {
+    const gallery = document.getElementById('gallery');
+
+    gallery.innerHTML = '';
+
+    uploadedFoods.forEach((item, itemIndex) => {
+      const averageRating = item.ratings.length
+        ? (
+            item.ratings.reduce((a, b) => a + b, 0) /
+            item.ratings.length
+          ).toFixed(1)
+        : 'No Ratings';
+
       const card = document.createElement('div');
       card.className = 'card';
 
       card.innerHTML = `
-        <img src="${imageUrl}" />
+        <img src="${item.imageUrl}" />
 
         <div class="card-content">
-          <h2>${food}</h2>
-          <h4>${restaurant}</h4>
-          <p>${details}</p>
+          <h2>${item.food}</h2>
+          <h4>${item.restaurant}</h4>
+          <p>${item.details}</p>
 
           <div class="rating-text">
-            ⭐ Rate this food and photo from 1 to 5
+            ⭐ Rate this food photo from 1 to 5 stars
           </div>
 
           <div class="stars">
@@ -174,32 +241,29 @@
             <span class="star">★</span>
             <span class="star">★</span>
           </div>
+
+          <div class="rating-text" style="margin-top:15px;">
+            📊 Average Rating: <b>${averageRating}</b>
+          </div>
+
+          <div class="rating-text">
+            👥 Total Ratings: <b>${item.ratings.length}</b>
+          </div>
         </div>
       `;
 
       const stars = card.querySelectorAll('.star');
 
-      stars.forEach((star, index) => {
+      stars.forEach((star, starIndex) => {
         star.addEventListener('click', () => {
-          stars.forEach((s, i) => {
-            if (i <= index) {
-              s.classList.add('active');
-            } else {
-              s.classList.remove('active');
-            }
-          });
+          item.ratings.push(starIndex + 1);
+
+          renderGallery();
         });
       });
 
-      document.getElementById('gallery').prepend(card);
-
-      document.getElementById('restaurant').value = '';
-      document.getElementById('food').value = '';
-      document.getElementById('details').value = '';
-      document.getElementById('imageUpload').value = '';
-    };
-
-    reader.readAsDataURL(imageInput.files[0]);
+      gallery.appendChild(card);
+    });
   }
 </script>
 
