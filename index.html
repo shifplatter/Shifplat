@@ -118,16 +118,20 @@
 <div class="container">
 
   <div id="loginPage" class="upload-box">
-    <h2>🔐 Admin Login</h2>
+    <h2>🔐 User Login</h2>
 
-    <input type="text" id="username" placeholder="Admin Username" />
+    <input type="text" id="username" placeholder="Enter Username" />
 
     <div style="position:relative;">
-      <input type="password" id="password" placeholder="Admin Password" style="padding-right:50px;" />
+      <input type="password" id="password" placeholder="Enter Password" style="padding-right:50px;" />
       <span onclick="togglePassword()" style="position:absolute; right:15px; top:22px; cursor:pointer; font-size:14px; color:#555;">👁️</span>
     </div>
 
-    <button onclick="loginAdmin()">Login as Admin</button>
+    <input type="text" id="viewerName" placeholder="Enter Your Name" />
+
+    <input type="email" id="viewerEmail" placeholder="Enter Your Email" />
+
+    <button onclick="loginUser()">Login</button>
   </div>
 
   <div id="adminPanel" class="upload-box" style="display:none;">
@@ -144,15 +148,7 @@
     <button onclick="uploadFood()">Upload Food</button>
   </div>
 
-  <div id="userLogin" class="upload-box">
-    <h2>👤 User Login</h2>
-
-    <input type="text" id="viewerName" placeholder="Enter Your Name" />
-
-    <input type="email" id="viewerEmail" placeholder="Enter Your Email" />
-
-    <button onclick="loginViewer()">Enter Food Gallery</button>
-  </div>
+  
 
   <div id="gallerySection" style="display:none;">
     <h2 style="margin-bottom:20px;">📸 Public Food Gallery</h2>
@@ -179,7 +175,9 @@
     }
   }
 
-  function loginViewer() {
+  function loginUser() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
     const name = document.getElementById('viewerName').value;
     const email = document.getElementById('viewerEmail').value;
 
@@ -193,25 +191,19 @@
       email
     };
 
-    document.getElementById('gallerySection').style.display = 'block';
-    document.getElementById('userLogin').style.display = 'none';
-  }
-
-  function loginAdmin() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-
     if (
       username.toUpperCase() === ADMIN_USERNAME &&
       password === ADMIN_PASSWORD
     ) {
       alert('Admin Login Successful');
       document.getElementById('adminPanel').style.display = 'block';
-      document.getElementById('loginPage').style.display = 'none';
-    } else {
-      alert('Invalid Admin Credentials');
     }
+
+    document.getElementById('gallerySection').style.display = 'block';
+    document.getElementById('loginPage').style.display = 'none';
   }
+
+  
 
   function uploadFood() {
     const restaurant = document.getElementById('restaurant').value;
