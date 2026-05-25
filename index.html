@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ShiftPlatter</title>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
   <style>
 
     body{
       margin:0;
       padding:0;
-      font-family:Arial,sans-serif;
       background:#f5f5f5;
+      font-family:Arial,sans-serif;
     }
 
     .container{
@@ -80,9 +84,18 @@
     .stars{
       display:flex;
       gap:10px;
-      font-size:30px;
       margin-top:15px;
+    }
+
+    .star{
+      font-size:32px;
+      color:#ccc;
       cursor:pointer;
+      transition:0.2s;
+    }
+
+    .star.active{
+      color:gold;
     }
 
     .tracker{
@@ -179,15 +192,41 @@
 
   </div>
 
-  <!-- FOOD GALLERY -->
+  <!-- ADMIN DATABASE -->
+  <div class="card hidden" id="adminDatabase">
+
+    <h2>📊 Admin Dashboard</h2>
+
+    <div id="adminData"></div>
+
+  </div>
+
+  <!-- GALLERY -->
   <div id="gallery"></div>
 
 </div>
 
 <script>
 
-  let foods = [];
+  // FIREBASE CONFIG
+  const firebaseConfig = {
 
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    databaseURL: "YOUR_DATABASE_URL",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_ID",
+    appId: "YOUR_APP_ID"
+
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  const db = firebase.database();
+
+  let currentUser = "";
+  let currentEmail = "";
   let isAdmin = false;
 
   // LOGIN
@@ -210,7 +249,10 @@
 
     }
 
-    // ADMIN CHECK
+    currentUser = username;
+    currentEmail = email;
+
+    // ADMIN LOGIN
     if(
       username.toUpperCase() === "SHIFPLATTER" &&
       email.toUpperCase() === "SHIVIK@2030"
@@ -220,6 +262,11 @@
 
       document
         .getElementById("adminPanel")
+        .classList
+        .remove("hidden");
+
+      document
+        .getElementById("adminDatabase")
         .classList
         .remove("hidden");
 
@@ -235,7 +282,7 @@
       .classList
       .remove("hidden");
 
-    renderFoods();
+    loadFoods();
 
   }
 
@@ -274,21 +321,20 @@
 
     reader.onload = function(e){
 
-      foods.push({
+      const foodData = {
 
         restaurant,
         foodname,
         details,
         image:e.target.result,
-        ratings:[]
+        ratingsData:[]
 
-      });
+      };
 
-      renderFoods();
+      db.ref("foods").push(foodData);
 
-      alert("Food Uploaded");
+      alert("Food Uploaded Successfully");
 
-      // CLEAR INPUTS
       document.getElementById("restaurant").value = "";
       document.getElementById("foodname").value = "";
       document.getElementById("details").value = "";
@@ -300,109 +346,221 @@
 
   }
 
-  // RENDER FOODS
-  function renderFoods(){
+  // LOAD FOODS
+  function loadFoods(){
 
-    const gallery = document.getElementById("gallery");
+    db.ref("foods").on("value", function(snapshot){
 
-    const tracker = document.getElementById("trackerContainer");
+      const data = snapshot.val();
 
-    gallery.innerHTML = "";
+      const gallery = document.getElementById("gallery");
+      const tracker = document.getElementById("trackerContainer");
+      const adminData = document.getElementById("adminData");
 
-    tracker.innerHTML = "";
+      gallery.innerHTML = "";
+      tracker.innerHTML = "";
+      adminData.innerHTML = "";
 
-    if(foods.length === 0){
+      if(!data){
 
-      gallery.innerHTML = `
-        <div class="card">
-          <p>No food uploaded yet.</p>
-        </div>
-      `;
+        gallery.innerHTML = `
+          <div class="card">
+            <p>No food uploaded yet.</p>
+          </div>
+        `;
 
-      return;
-
-    }
-
-    foods.forEach((food,index)=>{
-
-      let avg = 0;
-
-      if(food.ratings.length > 0){
-
-        avg = food.ratings.reduce((a,b)=>a+b,0)
-              / food.ratings.length;
+        return;
 
       }
 
-      // FOOD CARD
-      gallery.innerHTML += `
+      for(let id in data){
 
-        <div class="card">
+        const item = data[id];
 
-          <img src="${food.image}">
+        let total = 0;
 
-          <h2>${food.foodname}</h2>
+        if(item.ratingsData){
 
-          <h4>${food.restaurant}</h4>
+          item.ratingsData.forEach((r)=>{
 
-          <p>${food.details}</p>
+            total += r.rating;
 
-          <div class="stars">
+          });
 
-            <span onclick="rateFood(${index},1)">⭐</span>
-            <span onclick="rateFood(${index},2)">⭐</span>
-            <span onclick="rateFood(${index},3)">⭐</span>
-            <span onclick="rateFood(${index},4)">⭐</span>
-            <span onclick="rateFood(${index},5)">⭐</span>
+        }
 
-          </div>
+        let avg = 0;
 
-        </div>
+        if(item.ratingsData && item.ratingsData.length > 0){
 
-      `;
+          avg = total / item.ratingsData.length;
 
-      // TRACKER
-      tracker.innerHTML += `
+        }
 
-        <div class="card">
+        // FOOD CARD
+        gallery.innerHTML += `
 
-          <h3>${food.foodname}</h3>
+          <div class="card">
 
-          <div class="tracker">
+            <img src="${item.image}">
 
-            <div 
-              class="tracker-fill"
-              style="width:${avg*20}%">
+            <h2>${item.foodname}</h2>
+
+            <h4>${item.restaurant}</h4>
+
+            <p>${item.details}</p>
+
+            <div class="stars">
+
+              <span class="star"
+                onclick="rateFood('${id}',1,this)">
+                ☆
+              </span>
+
+              <span class="star"
+                onclick="rateFood('${id}',2,this)">
+                ☆
+              </span>
+
+              <span class="star"
+                onclick="rateFood('${id}',3,this)">
+                ☆
+              </span>
+
+              <span class="star"
+                onclick="rateFood('${id}',4,this)">
+                ☆
+              </span>
+
+              <span class="star"
+                onclick="rateFood('${id}',5,this)">
+                ☆
+              </span>
+
             </div>
 
           </div>
 
-          <p>
-            ⭐ Overall Rating: 
-            ${avg.toFixed(1)}/5
-          </p>
+        `;
 
-          <p>
-            Total Ratings: 
-            ${food.ratings.length}
-          </p>
+        // TRACKER
+        tracker.innerHTML += `
 
-        </div>
+          <div class="card">
 
-      `;
+            <h3>${item.foodname}</h3>
+
+            <div class="tracker">
+
+              <div 
+                class="tracker-fill"
+                style="width:${avg*20}%">
+              </div>
+
+            </div>
+
+            <p>
+              ⭐ Overall Rating:
+              ${avg.toFixed(1)}/5
+            </p>
+
+            <p>
+              Total Ratings:
+              ${item.ratingsData ? item.ratingsData.length : 0}
+            </p>
+
+          </div>
+
+        `;
+
+        // ADMIN DATA
+        if(isAdmin && item.ratingsData){
+
+          item.ratingsData.forEach((r)=>{
+
+            adminData.innerHTML += `
+
+              <div class="card">
+
+                <p><b>User:</b> ${r.user}</p>
+
+                <p><b>Email:</b> ${r.email}</p>
+
+                <p><b>Food:</b> ${item.foodname}</p>
+
+                <p><b>Rating:</b> ⭐ ${r.rating}</p>
+
+              </div>
+
+            `;
+
+          });
+
+        }
+
+      }
 
     });
 
   }
 
   // RATE FOOD
-  function rateFood(index,rating){
+  function rateFood(foodId,rating,element){
 
-    foods[index].ratings.push(rating);
+    const parent = element.parentElement;
 
-    renderFoods();
+    const stars = parent.querySelectorAll(".star");
 
-    alert("Rating Submitted");
+    stars.forEach((star)=>{
+
+      star.innerHTML = "☆";
+      star.classList.remove("active");
+
+    });
+
+    for(let i=0;i<rating;i++){
+
+      stars[i].innerHTML = "★";
+      stars[i].classList.add("active");
+
+    }
+
+    db.ref("foods/" + foodId).once("value", function(snapshot){
+
+      const item = snapshot.val();
+
+      if(!item.ratingsData){
+
+        item.ratingsData = [];
+
+      }
+
+      const alreadyRated = item.ratingsData.find((r)=>{
+
+        return r.email === currentEmail;
+
+      });
+
+      if(alreadyRated){
+
+        alert("You already rated this food");
+        return;
+
+      }
+
+      item.ratingsData.push({
+
+        user:currentUser,
+        email:currentEmail,
+        rating:rating
+
+      });
+
+      db.ref("foods/" + foodId).set(item);
+
+      alert("Rating Submitted");
+
+    });
 
   }
 
