@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>ShiftPlatter</title>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
@@ -21,15 +21,15 @@ body{
 .container{
   max-width:900px;
   margin:auto;
-  padding:20px;
+  padding:15px;
 }
 
 .card{
   background:white;
-  padding:20px;
-  border-radius:24px;
-  margin-bottom:20px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+  padding:15px;
+  border-radius:20px;
+  margin-bottom:15px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 
 input{
@@ -39,45 +39,35 @@ input{
   border:1px solid #ddd;
   margin-top:12px;
   box-sizing:border-box;
-  font-size:15px;
 }
 
 button{
-  width:100%;
   padding:14px;
   border:none;
   border-radius:14px;
   background:black;
   color:white;
-  margin-top:15px;
-  font-size:16px;
   cursor:pointer;
 }
 
-img{
+.full-btn{
   width:100%;
-  border-radius:18px;
-  margin-top:12px;
-}
-
-.hidden{
-  display:none;
+  margin-top:15px;
 }
 
 .tabs{
   display:flex;
-  gap:10px;
+  gap:8px;
   margin-bottom:20px;
 }
 
 .tab-btn{
   flex:1;
-  padding:14px;
+  padding:12px;
   border:none;
   border-radius:14px;
   background:#e5e5e5;
   font-weight:bold;
-  cursor:pointer;
 }
 
 .active-tab{
@@ -85,14 +75,32 @@ img{
   color:white;
 }
 
+.hidden{
+  display:none;
+}
+
+.food-card{
+  display:flex;
+  gap:15px;
+}
+
+.food-image{
+  width:90px;
+  height:90px;
+  object-fit:cover;
+  border-radius:14px;
+  cursor:pointer;
+  flex-shrink:0;
+}
+
 .stars{
   display:flex;
-  gap:10px;
-  margin-top:15px;
+  gap:5px;
+  margin-top:10px;
 }
 
 .star{
-  font-size:36px;
+  font-size:28px;
   color:#ccc;
   cursor:pointer;
 }
@@ -103,32 +111,27 @@ img{
 
 .rating-bar{
   width:100%;
-  height:20px;
+  height:28px;
   background:#ddd;
-  border-radius:20px;
+  border-radius:30px;
   overflow:hidden;
-  margin-top:12px;
+  margin-top:15px;
 }
 
 .rating-fill{
   height:100%;
   background:black;
-}
-
-.rating-score{
-  font-size:38px;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
   font-weight:bold;
-  margin-top:15px;
 }
 
-.loading{
+.loader{
   text-align:center;
   padding:30px;
-  font-size:18px;
-}
-
-h1,h2,h3{
-  margin-top:0;
 }
 
 </style>
@@ -144,7 +147,7 @@ h1,h2,h3{
     <h1>ShiftPlatter</h1>
 
     <p>
-      Rate your favorite food photos and share your likes
+      Rate your favorite food photos
     </p>
 
     <input
@@ -159,16 +162,17 @@ h1,h2,h3{
       placeholder="Enter Email Address"
     >
 
-    <button onclick="loginUser()">
+    <button
+      class="full-btn"
+      onclick="loginUser()">
       Continue
     </button>
 
   </div>
 
-  <!-- MAIN APP -->
+  <!-- MAIN -->
   <div id="mainApp" class="hidden">
 
-    <!-- TABS -->
     <div class="tabs">
 
       <button
@@ -181,6 +185,12 @@ h1,h2,h3{
         class="tab-btn"
         onclick="showTab('ratingsTab',this)">
         Overall Ratings
+      </button>
+
+      <button
+        class="tab-btn"
+        onclick="showTab('graphTab',this)">
+        Graph
       </button>
 
     </div>
@@ -199,13 +209,18 @@ h1,h2,h3{
 
     </div>
 
+    <!-- GRAPH -->
+    <div id="graphTab" class="hidden">
+
+      <div id="graphContainer"></div>
+
+    </div>
+
   </div>
 
 </div>
 
 <script>
-
-// FIREBASE CONFIG
 
 const firebaseConfig = {
     apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
@@ -216,7 +231,7 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
-// INIT FIREBASE
+
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
@@ -229,57 +244,54 @@ function loginUser(){
 
   const username =
     document.getElementById("username")
-    .value
-    .trim();
+    .value.trim();
 
   const email =
     document.getElementById("email")
-    .value
-    .trim();
+    .value.trim();
 
-  if(username === "" || email === ""){
+  if(!username || !email){
 
-    alert("Please enter username and email");
+    alert("Please enter details");
 
     return;
 
   }
 
-  // ADMIN REDIRECT
+  // ADMIN
   if(
-    username.toUpperCase() === "SHIFPLATTER" &&
-    email.toUpperCase() === "SHIVIK@2030"
+    username.toUpperCase()==="SHIFPLATTER" &&
+    email.toUpperCase()==="SHIVIK@2030"
   ){
 
-    window.location.href = "admin.html";
+    window.location.href="admin.html";
 
     return;
 
   }
 
-  currentUser = username;
-
-  currentEmail = email;
+  currentUser=username;
+  currentEmail=email;
 
   document
     .getElementById("loginPage")
-    .classList
-    .add("hidden");
+    .classList.add("hidden");
 
   document
     .getElementById("mainApp")
-    .classList
-    .remove("hidden");
+    .classList.remove("hidden");
 
   loadFoods();
 
 }
 
-// TAB SWITCH
+// TABS
 function showTab(tabId,btn){
 
   document
-    .querySelectorAll("#galleryTab,#ratingsTab")
+    .querySelectorAll(
+      "#galleryTab,#ratingsTab,#graphTab"
+    )
     .forEach((tab)=>{
 
       tab.classList.add("hidden");
@@ -288,8 +300,7 @@ function showTab(tabId,btn){
 
   document
     .getElementById(tabId)
-    .classList
-    .remove("hidden");
+    .classList.remove("hidden");
 
   document
     .querySelectorAll(".tab-btn")
@@ -303,7 +314,7 @@ function showTab(tabId,btn){
 
 }
 
-// LOAD FOODS FAST
+// LOAD FOODS
 function loadFoods(){
 
   const gallery =
@@ -312,29 +323,28 @@ function loadFoods(){
   const overall =
     document.getElementById("overallRatings");
 
-  gallery.innerHTML = `
-    <div class="card loading">
-      Loading foods...
-    </div>
-  `;
+  const graph =
+    document.getElementById("graphContainer");
 
-  overall.innerHTML = "";
+  gallery.innerHTML =
+    '<div class="loader">Loading...</div>';
 
   db.ref("foods")
+  .limitToLast(20)
   .once("value")
   .then((snapshot)=>{
 
     const data = snapshot.val();
 
-    gallery.innerHTML = "";
-
-    overall.innerHTML = "";
+    gallery.innerHTML="";
+    overall.innerHTML="";
+    graph.innerHTML="";
 
     if(!data){
 
-      gallery.innerHTML = `
+      gallery.innerHTML=`
         <div class="card">
-          No Food Uploaded Yet
+          No foods uploaded yet
         </div>
       `;
 
@@ -342,75 +352,79 @@ function loadFoods(){
 
     }
 
-    Object.keys(data).reverse().forEach((id)=>{
+    Object.keys(data)
+    .reverse()
+    .forEach((id)=>{
 
-      const item = data[id];
-
-      if(!item){
-
-        return;
-
-      }
+      const item=data[id];
 
       if(!item.ratings){
 
-        item.ratings = [];
+        item.ratings=[];
 
       }
 
-      let total = 0;
+      let total=0;
 
       item.ratings.forEach((r)=>{
 
-        total += Number(r.rating || 0);
+        total+=Number(r.rating||0);
 
       });
 
-      let avg = 0;
+      let avg=0;
 
-      if(item.ratings.length > 0){
+      if(item.ratings.length>0){
 
-        avg = total / item.ratings.length;
+        avg=
+          total/item.ratings.length;
 
       }
 
-      // FOOD CARD
-      const card =
+      // GALLERY
+      const card=
         document.createElement("div");
 
-      card.className = "card";
+      card.className="card";
 
-      card.innerHTML = `
+      card.innerHTML=`
 
-        <img
-          src="${item.image}"
-          loading="lazy"
-        >
+        <div class="food-card">
 
-        <h2>${item.foodname || ""}</h2>
+          <img
+            class="food-image"
+            src="${item.image}"
+            loading="lazy"
+            onclick="window.open('${item.image}')"
+          >
 
-        <p>
-          <b>Restaurant:</b>
-          ${item.restaurant || ""}
-        </p>
+          <div>
 
-        <p>
-          ${item.details || ""}
-        </p>
+            <h3>${item.foodname}</h3>
 
-        <div class="stars">
+            <p>
+              <b>${item.restaurant}</b>
+            </p>
 
-          <span class="star">☆</span>
-          <span class="star">☆</span>
-          <span class="star">☆</span>
-          <span class="star">☆</span>
-          <span class="star">☆</span>
+            <p>${item.details}</p>
+
+            <div class="stars">
+
+              <span class="star">☆</span>
+              <span class="star">☆</span>
+              <span class="star">☆</span>
+              <span class="star">☆</span>
+              <span class="star">☆</span>
+
+            </div>
+
+          </div>
 
         </div>
 
       `;
 
-      const stars =
+      const stars=
         card.querySelectorAll(".star");
 
       stars.forEach((star,index)=>{
@@ -421,7 +435,7 @@ function loadFoods(){
 
             rateFood(
               id,
-              index + 1,
+              index+1,
               stars
             );
 
@@ -432,40 +446,62 @@ function loadFoods(){
 
       gallery.appendChild(card);
 
-      // OVERALL CARD
-      overall.innerHTML += `
+      // OVERALL
+      overall.innerHTML+=`
 
         <div class="card">
 
-          <img
-            src="${item.image}"
-            loading="lazy"
-          >
+          <div class="food-card">
 
-          <h2>${item.foodname || ""}</h2>
+            <img
+              class="food-image"
+              src="${item.image}"
+              loading="lazy"
+            >
 
-          <p>
-            <b>Restaurant:</b>
-            ${item.restaurant || ""}
-          </p>
+            <div>
 
-          <div class="rating-score">
-            ⭐ ${avg.toFixed(1)}/5
+              <h3>${item.foodname}</h3>
+
+              <p>${item.restaurant}</p>
+
+              <h2>
+                ⭐ ${avg.toFixed(1)}/5
+              </h2>
+
+              <p>
+                ${item.ratings.length}
+                Ratings
+              </p>
+
+            </div>
+
           </div>
+
+        </div>
+
+      `;
+
+      // GRAPH
+      graph.innerHTML+=`
+
+        <div class="card">
+
+          <h3>${item.foodname}</h3>
+
+          <p>${item.restaurant}</p>
 
           <div class="rating-bar">
 
             <div
               class="rating-fill"
               style="width:${avg*20}%">
+
+              ${avg.toFixed(1)}/5
+
             </div>
 
           </div>
-
-          <p style="margin-top:15px;">
-            Total Ratings:
-            ${item.ratings.length}
-          </p>
 
         </div>
 
@@ -477,44 +513,41 @@ function loadFoods(){
 
 }
 
-// SAVE RATING
+// RATE
 function rateFood(foodId,rating,stars){
 
-  // RESET
   stars.forEach((star)=>{
 
-    star.innerHTML = "☆";
+    star.innerHTML="☆";
 
     star.classList.remove("active");
 
   });
 
-  // FILL STARS
   for(let i=0;i<rating;i++){
 
-    stars[i].innerHTML = "★";
+    stars[i].innerHTML="★";
 
     stars[i].classList.add("active");
 
   }
 
-  db.ref("foods/" + foodId)
+  db.ref("foods/"+foodId)
   .once("value")
   .then((snapshot)=>{
 
-    const item = snapshot.val();
+    const item=snapshot.val();
 
     if(!item.ratings){
 
-      item.ratings = [];
+      item.ratings=[];
 
     }
 
-    // CHECK DUPLICATE
-    const alreadyRated =
+    const alreadyRated=
       item.ratings.find((r)=>{
 
-        return r.email === currentEmail;
+        return r.email===currentEmail;
 
       });
 
@@ -528,7 +561,6 @@ function rateFood(foodId,rating,stars){
 
     }
 
-    // SAVE
     item.ratings.push({
 
       user:currentUser,
@@ -537,15 +569,13 @@ function rateFood(foodId,rating,stars){
 
     });
 
-    db.ref("foods/" + foodId)
+    db.ref("foods/"+foodId)
     .set(item)
     .then(()=>{
 
       alert(
-        "Your rating has been successfully saved"
+        "Rating saved successfully"
       );
-
-      loadFoods();
 
     });
 
