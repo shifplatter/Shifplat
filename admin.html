@@ -6,7 +6,6 @@
 
 <title>ShiftPlatter Admin</title>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
@@ -22,19 +21,82 @@ body{
 .container{
   max-width:1000px;
   margin:auto;
-  padding:20px;
+  padding:15px;
 }
 
 .card{
   background:white;
-  padding:20px;
-  border-radius:24px;
-  margin-bottom:20px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+  padding:15px;
+  border-radius:20px;
+  margin-bottom:15px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 
-h1,h2,h3{
-  margin-top:0;
+.tabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:20px;
+}
+
+.tab-btn{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  background:#e5e5e5;
+  font-weight:bold;
+}
+
+.active-tab{
+  background:black;
+  color:white;
+}
+
+.hidden{
+  display:none;
+}
+
+.food-card{
+  display:flex;
+  gap:15px;
+}
+
+.food-image{
+  width:90px;
+  height:90px;
+  object-fit:cover;
+  border-radius:14px;
+  cursor:pointer;
+}
+
+.plus-btn{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  background:black;
+  color:white;
+  font-size:35px;
+  border:none;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-content{
+  background:white;
+  width:90%;
+  max-width:450px;
+  padding:20px;
+  border-radius:24px;
 }
 
 input,textarea{
@@ -44,109 +106,38 @@ input,textarea{
   border:1px solid #ddd;
   margin-top:12px;
   box-sizing:border-box;
-  font-size:15px;
-}
-
-textarea{
-  min-height:100px;
-  resize:none;
 }
 
 button{
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  background:black;
-  color:white;
   cursor:pointer;
-  font-size:15px;
 }
 
 .full-btn{
   width:100%;
-  margin-top:15px;
-}
-
-.tabs{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
-}
-
-.tab-btn{
-  flex:1;
   padding:14px;
   border:none;
   border-radius:14px;
-  background:#e5e5e5;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.active-tab{
   background:black;
   color:white;
-}
-
-img{
-  width:100%;
-  border-radius:18px;
-  margin-top:12px;
-}
-
-.plus-btn{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  width:70px;
-  height:70px;
-  border-radius:50%;
-  font-size:40px;
-  background:black;
-  color:white;
-  border:none;
-  cursor:pointer;
-}
-
-.modal{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  background:rgba(0,0,0,0.6);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-}
-
-.modal-content{
-  background:white;
-  width:100%;
-  max-width:500px;
-  padding:20px;
-  border-radius:24px;
+  margin-top:15px;
 }
 
 .rating-bar{
   width:100%;
-  height:20px;
+  height:28px;
   background:#ddd;
-  border-radius:20px;
+  border-radius:30px;
   overflow:hidden;
-  margin-top:12px;
+  margin-top:15px;
 }
 
 .rating-fill{
   height:100%;
   background:black;
-}
-
-.rating-score{
-  font-size:34px;
-  font-weight:bold;
-  margin-top:15px;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 table{
@@ -157,17 +148,8 @@ table{
 
 th,td{
   border:1px solid #ddd;
-  padding:10px;
-  text-align:left;
+  padding:8px;
   font-size:14px;
-}
-
-th{
-  background:#f1f1f1;
-}
-
-.hidden{
-  display:none;
 }
 
 </style>
@@ -179,59 +161,55 @@ th{
 
   <h1>ShiftPlatter Admin</h1>
 
-  <!-- TABS -->
   <div class="tabs">
 
     <button
       class="tab-btn active-tab"
       onclick="showTab('galleryTab',this)">
-      Food Gallery
+      Gallery
     </button>
 
     <button
       class="tab-btn"
       onclick="showTab('trackerTab',this)">
-      Overall Tracker
+      Tracker
     </button>
 
     <button
       class="tab-btn"
       onclick="showTab('audienceTab',this)">
-      Audience Ratings
+      Audience
     </button>
 
   </div>
 
-  <!-- FOOD GALLERY -->
   <div id="galleryTab">
 
-    <div id="foodGallery"></div>
+    <div id="gallery"></div>
 
   </div>
 
-  <!-- OVERALL TRACKER -->
   <div id="trackerTab" class="hidden">
 
-    <div id="overallTracker"></div>
+    <div id="tracker"></div>
 
   </div>
 
-  <!-- AUDIENCE -->
   <div id="audienceTab" class="hidden">
 
-    <div id="audienceRatings"></div>
+    <div id="audience"></div>
 
   </div>
 
 </div>
 
-<!-- PLUS BUTTON -->
-<button class="plus-btn" onclick="openModal()">
-+
+<button
+  class="plus-btn"
+  onclick="openModal()">
+  +
 </button>
 
-<!-- MODAL -->
-<div class="modal" id="uploadModal">
+<div class="modal" id="modal">
 
   <div class="modal-content">
 
@@ -246,7 +224,7 @@ th{
     <input
       type="text"
       id="restaurantName"
-      placeholder="Restaurant / Cafe Name"
+      placeholder="Restaurant Name"
     >
 
     <input
@@ -263,7 +241,7 @@ th{
     <button
       class="full-btn"
       onclick="uploadFood()">
-      Upload Food
+      Upload
     </button>
 
   </div>
@@ -271,8 +249,6 @@ th{
 </div>
 
 <script>
-
-// FIREBASE CONFIG
 
 const firebaseConfig = {
     apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
@@ -283,11 +259,11 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
+
 firebase.initializeApp(firebaseConfig);
 
-const db = firebase.database();
+const db=firebase.database();
 
-// TABS
 function showTab(tabId,btn){
 
   document
@@ -302,8 +278,7 @@ function showTab(tabId,btn){
 
   document
     .getElementById(tabId)
-    .classList
-    .remove("hidden");
+    .classList.remove("hidden");
 
   document
     .querySelectorAll(".tab-btn")
@@ -317,45 +292,42 @@ function showTab(tabId,btn){
 
 }
 
-// OPEN MODAL
 function openModal(){
 
   document
-    .getElementById("uploadModal")
-    .style.display = "flex";
+    .getElementById("modal")
+    .style.display="flex";
 
 }
 
-// CLOSE MODAL
-window.onclick = function(e){
+window.onclick=function(e){
 
-  const modal =
-    document.getElementById("uploadModal");
+  const modal=
+    document.getElementById("modal");
 
-  if(e.target === modal){
+  if(e.target===modal){
 
-    modal.style.display = "none";
+    modal.style.display="none";
 
   }
 
-}
+};
 
-// UPLOAD FOOD
 function uploadFood(){
 
-  const imageFile =
+  const imageFile=
     document.getElementById("foodImage")
     .files[0];
 
-  const restaurant =
+  const restaurant=
     document.getElementById("restaurantName")
     .value;
 
-  const foodname =
+  const foodname=
     document.getElementById("foodName")
     .value;
 
-  const details =
+  const details=
     document.getElementById("foodDetails")
     .value;
 
@@ -372,33 +344,64 @@ function uploadFood(){
 
   }
 
-  const reader = new FileReader();
+  const reader=new FileReader();
 
-  reader.onload = function(e){
+  reader.onload=function(){
 
-    const foodData = {
+    const img=new Image();
 
-      image:e.target.result,
-      restaurant,
-      foodname,
-      details,
-      ratings:[]
+    img.onload=function(){
+
+      const canvas=
+        document.createElement("canvas");
+
+      const ctx=
+        canvas.getContext("2d");
+
+      canvas.width=300;
+      canvas.height=300;
+
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        300,
+        300
+      );
+
+      const compressed=
+        canvas.toDataURL(
+          "image/jpeg",
+          0.6
+        );
+
+      const foodData={
+
+        image:compressed,
+        restaurant,
+        foodname,
+        details,
+        ratings:[]
+
+      };
+
+      db.ref("foods")
+      .push(foodData)
+      .then(()=>{
+
+        alert("Food uploaded");
+
+        document
+          .getElementById("modal")
+          .style.display="none";
+
+        loadFoods();
+
+      });
 
     };
 
-    db.ref("foods")
-    .push(foodData)
-    .then(()=>{
-
-      alert("Food Uploaded Successfully");
-
-      document
-        .getElementById("uploadModal")
-        .style.display = "none";
-
-      loadFoods();
-
-    });
+    img.src=reader.result;
 
   };
 
@@ -406,33 +409,33 @@ function uploadFood(){
 
 }
 
-// LOAD FOODS
 function loadFoods(){
 
   db.ref("foods")
+  .limitToLast(20)
   .once("value")
   .then((snapshot)=>{
 
-    const data = snapshot.val();
+    const data=snapshot.val();
 
-    const gallery =
-      document.getElementById("foodGallery");
+    const gallery=
+      document.getElementById("gallery");
 
-    const tracker =
-      document.getElementById("overallTracker");
+    const tracker=
+      document.getElementById("tracker");
 
-    const audience =
-      document.getElementById("audienceRatings");
+    const audience=
+      document.getElementById("audience");
 
-    gallery.innerHTML = "";
-    tracker.innerHTML = "";
-    audience.innerHTML = "";
+    gallery.innerHTML="";
+    tracker.innerHTML="";
+    audience.innerHTML="";
 
     if(!data){
 
-      gallery.innerHTML = `
+      gallery.innerHTML=`
         <div class="card">
-          No Foods Uploaded Yet
+          No foods uploaded
         </div>
       `;
 
@@ -440,89 +443,102 @@ function loadFoods(){
 
     }
 
-    Object.keys(data).reverse().forEach((id)=>{
+    Object.keys(data)
+    .reverse()
+    .forEach((id)=>{
 
-      const item = data[id];
+      const item=data[id];
 
       if(!item.ratings){
 
-        item.ratings = [];
+        item.ratings=[];
 
       }
 
-      let total = 0;
+      let total=0;
 
       item.ratings.forEach((r)=>{
 
-        total += Number(r.rating || 0);
+        total+=Number(r.rating||0);
 
       });
 
-      let avg = 0;
+      let avg=0;
 
-      if(item.ratings.length > 0){
+      if(item.ratings.length>0){
 
-        avg = total / item.ratings.length;
+        avg=
+          total/item.ratings.length;
 
       }
 
       // GALLERY
-      gallery.innerHTML += `
+      gallery.innerHTML+=`
 
         <div class="card">
 
-          <img src="${item.image}">
+          <div class="food-card">
 
-          <h2>${item.foodname}</h2>
+            <img
+              class="food-image"
+              src="${item.image}"
+              onclick="window.open('${item.image}')"
+            >
 
-          <p>
-            <b>Restaurant:</b>
-            ${item.restaurant}
-          </p>
+            <div>
 
-          <p>${item.details}</p>
+              <h3>${item.foodname}</h3>
+
+              <p>
+                <b>${item.restaurant}</b>
+              </p>
+
+              <p>${item.details}</p>
+
+            </div>
+
+          </div>
 
         </div>
 
       `;
 
       // TRACKER
-      tracker.innerHTML += `
+      tracker.innerHTML+=`
 
         <div class="card">
 
-          <img src="${item.image}">
+          <h3>${item.foodname}</h3>
 
-          <h2>${item.foodname}</h2>
-
-          <p>
-            ⭐ ${avg.toFixed(1)}/5
-          </p>
+          <p>${item.restaurant}</p>
 
           <div class="rating-bar">
 
             <div
               class="rating-fill"
               style="width:${avg*20}%">
+
+              ${avg.toFixed(1)}/5
+
             </div>
 
           </div>
 
-          <p style="margin-top:15px;">
-            Total Ratings:
+          <p>
             ${item.ratings.length}
+            Ratings
           </p>
 
         </div>
 
       `;
 
-      // AUDIENCE TABLE
-      let rows = "";
+      // AUDIENCE
+      let rows="";
 
       item.ratings.forEach((r)=>{
 
-        rows += `
+        rows+=`
 
           <tr>
 
@@ -538,13 +554,11 @@ function loadFoods(){
 
       });
 
-      audience.innerHTML += `
+      audience.innerHTML+=`
 
         <div class="card">
 
-          <img src="${item.image}">
-
-          <h2>${item.foodname}</h2>
+          <h3>${item.foodname}</h3>
 
           <table>
 
@@ -570,7 +584,6 @@ function loadFoods(){
 
 }
 
-// INITIAL LOAD
 loadFoods();
 
 </script>
