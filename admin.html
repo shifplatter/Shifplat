@@ -13,28 +13,29 @@
 
 body{
   margin:0;
-  padding:20px;
+  padding:0;
   background:#f5f5f5;
   font-family:Arial,sans-serif;
 }
 
 .container{
-  max-width:800px;
+  max-width:900px;
   margin:auto;
+  padding:20px;
 }
 
 .card{
   background:white;
   padding:20px;
-  border-radius:20px;
+  border-radius:24px;
   margin-bottom:20px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  box-shadow:0 2px 10px rgba(0,0,0,0.08);
 }
 
 input,textarea{
   width:100%;
   padding:14px;
-  border-radius:12px;
+  border-radius:14px;
   border:1px solid #ddd;
   margin-top:12px;
   box-sizing:border-box;
@@ -45,7 +46,7 @@ button{
   width:100%;
   padding:14px;
   border:none;
-  border-radius:12px;
+  border-radius:14px;
   background:black;
   color:white;
   margin-top:15px;
@@ -55,44 +56,99 @@ button{
 
 img{
   width:100%;
-  border-radius:16px;
-  margin-top:15px;
+  border-radius:18px;
+  margin-top:12px;
 }
 
 .hidden{
   display:none;
 }
 
+.tabs{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.tab-btn{
+  flex:1;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:#e5e5e5;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.active-tab{
+  background:black;
+  color:white;
+}
+
 .plus-box{
-  width:120px;
-  height:120px;
+  width:130px;
+  height:130px;
   background:#f0f0f0;
   border-radius:30px;
   margin:auto;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:60px;
+  font-size:70px;
   border:3px dashed #999;
   cursor:pointer;
 }
 
-.tracker{
+.rating-bar{
   width:100%;
-  height:18px;
+  height:20px;
   background:#ddd;
   border-radius:20px;
   overflow:hidden;
-  margin-top:10px;
+  margin-top:12px;
 }
 
-.fill{
+.rating-fill{
   height:100%;
   background:black;
 }
 
+.rating-score{
+  font-size:38px;
+  font-weight:bold;
+  margin-top:15px;
+}
+
+.table{
+  width:100%;
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:12px;
+  border-bottom:1px solid #ddd;
+  text-align:left;
+}
+
+th{
+  background:#f5f5f5;
+}
+
 h1,h2,h3{
   margin-top:0;
+}
+
+.snapshot-card{
+  background:white;
+  border-radius:25px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.08);
 }
 
 </style>
@@ -102,7 +158,7 @@ h1,h2,h3{
 
 <div class="container">
 
-  <!-- LOGIN PAGE -->
+  <!-- LOGIN -->
   <div class="card" id="loginPage">
 
     <h1>ShiftPlatter Admin</h1>
@@ -128,79 +184,92 @@ h1,h2,h3{
   <!-- ADMIN PANEL -->
   <div id="adminPanel" class="hidden">
 
-    <!-- UPLOAD CARD -->
-    <div class="card">
+    <!-- TABS -->
+    <div class="tabs">
 
-      <h2 style="text-align:center;">
+      <button class="tab-btn active-tab"
+        onclick="showTab('uploadTab',this)">
         Upload Food
-      </h2>
+      </button>
 
-      <!-- PLUS BUTTON -->
-      <label for="imageInput">
+      <button class="tab-btn"
+        onclick="showTab('ratingTab',this)">
+        Overall Ratings
+      </button>
 
-        <div class="plus-box">
-          +
-        </div>
-
-      </label>
-
-      <p style="
-        text-align:center;
-        color:gray;
-        margin-top:10px;
-      ">
-        Tap + to Upload Food Image
-      </p>
-
-      <!-- FILE INPUT -->
-      <input
-        type="file"
-        id="imageInput"
-        style="display:none;"
-      >
-
-      <!-- RESTAURANT -->
-      <input
-        type="text"
-        id="restaurant"
-        placeholder="Restaurant / Cafe Name"
-      >
-
-      <!-- FOOD -->
-      <input
-        type="text"
-        id="foodname"
-        placeholder="Food Name"
-      >
-
-      <!-- DETAILS -->
-      <textarea
-        id="details"
-        placeholder="Food Details"
-      ></textarea>
-
-      <!-- BUTTON -->
-      <button onclick="uploadFood()">
-        Upload Food
+      <button class="tab-btn"
+        onclick="showTab('trackerTab',this)">
+        Audience Tracker
       </button>
 
     </div>
 
-    <!-- TRACKER -->
-    <div class="card">
+    <!-- TAB 1 -->
+    <div id="uploadTab">
 
-      <h2>📈 Overall Ratings Tracker</h2>
+      <div class="card">
 
-      <div id="trackerContainer"></div>
+        <h2 style="text-align:center;">
+          Upload Food
+        </h2>
+
+        <label for="imageInput">
+
+          <div class="plus-box">
+            +
+          </div>
+
+        </label>
+
+        <p style="
+          text-align:center;
+          color:gray;
+        ">
+          Tap + to Upload Food Image
+        </p>
+
+        <input
+          type="file"
+          id="imageInput"
+          style="display:none;"
+        >
+
+        <input
+          type="text"
+          id="restaurant"
+          placeholder="Restaurant / Cafe Name"
+        >
+
+        <input
+          type="text"
+          id="foodname"
+          placeholder="Food Name"
+        >
+
+        <textarea
+          id="details"
+          placeholder="Food Details"
+        ></textarea>
+
+        <button onclick="uploadFood()">
+          Upload Food
+        </button>
+
+      </div>
 
     </div>
 
-    <!-- USER DATABASE -->
-    <div class="card">
+    <!-- TAB 2 -->
+    <div id="ratingTab" class="hidden">
 
-      <h2>📊 User Ratings Database</h2>
+      <div id="overallRatings"></div>
 
-      <div id="ratingsContainer"></div>
+    </div>
+
+    <!-- TAB 3 -->
+    <div id="trackerTab" class="hidden">
+
+      <div id="audienceTracker"></div>
 
     </div>
 
@@ -210,21 +279,28 @@ h1,h2,h3{
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
-  authDomain: "shifplatter-e0449.firebaseapp.com",
-  databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "shifplatter-e0449",
-  storageBucket: "shifplatter-e0449.firebasestorage.app",
-  messagingSenderId: "873786528833",
-  appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
+
+  apiKey: "YOUR_API_KEY",
+
+  authDomain: "YOUR_AUTH_DOMAIN",
+
+  databaseURL: "YOUR_DATABASE_URL",
+
+  projectId: "YOUR_PROJECT_ID",
+
+  storageBucket: "YOUR_STORAGE_BUCKET",
+
+  messagingSenderId: "YOUR_MSG_ID",
+
+  appId: "YOUR_APP_ID"
+
 };
 
-// INITIALIZE FIREBASE
+
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 
-// ADMIN LOGIN
 function loginAdmin(){
 
   const username =
@@ -262,7 +338,33 @@ function loginAdmin(){
 
 }
 
-// UPLOAD FOOD
+function showTab(tabId,btn){
+
+  document
+    .querySelectorAll("#uploadTab,#ratingTab,#trackerTab")
+    .forEach((tab)=>{
+
+      tab.classList.add("hidden");
+
+    });
+
+  document
+    .getElementById(tabId)
+    .classList
+    .remove("hidden");
+
+  document
+    .querySelectorAll(".tab-btn")
+    .forEach((b)=>{
+
+      b.classList.remove("active-tab");
+
+    });
+
+  btn.classList.add("active-tab");
+
+}
+
 function uploadFood(){
 
   const restaurant =
@@ -296,9 +398,9 @@ function uploadFood(){
 
     const foodData = {
 
-      restaurant:restaurant,
-      foodname:foodname,
-      details:details,
+      restaurant,
+      foodname,
+      details,
       image:e.target.result,
       ratings:[]
 
@@ -307,7 +409,7 @@ function uploadFood(){
     db.ref("foods").push(foodData)
     .then(()=>{
 
-      alert("Food Uploaded Successfully");
+      alert("Food Uploaded");
 
       document.getElementById("restaurant").value = "";
       document.getElementById("foodname").value = "";
@@ -322,26 +424,29 @@ function uploadFood(){
 
 }
 
-// LOAD ADMIN DATA
 function loadAdminData(){
 
   db.ref("foods").on("value",function(snapshot){
 
     const data = snapshot.val();
 
-    const tracker =
-      document.getElementById("trackerContainer");
+    const overall =
+      document.getElementById("overallRatings");
 
-    const ratings =
-      document.getElementById("ratingsContainer");
+    const tracker =
+      document.getElementById("audienceTracker");
+
+    overall.innerHTML = "";
 
     tracker.innerHTML = "";
 
-    ratings.innerHTML = "";
-
     if(!data){
 
-      tracker.innerHTML = "No Food Uploaded";
+      overall.innerHTML = `
+        <div class="card">
+          No Food Uploaded Yet
+        </div>
+      `;
 
       return;
 
@@ -373,35 +478,33 @@ function loadAdminData(){
 
       }
 
-      // TRACKER CARD
-      tracker.innerHTML += `
+      // OVERALL SNAPSHOT CARD
+      overall.innerHTML += `
 
-        <div class="card">
+        <div class="snapshot-card">
 
           <img src="${item.image}">
 
-          <h3>${item.foodname}</h3>
+          <h2>${item.foodname}</h2>
 
           <p>
             <b>Restaurant:</b>
             ${item.restaurant}
           </p>
 
-          <div class="tracker">
+          <div class="rating-score">
+            ⭐ ${avg.toFixed(1)}/5
+          </div>
 
-            <div
-              class="fill"
+          <div class="rating-bar">
+
+            <div class="rating-fill"
               style="width:${avg*20}%">
             </div>
 
           </div>
 
-          <p>
-            ⭐ Overall Rating:
-            ${avg.toFixed(1)}/5
-          </p>
-
-          <p>
+          <p style="margin-top:15px;">
             Total Ratings:
             ${item.ratings.length}
           </p>
@@ -410,41 +513,67 @@ function loadAdminData(){
 
       `;
 
-      // USER RATINGS
-      if(item.ratings.length > 0){
+      // TRACKER TABLE
+      tracker.innerHTML += `
 
-        item.ratings.forEach((r)=>{
+        <div class="card">
 
-          ratings.innerHTML += `
+          <img src="${item.image}">
 
-            <div class="card">
+          <h2>${item.foodname}</h2>
 
-              <img src="${item.image}">
+          <p>
+            <b>Restaurant:</b>
+            ${item.restaurant}
+          </p>
 
-              <h3>${item.foodname}</h3>
+          <div class="table">
 
-              <p>
-                <b>User:</b>
-                ${r.user}
-              </p>
+            <table>
 
-              <p>
-                <b>Email:</b>
-                ${r.email}
-              </p>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Rating</th>
+              </tr>
 
-              <p>
-                <b>Rating:</b>
-                ⭐ ${r.rating}
-              </p>
+              ${
+                item.ratings.length > 0
 
-            </div>
+                ?
 
-          `;
+                item.ratings.map((r)=>`
 
-        });
+                  <tr>
 
-      }
+                    <td>${r.user}</td>
+
+                    <td>${r.email}</td>
+
+                    <td>⭐ ${r.rating}</td>
+
+                  </tr>
+
+                `).join("")
+
+                :
+
+                `
+                  <tr>
+                    <td colspan="3">
+                      No Ratings Yet
+                    </td>
+                  </tr>
+                `
+              }
+
+            </table>
+
+          </div>
+
+        </div>
+
+      `;
 
     });
 
