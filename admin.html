@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ShiftPlatter Admin</title>
 
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
@@ -35,8 +36,9 @@ input,textarea{
   padding:14px;
   border-radius:12px;
   border:1px solid #ddd;
-  margin-top:10px;
+  margin-top:12px;
   box-sizing:border-box;
+  font-size:15px;
 }
 
 button{
@@ -61,10 +63,18 @@ img{
   display:none;
 }
 
-.plus{
+.plus-box{
+  width:120px;
+  height:120px;
+  background:#f0f0f0;
+  border-radius:30px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   font-size:60px;
-  text-align:center;
-  margin-bottom:10px;
+  border:3px dashed #999;
+  cursor:pointer;
 }
 
 .tracker{
@@ -92,20 +102,20 @@ h1,h2,h3{
 
 <div class="container">
 
-  <!-- LOGIN -->
+  <!-- LOGIN PAGE -->
   <div class="card" id="loginPage">
 
     <h1>ShiftPlatter Admin</h1>
 
-    <input 
-      type="text" 
-      id="username" 
+    <input
+      type="text"
+      id="username"
       placeholder="Admin Username"
     >
 
-    <input 
-      type="email" 
-      id="email" 
+    <input
+      type="email"
+      id="email"
       placeholder="Admin Email"
     >
 
@@ -118,42 +128,65 @@ h1,h2,h3{
   <!-- ADMIN PANEL -->
   <div id="adminPanel" class="hidden">
 
-    <!-- UPLOAD SECTION -->
+    <!-- UPLOAD CARD -->
     <div class="card">
 
-      <div class="plus">➕</div>
+      <h2 style="text-align:center;">
+        Upload Food
+      </h2>
 
-      <h2>Upload Food</h2>
+      <!-- PLUS BUTTON -->
+      <label for="imageInput">
 
-      <input 
-        type="text" 
+        <div class="plus-box">
+          +
+        </div>
+
+      </label>
+
+      <p style="
+        text-align:center;
+        color:gray;
+        margin-top:10px;
+      ">
+        Tap + to Upload Food Image
+      </p>
+
+      <!-- FILE INPUT -->
+      <input
+        type="file"
+        id="imageInput"
+        style="display:none;"
+      >
+
+      <!-- RESTAURANT -->
+      <input
+        type="text"
         id="restaurant"
         placeholder="Restaurant / Cafe Name"
       >
 
-      <input 
-        type="text" 
+      <!-- FOOD -->
+      <input
+        type="text"
         id="foodname"
         placeholder="Food Name"
       >
 
-      <textarea 
+      <!-- DETAILS -->
+      <textarea
         id="details"
         placeholder="Food Details"
       ></textarea>
 
-      <input 
-        type="file" 
-        id="imageInput"
-      >
-
+      <!-- BUTTON -->
       <button onclick="uploadFood()">
         Upload Food
       </button>
 
     </div>
 
-    <!-- OVERALL TRACKER -->
+    <!-- TRACKER -->
     <div class="card">
 
       <h2>📈 Overall Ratings Tracker</h2>
@@ -162,7 +195,7 @@ h1,h2,h3{
 
     </div>
 
-    <!-- USER RATINGS -->
+    <!-- USER DATABASE -->
     <div class="card">
 
       <h2>📊 User Ratings Database</h2>
@@ -176,7 +209,6 @@ h1,h2,h3{
 </div>
 
 <script>
-
 const firebaseConfig = {
 
   apiKey: "YOUR_API_KEY",
@@ -195,10 +227,13 @@ const firebaseConfig = {
 
 };
 
+
+// INITIALIZE FIREBASE
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 
+// ADMIN LOGIN
 function loginAdmin(){
 
   const username =
@@ -236,23 +271,20 @@ function loginAdmin(){
 
 }
 
+// UPLOAD FOOD
 function uploadFood(){
 
   const restaurant =
-    document.getElementById("restaurant")
-    .value;
+    document.getElementById("restaurant").value;
 
   const foodname =
-    document.getElementById("foodname")
-    .value;
+    document.getElementById("foodname").value;
 
   const details =
-    document.getElementById("details")
-    .value;
+    document.getElementById("details").value;
 
   const file =
-    document.getElementById("imageInput")
-    .files[0];
+    document.getElementById("imageInput").files[0];
 
   if(
     !restaurant ||
@@ -273,9 +305,9 @@ function uploadFood(){
 
     const foodData = {
 
-      restaurant,
-      foodname,
-      details,
+      restaurant:restaurant,
+      foodname:foodname,
+      details:details,
       image:e.target.result,
       ratings:[]
 
@@ -299,6 +331,7 @@ function uploadFood(){
 
 }
 
+// LOAD ADMIN DATA
 function loadAdminData(){
 
   db.ref("foods").on("value",function(snapshot){
@@ -349,7 +382,7 @@ function loadAdminData(){
 
       }
 
-      // TRACKER
+      // TRACKER CARD
       tracker.innerHTML += `
 
         <div class="card">
@@ -358,11 +391,15 @@ function loadAdminData(){
 
           <h3>${item.foodname}</h3>
 
-          <p><b>Restaurant:</b> ${item.restaurant}</p>
+          <p>
+            <b>Restaurant:</b>
+            ${item.restaurant}
+          </p>
 
           <div class="tracker">
 
-            <div class="fill"
+            <div
+              class="fill"
               style="width:${avg*20}%">
             </div>
 
@@ -382,7 +419,7 @@ function loadAdminData(){
 
       `;
 
-      // USER DATABASE
+      // USER RATINGS
       if(item.ratings.length > 0){
 
         item.ratings.forEach((r)=>{
@@ -396,15 +433,18 @@ function loadAdminData(){
               <h3>${item.foodname}</h3>
 
               <p>
-                <b>User:</b> ${r.user}
+                <b>User:</b>
+                ${r.user}
               </p>
 
               <p>
-                <b>Email:</b> ${r.email}
+                <b>Email:</b>
+                ${r.email}
               </p>
 
               <p>
-                <b>Rating:</b> ⭐ ${r.rating}
+                <b>Rating:</b>
+                ⭐ ${r.rating}
               </p>
 
             </div>
