@@ -14,8 +14,8 @@
 body{
 margin:0;
 padding:0;
-background:#f5f5f5;
 font-family:Arial,sans-serif;
+background:#f5f5f5;
 }
 
 .container{
@@ -35,16 +35,16 @@ box-shadow:0 2px 8px rgba(0,0,0,0.08);
 input,textarea{
 width:100%;
 padding:14px;
+margin-top:12px;
 border-radius:14px;
 border:1px solid #ddd;
-margin-top:12px;
 box-sizing:border-box;
 }
 
 button{
 border:none;
-border-radius:14px;
 padding:14px;
+border-radius:14px;
 cursor:pointer;
 }
 
@@ -81,7 +81,6 @@ display:none;
 .food-card{
 display:flex;
 gap:15px;
-align-items:flex-start;
 }
 
 .food-image{
@@ -101,17 +100,12 @@ margin-top:10px;
 
 .star{
 font-size:28px;
-color:#ccc;
 cursor:pointer;
+color:#ccc;
 }
 
 .star.active{
 color:gold;
-}
-
-.loader{
-text-align:center;
-padding:30px;
 }
 
 .gauge-wrap{
@@ -152,9 +146,7 @@ font-weight:bold;
 
 <h1>Rate Your View</h1>
 
-<p>
-Rate your favorite food photos
-</p>
+<p>Food Rating Platform</p>
 
 <input
 type="text"
@@ -189,13 +181,7 @@ Gallery
 <button
 class="tab-btn"
 onclick="showTab('ratingsTab',this)">
-Ratings
-</button>
-
-<button
-class="tab-btn"
-onclick="showTab('graphTab',this)">
-Graph
+Overall Ratings
 </button>
 
 <button
@@ -212,19 +198,17 @@ Upload Your Image
 
 </div>
 
-<div id="ratingsTab" class="hidden">
+<div
+id="ratingsTab"
+class="hidden">
 
 <div id="overallRatings"></div>
 
 </div>
 
-<div id="graphTab" class="hidden">
-
-<div id="graphContainer"></div>
-
-</div>
-
-<div id="uploadTab" class="hidden">
+<div
+id="uploadTab"
+class="hidden">
 
 <div class="card">
 
@@ -375,7 +359,7 @@ requestAnimationFrame(()=>{
 
 document
 .querySelectorAll(
-"#galleryTab,#ratingsTab,#graphTab,#uploadTab"
+"#galleryTab,#ratingsTab,#uploadTab"
 )
 .forEach((tab)=>{
 
@@ -409,11 +393,8 @@ document.getElementById("gallery");
 const overall=
 document.getElementById("overallRatings");
 
-const graph=
-document.getElementById("graphContainer");
-
-gallery.innerHTML=
-'<div class="loader">Loading...</div>';
+gallery.innerHTML="";
+overall.innerHTML="";
 
 db.ref("foods")
 .limitToLast(20)
@@ -421,10 +402,6 @@ db.ref("foods")
 .then((snapshot)=>{
 
 const data=snapshot.val();
-
-gallery.innerHTML="";
-overall.innerHTML="";
-graph.innerHTML="";
 
 if(!data){
 
@@ -552,38 +529,8 @@ style="width:${avg*20}%">
 
 <div class="gauge-text">
 
-Overall Rating:
 ${avg.toFixed(1)}/5
-
-</div>
-
-</div>
-
-</div>
-
-`;
-
-graph.innerHTML+=`
-
-<div class="card">
-
-<h3>${item.foodname}</h3>
-
-<div class="gauge-wrap">
-
-<div class="gauge">
-
-<div
-class="gauge-fill"
-style="width:${avg*20}%">
-</div>
-
-</div>
-
-<div class="gauge-text">
-
-${Math.round(avg*20)}%
-Audience Score
+Overall Audience Rating
 
 </div>
 
@@ -658,6 +605,22 @@ alert(
 "Food uploaded successfully"
 );
 
+document
+.getElementById("userRestaurant")
+.value="";
+
+document
+.getElementById("userFoodName")
+.value="";
+
+document
+.getElementById("userDetails")
+.value="";
+
+document
+.getElementById("userFoodImage")
+.value="";
+
 });
 
 };
@@ -709,9 +672,7 @@ return r.email===currentEmail;
 
 if(alreadyRated){
 
-alert(
-"You already rated"
-);
+alert("You already rated");
 
 return;
 
@@ -732,6 +693,8 @@ db.ref("foods/"+foodId)
 alert(
 "Rating saved successfully"
 );
+
+loadFoods();
 
 });
 
