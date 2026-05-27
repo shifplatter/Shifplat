@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>ShiftPlatter Admin</title>
 
 <!-- FIREBASE -->
@@ -19,7 +20,7 @@ body{
 }
 
 .container{
-  max-width:900px;
+  max-width:1000px;
   margin:auto;
   padding:20px;
 }
@@ -32,6 +33,10 @@ body{
   box-shadow:0 2px 10px rgba(0,0,0,0.08);
 }
 
+h1,h2,h3{
+  margin-top:0;
+}
+
 input,textarea{
   width:100%;
   padding:14px;
@@ -42,26 +47,24 @@ input,textarea{
   font-size:15px;
 }
 
+textarea{
+  min-height:100px;
+  resize:none;
+}
+
 button{
-  width:100%;
   padding:14px;
   border:none;
   border-radius:14px;
   background:black;
   color:white;
-  margin-top:15px;
-  font-size:16px;
   cursor:pointer;
+  font-size:15px;
 }
 
-img{
+.full-btn{
   width:100%;
-  border-radius:18px;
-  margin-top:12px;
-}
-
-.hidden{
-  display:none;
+  margin-top:15px;
 }
 
 .tabs{
@@ -85,18 +88,45 @@ img{
   color:white;
 }
 
-.plus-box{
-  width:130px;
-  height:130px;
-  background:#f0f0f0;
-  border-radius:30px;
-  margin:auto;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:70px;
-  border:3px dashed #999;
+img{
+  width:100%;
+  border-radius:18px;
+  margin-top:12px;
+}
+
+.plus-btn{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  font-size:40px;
+  background:black;
+  color:white;
+  border:none;
   cursor:pointer;
+}
+
+.modal{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.modal-content{
+  background:white;
+  width:100%;
+  max-width:500px;
+  padding:20px;
+  border-radius:24px;
 }
 
 .rating-bar{
@@ -114,41 +144,30 @@ img{
 }
 
 .rating-score{
-  font-size:38px;
+  font-size:34px;
   font-weight:bold;
   margin-top:15px;
-}
-
-.table{
-  width:100%;
-  overflow:auto;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
+  margin-top:15px;
 }
 
 th,td{
-  padding:12px;
-  border-bottom:1px solid #ddd;
+  border:1px solid #ddd;
+  padding:10px;
   text-align:left;
+  font-size:14px;
 }
 
 th{
-  background:#f5f5f5;
+  background:#f1f1f1;
 }
 
-h1,h2,h3{
-  margin-top:0;
-}
-
-.snapshot-card{
-  background:white;
-  border-radius:25px;
-  padding:20px;
-  margin-bottom:20px;
-  box-shadow:0 2px 12px rgba(0,0,0,0.08);
+.hidden{
+  display:none;
 }
 
 </style>
@@ -158,190 +177,123 @@ h1,h2,h3{
 
 <div class="container">
 
-  <!-- LOGIN -->
-  <div class="card" id="loginPage">
+  <h1>ShiftPlatter Admin</h1>
 
-    <h1>ShiftPlatter Admin</h1>
+  <!-- TABS -->
+  <div class="tabs">
 
-    <input
-      type="text"
-      id="username"
-      placeholder="Admin Username"
-    >
+    <button
+      class="tab-btn active-tab"
+      onclick="showTab('galleryTab',this)">
+      Food Gallery
+    </button>
 
-    <input
-      type="email"
-      id="email"
-      placeholder="Admin Email"
-    >
+    <button
+      class="tab-btn"
+      onclick="showTab('trackerTab',this)">
+      Overall Tracker
+    </button>
 
-    <button onclick="loginAdmin()">
-      Login
+    <button
+      class="tab-btn"
+      onclick="showTab('audienceTab',this)">
+      Audience Ratings
     </button>
 
   </div>
 
-  <!-- ADMIN PANEL -->
-  <div id="adminPanel" class="hidden">
+  <!-- FOOD GALLERY -->
+  <div id="galleryTab">
 
-    <!-- TABS -->
-    <div class="tabs">
+    <div id="foodGallery"></div>
 
-      <button class="tab-btn active-tab"
-        onclick="showTab('uploadTab',this)">
-        Upload Food
-      </button>
+  </div>
 
-      <button class="tab-btn"
-        onclick="showTab('ratingTab',this)">
-        Overall Ratings
-      </button>
+  <!-- OVERALL TRACKER -->
+  <div id="trackerTab" class="hidden">
 
-      <button class="tab-btn"
-        onclick="showTab('trackerTab',this)">
-        Audience Tracker
-      </button>
+    <div id="overallTracker"></div>
 
-    </div>
+  </div>
 
-    <!-- TAB 1 -->
-    <div id="uploadTab">
+  <!-- AUDIENCE -->
+  <div id="audienceTab" class="hidden">
 
-      <div class="card">
+    <div id="audienceRatings"></div>
 
-        <h2 style="text-align:center;">
-          Upload Food
-        </h2>
+  </div>
 
-        <label for="imageInput">
+</div>
 
-          <div class="plus-box">
-            +
-          </div>
+<!-- PLUS BUTTON -->
+<button class="plus-btn" onclick="openModal()">
++
+</button>
 
-        </label>
+<!-- MODAL -->
+<div class="modal" id="uploadModal">
 
-        <p style="
-          text-align:center;
-          color:gray;
-        ">
-          Tap + to Upload Food Image
-        </p>
+  <div class="modal-content">
 
-        <input
-          type="file"
-          id="imageInput"
-          style="display:none;"
-        >
+    <h2>Upload Food</h2>
 
-        <input
-          type="text"
-          id="restaurant"
-          placeholder="Restaurant / Cafe Name"
-        >
+    <input
+      type="file"
+      id="foodImage"
+      accept="image/*"
+    >
 
-        <input
-          type="text"
-          id="foodname"
-          placeholder="Food Name"
-        >
+    <input
+      type="text"
+      id="restaurantName"
+      placeholder="Restaurant / Cafe Name"
+    >
 
-        <textarea
-          id="details"
-          placeholder="Food Details"
-        ></textarea>
+    <input
+      type="text"
+      id="foodName"
+      placeholder="Food Name"
+    >
 
-        <button onclick="uploadFood()">
-          Upload Food
-        </button>
+    <textarea
+      id="foodDetails"
+      placeholder="Food Details">
+    </textarea>
 
-      </div>
-
-    </div>
-
-    <!-- TAB 2 -->
-    <div id="ratingTab" class="hidden">
-
-      <div id="overallRatings"></div>
-
-    </div>
-
-    <!-- TAB 3 -->
-    <div id="trackerTab" class="hidden">
-
-      <div id="audienceTracker"></div>
-
-    </div>
+    <button
+      class="full-btn"
+      onclick="uploadFood()">
+      Upload Food
+    </button>
 
   </div>
 
 </div>
 
 <script>
+
+// FIREBASE CONFIG
+
 const firebaseConfig = {
-
-  apiKey: "YOUR_API_KEY",
-
-  authDomain: "YOUR_AUTH_DOMAIN",
-
-  databaseURL: "YOUR_DATABASE_URL",
-
-  projectId: "YOUR_PROJECT_ID",
-
-  storageBucket: "YOUR_STORAGE_BUCKET",
-
-  messagingSenderId: "YOUR_MSG_ID",
-
-  appId: "YOUR_APP_ID"
-
-};
-
-
+    apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
+    authDomain: "shifplatter-e0449.firebaseapp.com",
+    databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "shifplatter-e0449",
+    storageBucket: "shifplatter-e0449.firebasestorage.app",
+    messagingSenderId: "873786528833",
+    appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
+  };
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 
-function loginAdmin(){
-
-  const username =
-    document.getElementById("username")
-    .value
-    .trim();
-
-  const email =
-    document.getElementById("email")
-    .value
-    .trim();
-
-  if(
-    username.toUpperCase() === "SHIFPLATTER" &&
-    email.toUpperCase() === "SHIVIK@2030"
-  ){
-
-    document
-      .getElementById("loginPage")
-      .classList
-      .add("hidden");
-
-    document
-      .getElementById("adminPanel")
-      .classList
-      .remove("hidden");
-
-    loadAdminData();
-
-  }else{
-
-    alert("Invalid Admin Credentials");
-
-  }
-
-}
-
+// TABS
 function showTab(tabId,btn){
 
   document
-    .querySelectorAll("#uploadTab,#ratingTab,#trackerTab")
+    .querySelectorAll(
+      "#galleryTab,#trackerTab,#audienceTab"
+    )
     .forEach((tab)=>{
 
       tab.classList.add("hidden");
@@ -365,28 +317,56 @@ function showTab(tabId,btn){
 
 }
 
+// OPEN MODAL
+function openModal(){
+
+  document
+    .getElementById("uploadModal")
+    .style.display = "flex";
+
+}
+
+// CLOSE MODAL
+window.onclick = function(e){
+
+  const modal =
+    document.getElementById("uploadModal");
+
+  if(e.target === modal){
+
+    modal.style.display = "none";
+
+  }
+
+}
+
+// UPLOAD FOOD
 function uploadFood(){
 
+  const imageFile =
+    document.getElementById("foodImage")
+    .files[0];
+
   const restaurant =
-    document.getElementById("restaurant").value;
+    document.getElementById("restaurantName")
+    .value;
 
   const foodname =
-    document.getElementById("foodname").value;
+    document.getElementById("foodName")
+    .value;
 
   const details =
-    document.getElementById("details").value;
-
-  const file =
-    document.getElementById("imageInput").files[0];
+    document.getElementById("foodDetails")
+    .value;
 
   if(
+    !imageFile ||
     !restaurant ||
     !foodname ||
-    !details ||
-    !file
+    !details
   ){
 
-    alert("Please fill all fields");
+    alert("Please fill all details");
 
     return;
 
@@ -398,53 +378,61 @@ function uploadFood(){
 
     const foodData = {
 
+      image:e.target.result,
       restaurant,
       foodname,
       details,
-      image:e.target.result,
       ratings:[]
 
     };
 
-    db.ref("foods").push(foodData)
+    db.ref("foods")
+    .push(foodData)
     .then(()=>{
 
-      alert("Food Uploaded");
+      alert("Food Uploaded Successfully");
 
-      document.getElementById("restaurant").value = "";
-      document.getElementById("foodname").value = "";
-      document.getElementById("details").value = "";
-      document.getElementById("imageInput").value = "";
+      document
+        .getElementById("uploadModal")
+        .style.display = "none";
+
+      loadFoods();
 
     });
 
   };
 
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(imageFile);
 
 }
 
-function loadAdminData(){
+// LOAD FOODS
+function loadFoods(){
 
-  db.ref("foods").on("value",function(snapshot){
+  db.ref("foods")
+  .once("value")
+  .then((snapshot)=>{
 
     const data = snapshot.val();
 
-    const overall =
-      document.getElementById("overallRatings");
+    const gallery =
+      document.getElementById("foodGallery");
 
     const tracker =
-      document.getElementById("audienceTracker");
+      document.getElementById("overallTracker");
 
-    overall.innerHTML = "";
+    const audience =
+      document.getElementById("audienceRatings");
 
+    gallery.innerHTML = "";
     tracker.innerHTML = "";
+    audience.innerHTML = "";
 
     if(!data){
 
-      overall.innerHTML = `
+      gallery.innerHTML = `
         <div class="card">
-          No Food Uploaded Yet
+          No Foods Uploaded Yet
         </div>
       `;
 
@@ -452,7 +440,7 @@ function loadAdminData(){
 
     }
 
-    Object.keys(data).forEach((id)=>{
+    Object.keys(data).reverse().forEach((id)=>{
 
       const item = data[id];
 
@@ -466,7 +454,7 @@ function loadAdminData(){
 
       item.ratings.forEach((r)=>{
 
-        total += Number(r.rating);
+        total += Number(r.rating || 0);
 
       });
 
@@ -478,10 +466,10 @@ function loadAdminData(){
 
       }
 
-      // OVERALL SNAPSHOT CARD
-      overall.innerHTML += `
+      // GALLERY
+      gallery.innerHTML += `
 
-        <div class="snapshot-card">
+        <div class="card">
 
           <img src="${item.image}">
 
@@ -492,13 +480,29 @@ function loadAdminData(){
             ${item.restaurant}
           </p>
 
-          <div class="rating-score">
+          <p>${item.details}</p>
+
+        </div>
+
+      `;
+
+      // TRACKER
+      tracker.innerHTML += `
+
+        <div class="card">
+
+          <img src="${item.image}">
+
+          <h2>${item.foodname}</h2>
+
+          <p>
             ⭐ ${avg.toFixed(1)}/5
-          </div>
+          </p>
 
           <div class="rating-bar">
 
-            <div class="rating-fill"
+            <div
+              class="rating-fill"
               style="width:${avg*20}%">
             </div>
 
@@ -513,8 +517,28 @@ function loadAdminData(){
 
       `;
 
-      // TRACKER TABLE
-      tracker.innerHTML += `
+      // AUDIENCE TABLE
+      let rows = "";
+
+      item.ratings.forEach((r)=>{
+
+        rows += `
+
+          <tr>
+
+            <td>${r.user}</td>
+
+            <td>${r.email}</td>
+
+            <td>⭐ ${r.rating}</td>
+
+          </tr>
+
+        `;
+
+      });
+
+      audience.innerHTML += `
 
         <div class="card">
 
@@ -522,54 +546,19 @@ function loadAdminData(){
 
           <h2>${item.foodname}</h2>
 
-          <p>
-            <b>Restaurant:</b>
-            ${item.restaurant}
-          </p>
+          <table>
 
-          <div class="table">
+            <tr>
 
-            <table>
+              <th>User</th>
+              <th>Email</th>
+              <th>Rating</th>
 
-              <tr>
-                <th>User</th>
-                <th>Email</th>
-                <th>Rating</th>
-              </tr>
+            </tr>
 
-              ${
-                item.ratings.length > 0
+            ${rows}
 
-                ?
-
-                item.ratings.map((r)=>`
-
-                  <tr>
-
-                    <td>${r.user}</td>
-
-                    <td>${r.email}</td>
-
-                    <td>⭐ ${r.rating}</td>
-
-                  </tr>
-
-                `).join("")
-
-                :
-
-                `
-                  <tr>
-                    <td colspan="3">
-                      No Ratings Yet
-                    </td>
-                  </tr>
-                `
-              }
-
-            </table>
-
-          </div>
+          </table>
 
         </div>
 
@@ -580,6 +569,9 @@ function loadAdminData(){
   });
 
 }
+
+// INITIAL LOAD
+loadFoods();
 
 </script>
 
