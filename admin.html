@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ShiftPlatter Admin</title>
+<title>Rate Your View - Admin</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -12,144 +12,142 @@
 <style>
 
 body{
-  margin:0;
-  padding:0;
-  background:#f5f5f5;
-  font-family:Arial,sans-serif;
+margin:0;
+padding:0;
+background:#f5f5f5;
+font-family:Arial,sans-serif;
 }
 
 .container{
-  max-width:1000px;
-  margin:auto;
-  padding:15px;
+max-width:1000px;
+margin:auto;
+padding:15px;
 }
 
 .card{
-  background:white;
-  padding:15px;
-  border-radius:20px;
-  margin-bottom:15px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);
-}
-
-.tabs{
-  display:flex;
-  gap:8px;
-  margin-bottom:20px;
-}
-
-.tab-btn{
-  flex:1;
-  padding:12px;
-  border:none;
-  border-radius:14px;
-  background:#e5e5e5;
-  font-weight:bold;
-}
-
-.active-tab{
-  background:black;
-  color:white;
-}
-
-.hidden{
-  display:none;
-}
-
-.food-card{
-  display:flex;
-  gap:15px;
-}
-
-.food-image{
-  width:90px;
-  height:90px;
-  object-fit:cover;
-  border-radius:14px;
-  cursor:pointer;
-}
-
-.plus-btn{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  width:65px;
-  height:65px;
-  border-radius:50%;
-  background:black;
-  color:white;
-  font-size:35px;
-  border:none;
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.5);
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
-
-.modal-content{
-  background:white;
-  width:90%;
-  max-width:450px;
-  padding:20px;
-  border-radius:24px;
+background:white;
+padding:15px;
+border-radius:18px;
+margin-bottom:15px;
+box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 
 input,textarea{
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid #ddd;
-  margin-top:12px;
-  box-sizing:border-box;
+width:100%;
+padding:14px;
+border-radius:14px;
+border:1px solid #ddd;
+margin-top:12px;
+box-sizing:border-box;
 }
 
 button{
-  cursor:pointer;
+border:none;
+border-radius:14px;
+padding:14px;
+cursor:pointer;
 }
 
 .full-btn{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  background:black;
-  color:white;
-  margin-top:15px;
+width:100%;
+background:black;
+color:white;
+margin-top:15px;
 }
 
-.rating-bar{
-  width:100%;
-  height:28px;
-  background:#ddd;
-  border-radius:30px;
-  overflow:hidden;
-  margin-top:15px;
+.tabs{
+display:flex;
+gap:8px;
+margin-bottom:20px;
+overflow:auto;
 }
 
-.rating-fill{
-  height:100%;
-  background:black;
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.tab-btn{
+flex:1;
+background:#e5e5e5;
+font-weight:bold;
+white-space:nowrap;
 }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:15px;
+.active-tab{
+background:black;
+color:white;
 }
 
-th,td{
-  border:1px solid #ddd;
-  padding:8px;
-  font-size:14px;
+.hidden{
+display:none;
+}
+
+.food-card{
+display:flex;
+gap:15px;
+align-items:flex-start;
+}
+
+.food-image{
+width:90px;
+height:90px;
+object-fit:cover;
+border-radius:14px;
+cursor:pointer;
+flex-shrink:0;
+}
+
+.plus-btn{
+position:fixed;
+bottom:25px;
+right:25px;
+width:65px;
+height:65px;
+border-radius:50%;
+background:black;
+color:white;
+font-size:34px;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+
+.gauge-wrap{
+margin-top:15px;
+}
+
+.gauge{
+width:100%;
+height:18px;
+background:#ddd;
+border-radius:30px;
+overflow:hidden;
+}
+
+.gauge-fill{
+height:100%;
+background:linear-gradient(
+90deg,
+#00c853,
+#64dd17
+);
+}
+
+.gauge-text{
+margin-top:8px;
+font-size:14px;
+font-weight:bold;
+}
+
+.table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+.table th,
+.table td{
+padding:10px;
+border:1px solid #ddd;
+font-size:14px;
+text-align:left;
 }
 
 </style>
@@ -159,92 +157,113 @@ th,td{
 
 <div class="container">
 
-  <h1>ShiftPlatter Admin</h1>
+<h1>Admin Dashboard</h1>
 
-  <div class="tabs">
+<div class="tabs">
 
-    <button
-      class="tab-btn active-tab"
-      onclick="showTab('galleryTab',this)">
-      Gallery
-    </button>
+<button
+class="tab-btn active-tab"
+onclick="showTab('galleryTab',this)">
+Food Gallery
+</button>
 
-    <button
-      class="tab-btn"
-      onclick="showTab('trackerTab',this)">
-      Tracker
-    </button>
+<button
+class="tab-btn"
+onclick="showTab('trackerTab',this)">
+Overall Ratings
+</button>
 
-    <button
-      class="tab-btn"
-      onclick="showTab('audienceTab',this)">
-      Audience
-    </button>
+<button
+class="tab-btn"
+onclick="showTab('audienceTab',this)">
+Audience Ratings
+</button>
 
-  </div>
-
-  <div id="galleryTab">
-
-    <div id="gallery"></div>
-
-  </div>
-
-  <div id="trackerTab" class="hidden">
-
-    <div id="tracker"></div>
-
-  </div>
-
-  <div id="audienceTab" class="hidden">
-
-    <div id="audience"></div>
-
-  </div>
+<button
+class="tab-btn"
+onclick="showTab('uploadsTab',this)">
+User Uploads
+</button>
 
 </div>
 
+<div id="galleryTab">
+
+<div id="gallery"></div>
+
+</div>
+
+<div id="trackerTab" class="hidden">
+
+<div id="tracker"></div>
+
+</div>
+
+<div id="audienceTab" class="hidden">
+
+<div id="audience"></div>
+
+</div>
+
+<div id="uploadsTab" class="hidden">
+
+<div id="userUploads"></div>
+
+</div>
+
+<div
+class="plus-btn"
+onclick="openUploadForm()">
++
+</div>
+
+<div
+id="uploadModal"
+class="hidden">
+
+<div class="card">
+
+<h2>Upload Food</h2>
+
+<input
+type="file"
+id="foodImage"
+accept="image/*"
+>
+
+<input
+type="text"
+id="restaurant"
+placeholder="Restaurant / Cafe Name"
+>
+
+<input
+type="text"
+id="foodname"
+placeholder="Food Name"
+>
+
+<textarea
+id="details"
+placeholder="Food Details">
+</textarea>
+
 <button
-  class="plus-btn"
-  onclick="openModal()">
-  +
+class="full-btn"
+onclick="uploadFood()">
+Save Food
 </button>
 
-<div class="modal" id="modal">
+<button
+class="full-btn"
+style="background:#999"
+onclick="closeUploadForm()">
+Close
+</button>
 
-  <div class="modal-content">
+</div>
 
-    <h2>Upload Food</h2>
-
-    <input
-      type="file"
-      id="foodImage"
-      accept="image/*"
-    >
-
-    <input
-      type="text"
-      id="restaurantName"
-      placeholder="Restaurant Name"
-    >
-
-    <input
-      type="text"
-      id="foodName"
-      placeholder="Food Name"
-    >
-
-    <textarea
-      id="foodDetails"
-      placeholder="Food Details">
-    </textarea>
-
-    <button
-      class="full-btn"
-      onclick="uploadFood()">
-      Upload
-    </button>
-
-  </div>
+</div>
 
 </div>
 
@@ -264,327 +283,388 @@ firebase.initializeApp(firebaseConfig);
 
 const db=firebase.database();
 
-function showTab(tabId,btn){
+window.onload=function(){
 
-  document
-    .querySelectorAll(
-      "#galleryTab,#trackerTab,#audienceTab"
-    )
-    .forEach((tab)=>{
-
-      tab.classList.add("hidden");
-
-    });
-
-  document
-    .getElementById(tabId)
-    .classList.remove("hidden");
-
-  document
-    .querySelectorAll(".tab-btn")
-    .forEach((b)=>{
-
-      b.classList.remove("active-tab");
-
-    });
-
-  btn.classList.add("active-tab");
-
-}
-
-function openModal(){
-
-  document
-    .getElementById("modal")
-    .style.display="flex";
-
-}
-
-window.onclick=function(e){
-
-  const modal=
-    document.getElementById("modal");
-
-  if(e.target===modal){
-
-    modal.style.display="none";
-
-  }
+loadFoods();
 
 };
 
+function showTab(tabId,btn){
+
+requestAnimationFrame(()=>{
+
+document
+.querySelectorAll(
+"#galleryTab,#trackerTab,#audienceTab,#uploadsTab"
+)
+.forEach((tab)=>{
+
+tab.classList.add("hidden");
+
+});
+
+document
+.getElementById(tabId)
+.classList.remove("hidden");
+
+document
+.querySelectorAll(".tab-btn")
+.forEach((b)=>{
+
+b.classList.remove("active-tab");
+
+});
+
+btn.classList.add("active-tab");
+
+});
+
+}
+
+function openUploadForm(){
+
+document
+.getElementById("uploadModal")
+.classList.remove("hidden");
+
+}
+
+function closeUploadForm(){
+
+document
+.getElementById("uploadModal")
+.classList.add("hidden");
+
+}
+
 function uploadFood(){
 
-  const imageFile=
-    document.getElementById("foodImage")
-    .files[0];
+const imageFile=
+document
+.getElementById("foodImage")
+.files[0];
 
-  const restaurant=
-    document.getElementById("restaurantName")
-    .value;
+const restaurant=
+document
+.getElementById("restaurant")
+.value;
 
-  const foodname=
-    document.getElementById("foodName")
-    .value;
+const foodname=
+document
+.getElementById("foodname")
+.value;
 
-  const details=
-    document.getElementById("foodDetails")
-    .value;
+const details=
+document
+.getElementById("details")
+.value;
 
-  if(
-    !imageFile ||
-    !restaurant ||
-    !foodname ||
-    !details
-  ){
+if(
+!imageFile ||
+!restaurant ||
+!foodname ||
+!details
+){
 
-    alert("Please fill all details");
+alert("Please fill all details");
 
-    return;
+return;
 
-  }
+}
 
-  const reader=new FileReader();
+const reader=new FileReader();
 
-  reader.onload=function(){
+reader.onload=function(){
 
-    const img=new Image();
+const foodData={
 
-    img.onload=function(){
+image:reader.result,
+restaurant,
+foodname,
+details,
+ratings:[],
+time:Date.now()
 
-      const canvas=
-        document.createElement("canvas");
+};
 
-      const ctx=
-        canvas.getContext("2d");
+db.ref("foods")
+.push(foodData)
+.then(()=>{
 
-      canvas.width=300;
-      canvas.height=300;
+alert("Food uploaded successfully");
 
-      ctx.drawImage(
-        img,
-        0,
-        0,
-        300,
-        300
-      );
+closeUploadForm();
 
-      const compressed=
-        canvas.toDataURL(
-          "image/jpeg",
-          0.6
-        );
+loadFoods();
 
-      const foodData={
+});
 
-        image:compressed,
-        restaurant,
-        foodname,
-        details,
-        ratings:[]
+};
 
-      };
-
-      db.ref("foods")
-      .push(foodData)
-      .then(()=>{
-
-        alert("Food uploaded");
-
-        document
-          .getElementById("modal")
-          .style.display="none";
-
-        loadFoods();
-
-      });
-
-    };
-
-    img.src=reader.result;
-
-  };
-
-  reader.readAsDataURL(imageFile);
+reader.readAsDataURL(imageFile);
 
 }
 
 function loadFoods(){
 
-  db.ref("foods")
-  .limitToLast(20)
-  .once("value")
-  .then((snapshot)=>{
+const gallery=
+document.getElementById("gallery");
 
-    const data=snapshot.val();
+const tracker=
+document.getElementById("tracker");
 
-    const gallery=
-      document.getElementById("gallery");
+const audience=
+document.getElementById("audience");
 
-    const tracker=
-      document.getElementById("tracker");
+const uploads=
+document.getElementById("userUploads");
 
-    const audience=
-      document.getElementById("audience");
+gallery.innerHTML="";
+tracker.innerHTML="";
+audience.innerHTML="";
+uploads.innerHTML="";
 
-    gallery.innerHTML="";
-    tracker.innerHTML="";
-    audience.innerHTML="";
+db.ref("foods")
+.limitToLast(50)
+.once("value")
+.then((snapshot)=>{
 
-    if(!data){
+const data=snapshot.val();
 
-      gallery.innerHTML=`
-        <div class="card">
-          No foods uploaded
-        </div>
-      `;
+if(!data){
 
-      return;
+gallery.innerHTML=`
+<div class="card">
+No foods uploaded
+</div>
+`;
 
-    }
-
-    Object.keys(data)
-    .reverse()
-    .forEach((id)=>{
-
-      const item=data[id];
-
-      if(!item.ratings){
-
-        item.ratings=[];
-
-      }
-
-      let total=0;
-
-      item.ratings.forEach((r)=>{
-
-        total+=Number(r.rating||0);
-
-      });
-
-      let avg=0;
-
-      if(item.ratings.length>0){
-
-        avg=
-          total/item.ratings.length;
-
-      }
-
-      // GALLERY
-      gallery.innerHTML+=`
-
-        <div class="card">
-
-          <div class="food-card">
-
-            <img
-              class="food-image"
-              src="${item.image}"
-              onclick="window.open('${item.image}')"
-            >
-
-            <div>
-
-              <h3>${item.foodname}</h3>
-
-              <p>
-                <b>${item.restaurant}</b>
-              </p>
-
-              <p>${item.details}</p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      `;
-
-      // TRACKER
-      tracker.innerHTML+=`
-
-        <div class="card">
-
-          <h3>${item.foodname}</h3>
-
-          <p>${item.restaurant}</p>
-
-          <div class="rating-bar">
-
-            <div
-              class="rating-fill"
-              style="width:${avg*20}%">
-
-              ${avg.toFixed(1)}/5
-
-            </div>
-
-          </div>
-
-          <p>
-            ${item.ratings.length}
-            Ratings
-          </p>
-
-        </div>
-
-      `;
-
-      // AUDIENCE
-      let rows="";
-
-      item.ratings.forEach((r)=>{
-
-        rows+=`
-
-          <tr>
-
-            <td>${r.user}</td>
-
-            <td>${r.email}</td>
-
-            <td>⭐ ${r.rating}</td>
-
-          </tr>
-
-        `;
-
-      });
-
-      audience.innerHTML+=`
-
-        <div class="card">
-
-          <h3>${item.foodname}</h3>
-
-          <table>
-
-            <tr>
-
-              <th>User</th>
-              <th>Email</th>
-              <th>Rating</th>
-
-            </tr>
-
-            ${rows}
-
-          </table>
-
-        </div>
-
-      `;
-
-    });
-
-  });
+return;
 
 }
 
-loadFoods();
+Object.keys(data)
+.reverse()
+.forEach((id)=>{
+
+const item=data[id];
+
+if(!item.ratings){
+
+item.ratings=[];
+
+}
+
+let total=0;
+
+item.ratings.forEach((r)=>{
+
+total+=Number(r.rating||0);
+
+});
+
+let avg=0;
+
+if(item.ratings.length>0){
+
+avg=
+total/item.ratings.length;
+
+}
+
+gallery.innerHTML+=`
+
+<div class="card">
+
+<div class="food-card">
+
+<img
+class="food-image"
+src="${item.image}"
+onclick="window.open('${item.image}')"
+>
+
+<div>
+
+<h3>${item.foodname}</h3>
+
+<p>
+<b>${item.restaurant}</b>
+</p>
+
+<p>${item.details}</p>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+tracker.innerHTML+=`
+
+<div class="card">
+
+<h3>${item.foodname}</h3>
+
+<p>${item.restaurant}</p>
+
+<div class="gauge-wrap">
+
+<div class="gauge">
+
+<div
+class="gauge-fill"
+style="width:${avg*20}%">
+</div>
+
+</div>
+
+<div class="gauge-text">
+
+${avg.toFixed(1)}/5
+Overall Rating
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+let tableRows="";
+
+item.ratings.forEach((r)=>{
+
+tableRows+=`
+
+<tr>
+
+<td>${r.user}</td>
+
+<td>${r.email}</td>
+
+<td>${r.rating} ⭐</td>
+
+</tr>
+
+`;
+
+});
+
+audience.innerHTML+=`
+
+<div class="card">
+
+<h3>${item.foodname}</h3>
+
+<table class="table">
+
+<tr>
+
+<th>User</th>
+<th>Email</th>
+<th>Rating</th>
+
+</tr>
+
+${tableRows}
+
+</table>
+
+</div>
+
+`;
+
+});
+
+});
+
+db.ref("userUploads")
+.limitToLast(50)
+.once("value")
+.then((snap)=>{
+
+const uploadsData=snap.val();
+
+if(!uploadsData){
+
+uploads.innerHTML=`
+<div class="card">
+No user uploads yet
+</div>
+`;
+
+return;
+
+}
+
+Object.keys(uploadsData)
+.reverse()
+.forEach((id)=>{
+
+const item=uploadsData[id];
+
+uploads.innerHTML+=`
+
+<div class="card">
+
+<div class="food-card">
+
+<img
+class="food-image"
+src="${item.image}"
+onclick="window.open('${item.image}')"
+>
+
+<div>
+
+<h3>${item.foodname}</h3>
+
+<p>
+<b>${item.restaurant}</b>
+</p>
+
+<p>${item.details}</p>
+
+<p>
+<b>Uploaded By:</b>
+${item.uploadedBy}
+</p>
+
+<p>
+<b>Email:</b>
+${item.uploadedEmail}
+</p>
+
+<a
+href="${item.image}"
+download="food-image.jpg"
+>
+
+<button class="full-btn">
+
+Download HD Image
+
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+});
+
+}
 
 </script>
 
