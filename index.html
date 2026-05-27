@@ -5,37 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ShiftPlatter</title>
 
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
 
 body{
-  font-family:Arial;
-  background:#f5f5f5;
   margin:0;
-  padding:20px;
+  padding:0;
+  background:#f5f5f5;
+  font-family:Arial,sans-serif;
 }
 
 .container{
-  max-width:700px;
+  max-width:900px;
   margin:auto;
+  padding:20px;
 }
 
 .card{
   background:white;
   padding:20px;
-  border-radius:20px;
+  border-radius:24px;
   margin-bottom:20px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  box-shadow:0 2px 10px rgba(0,0,0,0.08);
 }
 
 input{
   width:100%;
   padding:14px;
-  margin-top:10px;
-  border-radius:12px;
+  border-radius:14px;
   border:1px solid #ddd;
+  margin-top:12px;
   box-sizing:border-box;
 }
 
@@ -43,43 +45,84 @@ button{
   width:100%;
   padding:14px;
   border:none;
+  border-radius:14px;
   background:black;
   color:white;
-  border-radius:12px;
   margin-top:15px;
+  font-size:16px;
+  cursor:pointer;
 }
 
 img{
   width:100%;
-  border-radius:15px;
+  border-radius:18px;
+  margin-top:12px;
+}
+
+.hidden{
+  display:none;
+}
+
+.tabs{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.tab-btn{
+  flex:1;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:#e5e5e5;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.active-tab{
+  background:black;
+  color:white;
+}
+
+.stars{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
 }
 
 .star{
-  font-size:32px;
-  cursor:pointer;
+  font-size:36px;
   color:#ccc;
+  cursor:pointer;
+  transition:0.2s;
 }
 
 .star.active{
   color:gold;
 }
 
-.tracker{
+.rating-bar{
   width:100%;
-  height:18px;
+  height:20px;
   background:#ddd;
   border-radius:20px;
   overflow:hidden;
-  margin-top:10px;
+  margin-top:12px;
 }
 
-.fill{
+.rating-fill{
   height:100%;
   background:black;
 }
 
-.hidden{
-  display:none;
+.rating-score{
+  font-size:38px;
+  font-weight:bold;
+  margin-top:15px;
+}
+
+h1,h2,h3{
+  margin-top:0;
 }
 
 </style>
@@ -89,13 +132,26 @@ img{
 
 <div class="container">
 
+  <!-- LOGIN -->
   <div class="card" id="loginPage">
 
-    <h2>User Login</h2>
+    <h1>ShiftPlatter</h1>
 
-    <input type="text" id="username" placeholder="Enter Name">
+    <p>
+      Rate your favorite food photos and share your likes
+    </p>
 
-    <input type="email" id="email" placeholder="Enter Email">
+    <input
+      type="text"
+      id="username"
+      placeholder="Enter Username"
+    >
+
+    <input
+      type="email"
+      id="email"
+      placeholder="Enter Email Address"
+    >
 
     <button onclick="loginUser()">
       Continue
@@ -103,32 +159,53 @@ img{
 
   </div>
 
-  <div class="hidden" id="mainApp">
+  <!-- MAIN APP -->
+  <div id="mainApp" class="hidden">
 
-    <div class="card">
+    <!-- TABS -->
+    <div class="tabs">
 
-      <h2>📈 Overall Tracker</h2>
+      <button class="tab-btn active-tab"
+        onclick="showTab('galleryTab',this)">
+        Food Gallery
+      </button>
 
-      <div id="trackerContainer"></div>
+      <button class="tab-btn"
+        onclick="showTab('ratingsTab',this)">
+        Overall Ratings
+      </button>
 
     </div>
 
-    <div id="gallery"></div>
+    <!-- FOOD GALLERY -->
+    <div id="galleryTab">
+
+      <div id="gallery"></div>
+
+    </div>
+
+    <!-- OVERALL RATINGS -->
+    <div id="ratingsTab" class="hidden">
+
+      <div id="overallRatings"></div>
+
+    </div>
 
   </div>
 
 </div>
 
 <script>
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
-  authDomain: "shifplatter-e0449.firebaseapp.com",
-  databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "shifplatter-e0449",
-  storageBucket: "shifplatter-e0449.firebasestorage.app",
-  messagingSenderId: "873786528833",
-  appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
-};
+    apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
+    authDomain: "shifplatter-e0449.firebaseapp.com",
+    databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "shifplatter-e0449",
+    storageBucket: "shifplatter-e0449.firebasestorage.app",
+    messagingSenderId: "873786528833",
+    appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
+  };
 
 firebase.initializeApp(firebaseConfig);
 
@@ -139,19 +216,41 @@ let currentEmail = "";
 
 function loginUser(){
 
-  currentUser =
-    document.getElementById("username").value;
+  const username =
+    document.getElementById("username")
+    .value
+    .trim();
 
-  currentEmail =
-    document.getElementById("email").value;
+  const email =
+    document.getElementById("email")
+    .value
+    .trim();
 
-  if(!currentUser || !currentEmail){
+  if(!username || !email){
 
-    alert("Enter details");
+    alert("Please enter details");
 
     return;
 
   }
+
+  // ADMIN BLOCK
+  if(
+    username.toUpperCase() === "SHIFPLATTER" &&
+    email.toUpperCase() === "SHIVIK@2030"
+  ){
+
+    alert(
+      "Admin should login through admin.html"
+    );
+
+    return;
+
+  }
+
+  currentUser = username;
+
+  currentEmail = email;
 
   document
     .getElementById("loginPage")
@@ -167,6 +266,33 @@ function loginUser(){
 
 }
 
+function showTab(tabId,btn){
+
+  document
+    .querySelectorAll("#galleryTab,#ratingsTab")
+    .forEach((tab)=>{
+
+      tab.classList.add("hidden");
+
+    });
+
+  document
+    .getElementById(tabId)
+    .classList
+    .remove("hidden");
+
+  document
+    .querySelectorAll(".tab-btn")
+    .forEach((b)=>{
+
+      b.classList.remove("active-tab");
+
+    });
+
+  btn.classList.add("active-tab");
+
+}
+
 function loadFoods(){
 
   db.ref("foods").on("value",function(snapshot){
@@ -176,16 +302,20 @@ function loadFoods(){
     const gallery =
       document.getElementById("gallery");
 
-    const tracker =
-      document.getElementById("trackerContainer");
+    const overall =
+      document.getElementById("overallRatings");
 
     gallery.innerHTML = "";
 
-    tracker.innerHTML = "";
+    overall.innerHTML = "";
 
     if(!data){
 
-      gallery.innerHTML = "No Food Uploaded";
+      gallery.innerHTML = `
+        <div class="card">
+          No Food Uploaded Yet
+        </div>
+      `;
 
       return;
 
@@ -217,6 +347,7 @@ function loadFoods(){
 
       }
 
+      // FOOD CARD
       const card = document.createElement("div");
 
       card.className = "card";
@@ -227,11 +358,14 @@ function loadFoods(){
 
         <h2>${item.foodname}</h2>
 
-        <h4>${item.restaurant}</h4>
+        <p>
+          <b>Restaurant:</b>
+          ${item.restaurant}
+        </p>
 
         <p>${item.details}</p>
 
-        <div>
+        <div class="stars">
 
           <span class="star">☆</span>
           <span class="star">☆</span>
@@ -249,7 +383,11 @@ function loadFoods(){
 
         star.addEventListener("click",function(){
 
-          rateFood(id,index+1,stars);
+          rateFood(
+            id,
+            index + 1,
+            stars
+          );
 
         });
 
@@ -257,22 +395,35 @@ function loadFoods(){
 
       gallery.appendChild(card);
 
-      tracker.innerHTML += `
+      // OVERALL RATING CARD
+      overall.innerHTML += `
 
         <div class="card">
 
-          <h3>${item.foodname}</h3>
+          <img src="${item.image}">
 
-          <div class="tracker">
+          <h2>${item.foodname}</h2>
 
-            <div class="fill"
+          <p>
+            <b>Restaurant:</b>
+            ${item.restaurant}
+          </p>
+
+          <div class="rating-score">
+            ⭐ ${avg.toFixed(1)}/5
+          </div>
+
+          <div class="rating-bar">
+
+            <div class="rating-fill"
               style="width:${avg*20}%">
             </div>
 
           </div>
 
-          <p>
-            ⭐ ${avg.toFixed(1)}/5
+          <p style="margin-top:15px;">
+            Total Ratings:
+            ${item.ratings.length}
           </p>
 
         </div>
@@ -287,6 +438,7 @@ function loadFoods(){
 
 function rateFood(foodId,rating,stars){
 
+  // RESET STARS
   stars.forEach((star)=>{
 
     star.innerHTML = "☆";
@@ -295,6 +447,7 @@ function rateFood(foodId,rating,stars){
 
   });
 
+  // FILL STARS
   for(let i=0;i<rating;i++){
 
     stars[i].innerHTML = "★";
@@ -303,7 +456,8 @@ function rateFood(foodId,rating,stars){
 
   }
 
-  db.ref("foods/" + foodId).once("value",function(snapshot){
+  db.ref("foods/" + foodId)
+  .once("value",function(snapshot){
 
     const item = snapshot.val();
 
@@ -313,15 +467,18 @@ function rateFood(foodId,rating,stars){
 
     }
 
-    const alreadyRated = item.ratings.find((r)=>{
+    const alreadyRated =
+      item.ratings.find((r)=>{
 
-      return r.email === currentEmail;
+        return r.email === currentEmail;
 
-    });
+      });
 
     if(alreadyRated){
 
-      alert("Already Rated");
+      alert(
+        "You already rated this food"
+      );
 
       return;
 
@@ -335,9 +492,12 @@ function rateFood(foodId,rating,stars){
 
     });
 
-    db.ref("foods/" + foodId).set(item);
+    db.ref("foods/" + foodId)
+    .set(item);
 
-    alert("Rating Submitted");
+    alert(
+      "Your rating has been successfully saved"
+    );
 
   });
 
