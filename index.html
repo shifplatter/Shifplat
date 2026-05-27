@@ -39,6 +39,7 @@ input{
   border:1px solid #ddd;
   margin-top:12px;
   box-sizing:border-box;
+  font-size:15px;
 }
 
 button{
@@ -94,7 +95,6 @@ img{
   font-size:36px;
   color:#ccc;
   cursor:pointer;
-  transition:0.2s;
 }
 
 .star.active{
@@ -177,14 +177,14 @@ h1,h2,h3{
 
     </div>
 
-    <!-- FOOD GALLERY -->
+    <!-- GALLERY -->
     <div id="galleryTab">
 
       <div id="gallery"></div>
 
     </div>
 
-    <!-- OVERALL RATINGS -->
+    <!-- RATINGS -->
     <div id="ratingsTab" class="hidden">
 
       <div id="overallRatings"></div>
@@ -198,8 +198,6 @@ h1,h2,h3{
 <script>
 
 const firebaseConfig = {
-
-const firebaseConfig = {
     apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
     authDomain: "shifplatter-e0449.firebaseapp.com",
     databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -208,6 +206,7 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
+
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
@@ -215,6 +214,7 @@ const db = firebase.database();
 let currentUser = "";
 let currentEmail = "";
 
+// LOGIN
 function loginUser(){
 
   const username =
@@ -227,23 +227,22 @@ function loginUser(){
     .value
     .trim();
 
-  if(!username || !email){
+  // EMPTY CHECK
+  if(username === "" || email === ""){
 
-    alert("Please enter details");
+    alert("Please enter username and email");
 
     return;
 
   }
 
-  // ADMIN BLOCK
+  // ADMIN REDIRECT
   if(
     username.toUpperCase() === "SHIFPLATTER" &&
     email.toUpperCase() === "SHIVIK@2030"
   ){
 
-    alert(
-      "Admin should login through admin.html"
-    );
+    window.location.href = "admin.html";
 
     return;
 
@@ -267,6 +266,7 @@ function loginUser(){
 
 }
 
+// TAB SWITCH
 function showTab(tabId,btn){
 
   document
@@ -294,6 +294,7 @@ function showTab(tabId,btn){
 
 }
 
+// LOAD FOODS
 function loadFoods(){
 
   db.ref("foods").on("value",function(snapshot){
@@ -396,7 +397,7 @@ function loadFoods(){
 
       gallery.appendChild(card);
 
-      // OVERALL RATING CARD
+      // OVERALL RATINGS
       overall.innerHTML += `
 
         <div class="card">
@@ -416,7 +417,8 @@ function loadFoods(){
 
           <div class="rating-bar">
 
-            <div class="rating-fill"
+            <div
+              class="rating-fill"
               style="width:${avg*20}%">
             </div>
 
@@ -437,6 +439,7 @@ function loadFoods(){
 
 }
 
+// RATE FOOD
 function rateFood(foodId,rating,stars){
 
   // RESET STARS
@@ -468,6 +471,7 @@ function rateFood(foodId,rating,stars){
 
     }
 
+    // CHECK DUPLICATE
     const alreadyRated =
       item.ratings.find((r)=>{
 
@@ -485,6 +489,7 @@ function rateFood(foodId,rating,stars){
 
     }
 
+    // SAVE RATING
     item.ratings.push({
 
       user:currentUser,
