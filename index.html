@@ -121,6 +121,12 @@ img{
   margin-top:15px;
 }
 
+.loading{
+  text-align:center;
+  padding:30px;
+  font-size:18px;
+}
+
 h1,h2,h3{
   margin-top:0;
 }
@@ -165,12 +171,14 @@ h1,h2,h3{
     <!-- TABS -->
     <div class="tabs">
 
-      <button class="tab-btn active-tab"
+      <button
+        class="tab-btn active-tab"
         onclick="showTab('galleryTab',this)">
         Food Gallery
       </button>
 
-      <button class="tab-btn"
+      <button
+        class="tab-btn"
         onclick="showTab('ratingsTab',this)">
         Overall Ratings
       </button>
@@ -197,6 +205,8 @@ h1,h2,h3{
 
 <script>
 
+// FIREBASE CONFIG
+
 const firebaseConfig = {
     apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
     authDomain: "shifplatter-e0449.firebaseapp.com",
@@ -206,7 +216,7 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
-
+// INIT FIREBASE
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
@@ -227,7 +237,6 @@ function loginUser(){
     .value
     .trim();
 
-  // EMPTY CHECK
   if(username === "" || email === ""){
 
     alert("Please enter username and email");
@@ -294,18 +303,28 @@ function showTab(tabId,btn){
 
 }
 
-// LOAD FOODS
+// LOAD FOODS FAST
 function loadFoods(){
 
-  db.ref("foods").on("value",function(snapshot){
+  const gallery =
+    document.getElementById("gallery");
+
+  const overall =
+    document.getElementById("overallRatings");
+
+  gallery.innerHTML = `
+    <div class="card loading">
+      Loading foods...
+    </div>
+  `;
+
+  overall.innerHTML = "";
+
+  db.ref("foods")
+  .once("value")
+  .then((snapshot)=>{
 
     const data = snapshot.val();
-
-    const gallery =
-      document.getElementById("gallery");
-
-    const overall =
-      document.getElementById("overallRatings");
 
     gallery.innerHTML = "";
 
@@ -323,9 +342,15 @@ function loadFoods(){
 
     }
 
-    Object.keys(data).forEach((id)=>{
+    Object.keys(data).reverse().forEach((id)=>{
 
       const item = data[id];
+
+      if(!item){
+
+        return;
+
+      }
 
       if(!item.ratings){
 
@@ -337,7 +362,7 @@ function loadFoods(){
 
       item.ratings.forEach((r)=>{
 
-        total += Number(r.rating);
+        total += Number(r.rating || 0);
 
       });
 
@@ -350,22 +375,28 @@ function loadFoods(){
       }
 
       // FOOD CARD
-      const card = document.createElement("div");
+      const card =
+        document.createElement("div");
 
       card.className = "card";
 
       card.innerHTML = `
 
-        <img src="${item.image}">
+        <img
+          src="${item.image}"
+          loading="lazy"
+        >
 
-        <h2>${item.foodname}</h2>
+        <h2>${item.foodname || ""}</h2>
 
         <p>
           <b>Restaurant:</b>
-          ${item.restaurant}
+          ${item.restaurant || ""}
         </p>
 
-        <p>${item.details}</p>
+        <p>
+          ${item.details || ""}
+        </p>
 
         <div class="stars">
 
@@ -379,36 +410,43 @@ function loadFoods(){
 
       `;
 
-      const stars = card.querySelectorAll(".star");
+      const stars =
+        card.querySelectorAll(".star");
 
       stars.forEach((star,index)=>{
 
-        star.addEventListener("click",function(){
+        star.addEventListener(
+          "click",
+          function(){
 
-          rateFood(
-            id,
-            index + 1,
-            stars
-          );
+            rateFood(
+              id,
+              index + 1,
+              stars
+            );
 
-        });
+          }
+        );
 
       });
 
       gallery.appendChild(card);
 
-      // OVERALL RATINGS
+      // OVERALL CARD
       overall.innerHTML += `
 
         <div class="card">
 
-          <img src="${item.image}">
+          <img
+            src="${item.image}"
+            loading="lazy"
+          >
 
-          <h2>${item.foodname}</h2>
+          <h2>${item.foodname || ""}</h2>
 
           <p>
             <b>Restaurant:</b>
-            ${item.restaurant}
+            ${item.restaurant || ""}
           </p>
 
           <div class="rating-score">
@@ -439,10 +477,10 @@ function loadFoods(){
 
 }
 
-// RATE FOOD
+// SAVE RATING
 function rateFood(foodId,rating,stars){
 
-  // RESET STARS
+  // RESET
   stars.forEach((star)=>{
 
     star.innerHTML = "☆";
@@ -461,7 +499,8 @@ function rateFood(foodId,rating,stars){
   }
 
   db.ref("foods/" + foodId)
-  .once("value",function(snapshot){
+  .once("value")
+  .then((snapshot)=>{
 
     const item = snapshot.val();
 
@@ -489,7 +528,7 @@ function rateFood(foodId,rating,stars){
 
     }
 
-    // SAVE RATING
+    // SAVE
     item.ratings.push({
 
       user:currentUser,
@@ -499,11 +538,16 @@ function rateFood(foodId,rating,stars){
     });
 
     db.ref("foods/" + foodId)
-    .set(item);
+    .set(item)
+    .then(()=>{
 
-    alert(
-      "Your rating has been successfully saved"
-    );
+      alert(
+        "Your rating has been successfully saved"
+      );
+
+      loadFoods();
+
+    });
 
   });
 
