@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShiftPlatter Admin</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<style>
+
+body{
+  font-family:Arial;
+  background:#f5f5f5;
+  margin:0;
+  padding:20px;
+}
+
+.container{
+  max-width:700px;
+  margin:auto;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  margin-bottom:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+input,textarea{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  box-sizing:border-box;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  background:black;
+  color:white;
+  border-radius:12px;
+  margin-top:15px;
+  cursor:pointer;
+}
+
+img{
+  width:100%;
+  border-radius:15px;
+  margin-top:10px;
+}
+
+.hidden{
+  display:none;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+  <div class="card" id="loginPage">
+
+    <h2>Admin Login</h2>
+
+    <input type="text" id="username" placeholder="Username">
+
+    <input type="email" id="email" placeholder="Email">
+
+    <button onclick="loginAdmin()">
+      Login
+    </button>
+
+  </div>
+
+  <div class="hidden" id="adminPanel">
+
+    <div class="card">
+
+      <h2>➕ Upload Food</h2>
+
+      <input type="text" id="restaurant" placeholder="Restaurant Name">
+
+      <input type="text" id="foodname" placeholder="Food Name">
+
+      <textarea id="details" placeholder="Food Details"></textarea>
+
+      <input type="file" id="imageInput">
+
+      <button onclick="uploadFood()">
+        Upload Food
+      </button>
+
+    </div>
+
+    <div class="card">
+
+      <h2>📊 User Ratings</h2>
+
+      <div id="ratingsContainer"></div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+const firebaseConfig = {
+
+  apiKey: "YOUR_API_KEY",
+
+  authDomain: "YOUR_AUTH_DOMAIN",
+
+  databaseURL: "YOUR_DATABASE_URL",
+
+  projectId: "YOUR_PROJECT_ID",
+
+  storageBucket: "YOUR_STORAGE_BUCKET",
+
+  messagingSenderId: "YOUR_MSG_ID",
+
+  appId: "YOUR_APP_ID"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+function loginAdmin(){
+
+  const username = document
+    .getElementById("username")
+    .value
+    .trim();
+
+  const email = document
+    .getElementById("email")
+    .value
+    .trim();
+
+  if(
+    username.toUpperCase() === "SHIFPLATTER" &&
+    email.toUpperCase() === "SHIVIK@2030"
+  ){
+
+    document
+      .getElementById("loginPage")
+      .classList
+      .add("hidden");
+
+    document
+      .getElementById("adminPanel")
+      .classList
+      .remove("hidden");
+
+    loadRatings();
+
+  }else{
+
+    alert("Invalid Admin Credentials");
+
+  }
+
+}
+
+function uploadFood(){
+
+  const restaurant =
+    document.getElementById("restaurant").value;
+
+  const foodname =
+    document.getElementById("foodname").value;
+
+  const details =
+    document.getElementById("details").value;
+
+  const file =
+    document.getElementById("imageInput").files[0];
+
+  if(
+    !restaurant ||
+    !foodname ||
+    !details ||
+    !file
+  ){
+
+    alert("Fill all fields");
+
+    return;
+
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+
+    const foodData = {
+
+      restaurant,
+      foodname,
+      details,
+      image:e.target.result,
+      ratings:[]
+
+    };
+
+    db.ref("foods").push(foodData);
+
+    alert("Food Uploaded");
+
+  };
+
+  reader.readAsDataURL(file);
+
+}
+
+function loadRatings(){
+
+  db.ref("foods").on("value",function(snapshot){
+
+    const data = snapshot.val();
+
+    const container =
+      document.getElementById("ratingsContainer");
+
+    container.innerHTML = "";
+
+    if(!data){
+
+      container.innerHTML = "No Data";
+
+      return;
+
+    }
+
+    Object.keys(data).forEach((id)=>{
+
+      const item = data[id];
+
+      if(item.ratings){
+
+        item.ratings.forEach((r)=>{
+
+          container.innerHTML += `
+
+            <div class="card">
+
+              <img src="${item.image}">
+
+              <h3>${item.foodname}</h3>
+
+              <p><b>User:</b> ${r.user}</p>
+
+              <p><b>Email:</b> ${r.email}</p>
+
+              <p><b>Rating:</b> ⭐ ${r.rating}</p>
+
+            </div>
+
+          `;
+
+        });
+
+      }
+
+    });
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>
