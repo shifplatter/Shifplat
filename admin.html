@@ -19,7 +19,7 @@ background:#f5f5f5;
 }
 
 .container{
-max-width:1000px;
+max-width:1100px;
 margin:auto;
 padding:15px;
 }
@@ -32,40 +32,20 @@ margin-bottom:15px;
 box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 
-input,textarea{
-width:100%;
-padding:14px;
-margin-top:12px;
-border-radius:14px;
-border:1px solid #ddd;
-box-sizing:border-box;
-}
-
-button{
-border:none;
-padding:14px;
-border-radius:14px;
-cursor:pointer;
-}
-
-.full-btn{
-width:100%;
-background:black;
-color:white;
-margin-top:15px;
-}
-
 .tabs{
 display:flex;
 gap:8px;
-margin-bottom:20px;
 overflow:auto;
+margin-bottom:20px;
 }
 
 .tab-btn{
-flex:1;
+padding:12px 18px;
+border:none;
+border-radius:14px;
 background:#e5e5e5;
 font-weight:bold;
+cursor:pointer;
 white-space:nowrap;
 }
 
@@ -81,13 +61,14 @@ display:none;
 .food-card{
 display:flex;
 gap:15px;
+align-items:flex-start;
 }
 
 .food-image{
 width:90px;
 height:90px;
 object-fit:cover;
-border-radius:14px;
+border-radius:12px;
 cursor:pointer;
 flex-shrink:0;
 }
@@ -101,10 +82,31 @@ height:65px;
 border-radius:50%;
 background:black;
 color:white;
-font-size:34px;
+font-size:36px;
 display:flex;
 align-items:center;
 justify-content:center;
+cursor:pointer;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+input,textarea{
+width:100%;
+padding:14px;
+border-radius:12px;
+border:1px solid #ddd;
+margin-top:12px;
+box-sizing:border-box;
+}
+
+.full-btn{
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+background:black;
+color:white;
+margin-top:15px;
 cursor:pointer;
 }
 
@@ -121,16 +123,13 @@ padding:10px;
 font-size:14px;
 }
 
-.gauge-wrap{
-margin-top:15px;
-}
-
 .gauge{
 width:100%;
 height:18px;
 background:#ddd;
 border-radius:30px;
 overflow:hidden;
+margin-top:10px;
 }
 
 .gauge-fill{
@@ -144,8 +143,8 @@ background:linear-gradient(
 
 .gauge-text{
 margin-top:8px;
-font-size:14px;
 font-weight:bold;
+font-size:14px;
 }
 
 </style>
@@ -295,8 +294,6 @@ loadFoods();
 
 function showTab(tabId,btn){
 
-requestAnimationFrame(()=>{
-
 document
 .querySelectorAll(
 "#galleryTab,#trackerTab,#audienceTab,#usersPhotoTab"
@@ -320,8 +317,6 @@ b.classList.remove("active-tab");
 });
 
 btn.classList.add("active-tab");
-
-});
 
 }
 
@@ -395,9 +390,7 @@ db.ref("foods")
 .push(foodData)
 .then(()=>{
 
-alert(
-"Food uploaded successfully"
-);
+alert("Food uploaded");
 
 closeUploadForm();
 
@@ -494,9 +487,7 @@ onclick="window.open('${item.image}')"
 
 <h3>${item.foodname}</h3>
 
-<p>
-<b>${item.restaurant}</b>
-</p>
+<p><b>${item.restaurant}</b></p>
 
 <p>${item.details}</p>
 
@@ -516,8 +507,6 @@ tracker.innerHTML+=`
 
 <p>${item.restaurant}</p>
 
-<div class="gauge-wrap">
-
 <div class="gauge">
 
 <div
@@ -529,10 +518,7 @@ style="width:${avg*20}%">
 
 <div class="gauge-text">
 
-${avg.toFixed(1)}/5
-Overall Rating
-
-</div>
+${avg.toFixed(1)}/5 Overall Rating
 
 </div>
 
@@ -540,11 +526,11 @@ Overall Rating
 
 `;
 
-let tableRows="";
+let rows="";
 
 item.ratings.forEach((r)=>{
 
-tableRows+=`
+rows+=`
 
 <tr>
 
@@ -574,7 +560,7 @@ audience.innerHTML+=`
 
 </tr>
 
-${tableRows}
+${rows}
 
 </table>
 
@@ -587,11 +573,11 @@ ${tableRows}
 });
 
 db.ref("userUploads")
-.limitToLast(50)
+.limitToLast(100)
 .once("value")
-.then((snap)=>{
+.then((snapshot)=>{
 
-const uploadsData=snap.val();
+const uploadsData=snapshot.val();
 
 if(!uploadsData){
 
