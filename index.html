@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ShiftPlatter</title>
+<title>Rate Your View</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -12,126 +12,133 @@
 <style>
 
 body{
-  margin:0;
-  padding:0;
-  background:#f5f5f5;
-  font-family:Arial,sans-serif;
+margin:0;
+padding:0;
+background:#f5f5f5;
+font-family:Arial,sans-serif;
 }
 
 .container{
-  max-width:900px;
-  margin:auto;
-  padding:15px;
+max-width:900px;
+margin:auto;
+padding:15px;
 }
 
 .card{
-  background:white;
-  padding:15px;
-  border-radius:20px;
-  margin-bottom:15px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+background:white;
+padding:15px;
+border-radius:18px;
+margin-bottom:15px;
+box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 
-input{
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid #ddd;
-  margin-top:12px;
-  box-sizing:border-box;
+input,textarea{
+width:100%;
+padding:14px;
+border-radius:14px;
+border:1px solid #ddd;
+margin-top:12px;
+box-sizing:border-box;
 }
 
 button{
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  background:black;
-  color:white;
-  cursor:pointer;
+border:none;
+border-radius:14px;
+padding:14px;
+cursor:pointer;
 }
 
 .full-btn{
-  width:100%;
-  margin-top:15px;
+width:100%;
+background:black;
+color:white;
+margin-top:15px;
 }
 
 .tabs{
-  display:flex;
-  gap:8px;
-  margin-bottom:20px;
+display:flex;
+gap:8px;
+margin-bottom:20px;
+overflow:auto;
 }
 
 .tab-btn{
-  flex:1;
-  padding:12px;
-  border:none;
-  border-radius:14px;
-  background:#e5e5e5;
-  font-weight:bold;
+flex:1;
+background:#e5e5e5;
+font-weight:bold;
+white-space:nowrap;
 }
 
 .active-tab{
-  background:black;
-  color:white;
+background:black;
+color:white;
 }
 
 .hidden{
-  display:none;
+display:none;
 }
 
 .food-card{
-  display:flex;
-  gap:15px;
+display:flex;
+gap:15px;
+align-items:flex-start;
 }
 
 .food-image{
-  width:90px;
-  height:90px;
-  object-fit:cover;
-  border-radius:14px;
-  cursor:pointer;
-  flex-shrink:0;
+width:90px;
+height:90px;
+object-fit:cover;
+border-radius:14px;
+cursor:pointer;
+flex-shrink:0;
 }
 
 .stars{
-  display:flex;
-  gap:5px;
-  margin-top:10px;
+display:flex;
+gap:5px;
+margin-top:10px;
 }
 
 .star{
-  font-size:28px;
-  color:#ccc;
-  cursor:pointer;
+font-size:28px;
+color:#ccc;
+cursor:pointer;
 }
 
 .star.active{
-  color:gold;
-}
-
-.rating-bar{
-  width:100%;
-  height:28px;
-  background:#ddd;
-  border-radius:30px;
-  overflow:hidden;
-  margin-top:15px;
-}
-
-.rating-fill{
-  height:100%;
-  background:black;
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:14px;
-  font-weight:bold;
+color:gold;
 }
 
 .loader{
-  text-align:center;
-  padding:30px;
+text-align:center;
+padding:30px;
+}
+
+.gauge-wrap{
+margin-top:15px;
+}
+
+.gauge{
+width:100%;
+height:18px;
+background:#ddd;
+border-radius:30px;
+overflow:hidden;
+}
+
+.gauge-fill{
+height:100%;
+background:linear-gradient(
+90deg,
+#00c853,
+#64dd17
+);
+}
+
+.gauge-text{
+margin-top:8px;
+font-size:14px;
+font-weight:bold;
 }
 
 </style>
@@ -141,86 +148,127 @@ button{
 
 <div class="container">
 
-  <!-- LOGIN -->
-  <div class="card" id="loginPage">
+<div class="card" id="loginPage">
 
-    <h1>ShiftPlatter</h1>
+<h1>Rate Your View</h1>
 
-    <p>
-      Rate your favorite food photos
-    </p>
+<p>
+Rate your favorite food photos
+</p>
 
-    <input
-      type="text"
-      id="username"
-      placeholder="Enter Username"
-    >
+<input
+type="text"
+id="username"
+placeholder="Enter Username"
+>
 
-    <input
-      type="email"
-      id="email"
-      placeholder="Enter Email Address"
-    >
+<input
+type="email"
+id="email"
+placeholder="Enter Email Address"
+>
 
-    <button
-      class="full-btn"
-      onclick="loginUser()">
-      Continue
-    </button>
+<button
+class="full-btn"
+onclick="loginUser()">
+Continue
+</button>
 
-  </div>
+</div>
 
-  <!-- MAIN -->
-  <div id="mainApp" class="hidden">
+<div id="mainApp" class="hidden">
 
-    <div class="tabs">
+<div class="tabs">
 
-      <button
-        class="tab-btn active-tab"
-        onclick="showTab('galleryTab',this)">
-        Food Gallery
-      </button>
+<button
+class="tab-btn active-tab"
+onclick="showTab('galleryTab',this)">
+Gallery
+</button>
 
-      <button
-        class="tab-btn"
-        onclick="showTab('ratingsTab',this)">
-        Overall Ratings
-      </button>
+<button
+class="tab-btn"
+onclick="showTab('ratingsTab',this)">
+Ratings
+</button>
 
-      <button
-        class="tab-btn"
-        onclick="showTab('graphTab',this)">
-        Graph
-      </button>
+<button
+class="tab-btn"
+onclick="showTab('graphTab',this)">
+Graph
+</button>
 
-    </div>
+<button
+class="tab-btn"
+onclick="showTab('uploadTab',this)">
+Upload Your Image
+</button>
 
-    <!-- GALLERY -->
-    <div id="galleryTab">
+</div>
 
-      <div id="gallery"></div>
+<div id="galleryTab">
 
-    </div>
+<div id="gallery"></div>
 
-    <!-- RATINGS -->
-    <div id="ratingsTab" class="hidden">
+</div>
 
-      <div id="overallRatings"></div>
+<div id="ratingsTab" class="hidden">
 
-    </div>
+<div id="overallRatings"></div>
 
-    <!-- GRAPH -->
-    <div id="graphTab" class="hidden">
+</div>
 
-      <div id="graphContainer"></div>
+<div id="graphTab" class="hidden">
 
-    </div>
+<div id="graphContainer"></div>
 
-  </div>
+</div>
+
+<div id="uploadTab" class="hidden">
+
+<div class="card">
+
+<h2>Upload Your Food</h2>
+
+<input
+type="file"
+id="userFoodImage"
+accept="image/*"
+>
+
+<input
+type="text"
+id="userRestaurant"
+placeholder="Restaurant / Cafe Name"
+>
+
+<input
+type="text"
+id="userFoodName"
+placeholder="Food Name"
+>
+
+<textarea
+id="userDetails"
+placeholder="Food Details">
+</textarea>
+
+<button
+class="full-btn"
+onclick="uploadUserFood()">
+Upload Food
+</button>
+
+</div>
+
+</div>
+
+</div>
 
 </div>
 
 <script>
+
 const firebaseConfig = {
     apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
     authDomain: "shifplatter-e0449.firebaseapp.com",
@@ -231,355 +279,463 @@ const firebaseConfig = {
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
 
-
 firebase.initializeApp(firebaseConfig);
 
-const db = firebase.database();
+const db=firebase.database();
 
-let currentUser = "";
-let currentEmail = "";
+let currentUser="";
+let currentEmail="";
 
-// LOGIN
+window.onload=function(){
+
+const savedUser=
+localStorage.getItem("shiftUser");
+
+const savedEmail=
+localStorage.getItem("shiftEmail");
+
+if(savedUser && savedEmail){
+
+currentUser=savedUser;
+currentEmail=savedEmail;
+
+document
+.getElementById("loginPage")
+.classList.add("hidden");
+
+document
+.getElementById("mainApp")
+.classList.remove("hidden");
+
+loadFoods();
+
+}
+
+};
+
 function loginUser(){
 
-  const username =
-    document.getElementById("username")
-    .value.trim();
+const username=
+document
+.getElementById("username")
+.value.trim();
 
-  const email =
-    document.getElementById("email")
-    .value.trim();
+const email=
+document
+.getElementById("email")
+.value.trim();
 
-  if(!username || !email){
+if(!username || !email){
 
-    alert("Please enter details");
+alert("Please enter details");
 
-    return;
-
-  }
-
-  // ADMIN
-  if(
-    username.toUpperCase()==="SHIFPLATTER" &&
-    email.toUpperCase()==="SHIVIK@2030"
-  ){
-
-    window.location.href="admin.html";
-
-    return;
-
-  }
-
-  currentUser=username;
-  currentEmail=email;
-
-  document
-    .getElementById("loginPage")
-    .classList.add("hidden");
-
-  document
-    .getElementById("mainApp")
-    .classList.remove("hidden");
-
-  loadFoods();
+return;
 
 }
 
-// TABS
+if(
+username.toUpperCase()==="SHIFPLATTER" &&
+email.toUpperCase()==="SHIVIK@2030"
+){
+
+window.location.href="admin.html";
+
+return;
+
+}
+
+currentUser=username;
+currentEmail=email;
+
+localStorage.setItem(
+"shiftUser",
+username
+);
+
+localStorage.setItem(
+"shiftEmail",
+email
+);
+
+document
+.getElementById("loginPage")
+.classList.add("hidden");
+
+document
+.getElementById("mainApp")
+.classList.remove("hidden");
+
+loadFoods();
+
+}
+
 function showTab(tabId,btn){
 
-  document
-    .querySelectorAll(
-      "#galleryTab,#ratingsTab,#graphTab"
-    )
-    .forEach((tab)=>{
+requestAnimationFrame(()=>{
 
-      tab.classList.add("hidden");
+document
+.querySelectorAll(
+"#galleryTab,#ratingsTab,#graphTab,#uploadTab"
+)
+.forEach((tab)=>{
 
-    });
+tab.classList.add("hidden");
 
-  document
-    .getElementById(tabId)
-    .classList.remove("hidden");
+});
 
-  document
-    .querySelectorAll(".tab-btn")
-    .forEach((b)=>{
+document
+.getElementById(tabId)
+.classList.remove("hidden");
 
-      b.classList.remove("active-tab");
+document
+.querySelectorAll(".tab-btn")
+.forEach((b)=>{
 
-    });
+b.classList.remove("active-tab");
 
-  btn.classList.add("active-tab");
+});
+
+btn.classList.add("active-tab");
+
+});
 
 }
 
-// LOAD FOODS
 function loadFoods(){
 
-  const gallery =
-    document.getElementById("gallery");
+const gallery=
+document.getElementById("gallery");
 
-  const overall =
-    document.getElementById("overallRatings");
+const overall=
+document.getElementById("overallRatings");
 
-  const graph =
-    document.getElementById("graphContainer");
+const graph=
+document.getElementById("graphContainer");
 
-  gallery.innerHTML =
-    '<div class="loader">Loading...</div>';
+gallery.innerHTML=
+'<div class="loader">Loading...</div>';
 
-  db.ref("foods")
-  .limitToLast(20)
-  .once("value")
-  .then((snapshot)=>{
+db.ref("foods")
+.limitToLast(20)
+.once("value")
+.then((snapshot)=>{
 
-    const data = snapshot.val();
+const data=snapshot.val();
 
-    gallery.innerHTML="";
-    overall.innerHTML="";
-    graph.innerHTML="";
+gallery.innerHTML="";
+overall.innerHTML="";
+graph.innerHTML="";
 
-    if(!data){
+if(!data){
 
-      gallery.innerHTML=`
-        <div class="card">
-          No foods uploaded yet
-        </div>
-      `;
+gallery.innerHTML=`
+<div class="card">
+No foods uploaded yet
+</div>
+`;
 
-      return;
-
-    }
-
-    Object.keys(data)
-    .reverse()
-    .forEach((id)=>{
-
-      const item=data[id];
-
-      if(!item.ratings){
-
-        item.ratings=[];
-
-      }
-
-      let total=0;
-
-      item.ratings.forEach((r)=>{
-
-        total+=Number(r.rating||0);
-
-      });
-
-      let avg=0;
-
-      if(item.ratings.length>0){
-
-        avg=
-          total/item.ratings.length;
-
-      }
-
-      // GALLERY
-      const card=
-        document.createElement("div");
-
-      card.className="card";
-
-      card.innerHTML=`
-
-        <div class="food-card">
-
-          <img
-            class="food-image"
-            src="${item.image}"
-            loading="lazy"
-            onclick="window.open('${item.image}')"
-          >
-
-          <div>
-
-            <h3>${item.foodname}</h3>
-
-            <p>
-              <b>${item.restaurant}</b>
-            </p>
-
-            <p>${item.details}</p>
-
-            <div class="stars">
-
-              <span class="star">☆</span>
-              <span class="star">☆</span>
-              <span class="star">☆</span>
-              <span class="star">☆</span>
-              <span class="star">☆</span>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      `;
-
-      const stars=
-        card.querySelectorAll(".star");
-
-      stars.forEach((star,index)=>{
-
-        star.addEventListener(
-          "click",
-          function(){
-
-            rateFood(
-              id,
-              index+1,
-              stars
-            );
-
-          }
-        );
-
-      });
-
-      gallery.appendChild(card);
-
-      // OVERALL
-      overall.innerHTML+=`
-
-        <div class="card">
-
-          <div class="food-card">
-
-            <img
-              class="food-image"
-              src="${item.image}"
-              loading="lazy"
-            >
-
-            <div>
-
-              <h3>${item.foodname}</h3>
-
-              <p>${item.restaurant}</p>
-
-              <h2>
-                ⭐ ${avg.toFixed(1)}/5
-              </h2>
-
-              <p>
-                ${item.ratings.length}
-                Ratings
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      `;
-
-      // GRAPH
-      graph.innerHTML+=`
-
-        <div class="card">
-
-          <h3>${item.foodname}</h3>
-
-          <p>${item.restaurant}</p>
-
-          <div class="rating-bar">
-
-            <div
-              class="rating-fill"
-              style="width:${avg*20}%">
-
-              ${avg.toFixed(1)}/5
-
-            </div>
-
-          </div>
-
-        </div>
-
-      `;
-
-    });
-
-  });
+return;
 
 }
 
-// RATE
-function rateFood(foodId,rating,stars){
+Object.keys(data)
+.reverse()
+.forEach((id)=>{
 
-  stars.forEach((star)=>{
+const item=data[id];
 
-    star.innerHTML="☆";
+if(!item.ratings){
 
-    star.classList.remove("active");
+item.ratings=[];
 
-  });
+}
 
-  for(let i=0;i<rating;i++){
+let total=0;
 
-    stars[i].innerHTML="★";
+item.ratings.forEach((r)=>{
 
-    stars[i].classList.add("active");
+total+=Number(r.rating||0);
 
-  }
+});
 
-  db.ref("foods/"+foodId)
-  .once("value")
-  .then((snapshot)=>{
+let avg=0;
 
-    const item=snapshot.val();
+if(item.ratings.length>0){
 
-    if(!item.ratings){
+avg=
+total/item.ratings.length;
 
-      item.ratings=[];
+}
 
-    }
+const card=
+document.createElement("div");
 
-    const alreadyRated=
-      item.ratings.find((r)=>{
+card.className="card";
 
-        return r.email===currentEmail;
+card.innerHTML=`
 
-      });
+<div class="food-card">
 
-    if(alreadyRated){
+<img
+class="food-image"
+src="${item.image}"
+loading="lazy"
+onclick="window.open('${item.image}')"
+>
 
-      alert(
-        "You already rated this food"
-      );
+<div>
 
-      return;
+<h3>${item.foodname}</h3>
 
-    }
+<p>
+<b>${item.restaurant}</b>
+</p>
 
-    item.ratings.push({
+<p>${item.details}</p>
 
-      user:currentUser,
-      email:currentEmail,
-      rating:rating
+<div class="stars">
 
-    });
+<span class="star">☆</span>
+<span class="star">☆</span>
+<span class="star">☆</span>
+<span class="star">☆</span>
+<span class="star">☆</span>
 
-    db.ref("foods/"+foodId)
-    .set(item)
-    .then(()=>{
+</div>
 
-      alert(
-        "Rating saved successfully"
-      );
+</div>
 
-    });
+</div>
 
-  });
+`;
+
+const stars=
+card.querySelectorAll(".star");
+
+stars.forEach((star,index)=>{
+
+star.addEventListener(
+"click",
+function(){
+
+rateFood(
+id,
+index+1,
+stars
+);
+
+}
+);
+
+});
+
+gallery.appendChild(card);
+
+overall.innerHTML+=`
+
+<div class="card">
+
+<h3>${item.foodname}</h3>
+
+<p>${item.restaurant}</p>
+
+<div class="gauge-wrap">
+
+<div class="gauge">
+
+<div
+class="gauge-fill"
+style="width:${avg*20}%">
+</div>
+
+</div>
+
+<div class="gauge-text">
+
+Overall Rating:
+${avg.toFixed(1)}/5
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+graph.innerHTML+=`
+
+<div class="card">
+
+<h3>${item.foodname}</h3>
+
+<div class="gauge-wrap">
+
+<div class="gauge">
+
+<div
+class="gauge-fill"
+style="width:${avg*20}%">
+</div>
+
+</div>
+
+<div class="gauge-text">
+
+${Math.round(avg*20)}%
+Audience Score
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+});
+
+}
+
+function uploadUserFood(){
+
+const imageFile=
+document
+.getElementById("userFoodImage")
+.files[0];
+
+const restaurant=
+document
+.getElementById("userRestaurant")
+.value;
+
+const foodname=
+document
+.getElementById("userFoodName")
+.value;
+
+const details=
+document
+.getElementById("userDetails")
+.value;
+
+if(
+!imageFile ||
+!restaurant ||
+!foodname ||
+!details
+){
+
+alert("Please fill all details");
+
+return;
+
+}
+
+const reader=new FileReader();
+
+reader.onload=function(){
+
+const foodData={
+
+image:reader.result,
+restaurant,
+foodname,
+details,
+uploadedBy:currentUser,
+uploadedEmail:currentEmail,
+time:Date.now()
+
+};
+
+db.ref("userUploads")
+.push(foodData)
+.then(()=>{
+
+alert(
+"Food uploaded successfully"
+);
+
+});
+
+};
+
+reader.readAsDataURL(imageFile);
+
+}
+
+function rateFood(
+foodId,
+rating,
+stars
+){
+
+stars.forEach((star)=>{
+
+star.innerHTML="☆";
+
+star.classList.remove("active");
+
+});
+
+for(let i=0;i<rating;i++){
+
+stars[i].innerHTML="★";
+
+stars[i].classList.add("active");
+
+}
+
+db.ref("foods/"+foodId)
+.once("value")
+.then((snapshot)=>{
+
+const item=snapshot.val();
+
+if(!item.ratings){
+
+item.ratings=[];
+
+}
+
+const alreadyRated=
+item.ratings.find((r)=>{
+
+return r.email===currentEmail;
+
+});
+
+if(alreadyRated){
+
+alert(
+"You already rated"
+);
+
+return;
+
+}
+
+item.ratings.push({
+
+user:currentUser,
+email:currentEmail,
+rating:rating
+
+});
+
+db.ref("foods/"+foodId)
+.set(item)
+.then(()=>{
+
+alert(
+"Rating saved successfully"
+);
+
+});
+
+});
 
 }
 
