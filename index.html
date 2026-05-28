@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ShifPlatter Rating</title>
+<title>ShifPlatter User Ratings</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -18,7 +18,7 @@ font-family:Arial,sans-serif;
 background:#f5f5f5;
 }
 
-/* LOGO UI */
+/* LOGO */
 
 .logo-header{
 display:flex;
@@ -43,13 +43,11 @@ margin-bottom:10px;
 font-size:32px;
 font-weight:bold;
 color:#0d3b3b;
-margin-top:5px;
 }
 
 .logo-sub{
 font-size:15px;
 color:#666;
-margin-top:5px;
 text-align:center;
 }
 
@@ -82,8 +80,6 @@ font-size:13px;
 color:#666;
 }
 
-/* GENERAL */
-
 .container{
 max-width:900px;
 margin:auto;
@@ -113,6 +109,7 @@ border:none;
 padding:14px;
 border-radius:14px;
 cursor:pointer;
+font-weight:bold;
 }
 
 .full-btn{
@@ -120,7 +117,6 @@ width:100%;
 background:black;
 color:white;
 margin-top:15px;
-font-weight:bold;
 }
 
 .tabs{
@@ -149,7 +145,7 @@ display:none;
 
 .food-image{
 width:100%;
-height:300px;
+height:320px;
 object-fit:cover;
 border-radius:18px;
 cursor:pointer;
@@ -163,7 +159,7 @@ margin-top:10px;
 }
 
 .star{
-font-size:30px;
+font-size:32px;
 cursor:pointer;
 color:#ccc;
 }
@@ -289,6 +285,10 @@ height:110px;
 font-size:20px;
 }
 
+.food-image{
+height:250px;
+}
+
 }
 
 </style>
@@ -376,6 +376,8 @@ Food Community Ratings
 
 </div>
 
+<!-- TABS -->
+
 <div class="tabs">
 
 <button
@@ -392,19 +394,83 @@ Overall Ratings
 
 <button
 class="tab-btn"
+onclick="showTab('uploadTab',this)">
+Upload Your Image
+</button>
+
+<button
+class="tab-btn"
 onclick="showTab('leaderboardTab',this)">
 Leaderboard
 </button>
 
 </div>
 
+<!-- GALLERY -->
+
 <div id="galleryTab">
 <div id="gallery"></div>
 </div>
 
+<!-- RATINGS -->
+
 <div id="ratingsTab" class="hidden">
 <div id="overallRatings"></div>
 </div>
+
+<!-- USER UPLOAD -->
+
+<div id="uploadTab" class="hidden">
+
+<div class="card">
+
+<h2>
+Upload Your Food Photo
+</h2>
+
+<input
+type="file"
+id="userFoodImage"
+accept="image/*"
+>
+
+<input
+type="text"
+id="userRestaurant"
+placeholder="Restaurant / Cafe Name"
+>
+
+<input
+type="text"
+id="userFoodName"
+placeholder="Food Name"
+>
+
+<textarea
+id="userFoodDetails"
+placeholder="Food Details">
+</textarea>
+
+<button
+class="full-btn"
+onclick="uploadUserFood()">
+Upload Photo
+</button>
+
+<p style="
+margin-top:15px;
+color:#666;
+font-size:14px;
+">
+Only admin can view uploaded photos.
+Other users cannot see your uploads.
+</p>
+
+</div>
+
+</div>
+
+<!-- LEADERBOARD -->
 
 <div id="leaderboardTab" class="hidden">
 <div id="leaderboard"></div>
@@ -520,7 +586,7 @@ function showTab(tabId,btn){
 
 document
 .querySelectorAll(
-"#galleryTab,#ratingsTab,#leaderboardTab"
+"#galleryTab,#ratingsTab,#uploadTab,#leaderboardTab"
 )
 .forEach((tab)=>{
 
@@ -616,7 +682,7 @@ item
 
 foods.sort((a,b)=>b.avg-a.avg);
 
-foods.forEach((food,index)=>{
+foods.forEach((food)=>{
 
 const id=food.id;
 const item=food.item;
@@ -643,23 +709,23 @@ onclick="openImage('${item.image}')"
 <div class="stars">
 
 <span class="star"
-onclick="rateFood('${id}',1,this)">
+onclick="rateFood('${id}',1)">
 ☆</span>
 
 <span class="star"
-onclick="rateFood('${id}',2,this)">
+onclick="rateFood('${id}',2)">
 ☆</span>
 
 <span class="star"
-onclick="rateFood('${id}',3,this)">
+onclick="rateFood('${id}',3)">
 ☆</span>
 
 <span class="star"
-onclick="rateFood('${id}',4,this)">
+onclick="rateFood('${id}',4)">
 ☆</span>
 
 <span class="star"
-onclick="rateFood('${id}',5,this)">
+onclick="rateFood('${id}',5)">
 ☆</span>
 
 </div>
@@ -998,6 +1064,89 @@ div.innerHTML+=`
 });
 
 }
+
+}
+
+function uploadUserFood(){
+
+const imageFile=
+document
+.getElementById("userFoodImage")
+.files[0];
+
+const restaurant=
+document
+.getElementById("userRestaurant")
+.value;
+
+const foodname=
+document
+.getElementById("userFoodName")
+.value;
+
+const details=
+document
+.getElementById("userFoodDetails")
+.value;
+
+if(
+!imageFile ||
+!restaurant ||
+!foodname ||
+!details
+){
+
+alert("Please fill all details");
+
+return;
+
+}
+
+const reader=new FileReader();
+
+reader.onload=function(){
+
+const uploadData={
+
+image:reader.result,
+restaurant,
+foodname,
+details,
+uploadedBy:currentUser,
+uploadedEmail:currentName,
+time:Date.now()
+
+};
+
+db.ref("userUploads")
+.push(uploadData)
+.then(()=>{
+
+alert(
+"Photo uploaded successfully"
+);
+
+document
+.getElementById("userFoodImage")
+.value="";
+
+document
+.getElementById("userRestaurant")
+.value="";
+
+document
+.getElementById("userFoodName")
+.value="";
+
+document
+.getElementById("userFoodDetails")
+.value="";
+
+});
+
+};
+
+reader.readAsDataURL(imageFile);
 
 }
 
