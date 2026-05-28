@@ -153,16 +153,23 @@ cursor:pointer;
 
 .stars{
 display:flex;
-gap:5px;
-margin-top:12px;
+gap:8px;
+margin-top:14px;
 }
 
 .star{
-font-size:38px;
+font-size:42px;
 cursor:pointer;
 color:#d4d4d4;
 transition:0.2s;
 user-select:none;
+}
+
+.star.selected{
+color:#FFD700;
+text-shadow:
+0 0 12px rgba(255,215,0,0.9);
+transform:scale(1.08);
 }
 
 .comment{
@@ -469,6 +476,7 @@ Only admin can see uploaded photos.
 </div>
 
 <script>
+
 const firebaseConfig = {
     apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
     authDomain: "shifplatter-e0449.firebaseapp.com",
@@ -478,6 +486,7 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
+
 
 firebase.initializeApp(firebaseConfig);
 
@@ -691,27 +700,22 @@ onclick="openImage('${item.image}')"
 <div class="stars">
 
 <span class="star"
-data-value="1"
 onclick="rateFood(this,'${id}',1)">
 ★</span>
 
 <span class="star"
-data-value="2"
 onclick="rateFood(this,'${id}',2)">
 ★</span>
 
 <span class="star"
-data-value="3"
 onclick="rateFood(this,'${id}',3)">
 ★</span>
 
 <span class="star"
-data-value="4"
 onclick="rateFood(this,'${id}',4)">
 ★</span>
 
 <span class="star"
-data-value="5"
 onclick="rateFood(this,'${id}',5)">
 ★</span>
 
@@ -792,27 +796,29 @@ style="width:${avg*20}%">
 
 function rateFood(el,foodId,rating){
 
-const container =
+const starsContainer =
 el.parentElement;
 
 const stars =
-container.querySelectorAll(".star");
+starsContainer.querySelectorAll(".star");
+
+/* RESET */
 
 stars.forEach((star)=>{
 
-star.style.color="#d4d4d4";
-star.style.textShadow="none";
+star.classList.remove("selected");
 
 });
 
+/* FILL YELLOW */
+
 for(let i=0;i<rating;i++){
 
-stars[i].style.color="#FFD700";
-
-stars[i].style.textShadow=
-"0 0 10px rgba(255,215,0,0.8)";
+stars[i].classList.add("selected");
 
 }
+
+/* SAVE */
 
 db.ref("foods/"+foodId+"/ratings")
 .once("value")
@@ -829,7 +835,7 @@ ratings.push({
 
 user:currentUser,
 name:currentName,
-rating
+rating:rating
 
 });
 
@@ -838,28 +844,45 @@ db.ref("foods/"+foodId+"/ratings")
 
 });
 
-const toast=document.createElement("div");
+/* MESSAGE */
 
-toast.innerHTML="⭐ Rating Saved";
+const message=document.createElement("div");
 
-toast.style.position="fixed";
-toast.style.bottom="20px";
-toast.style.left="50%";
-toast.style.transform="translateX(-50%)";
-toast.style.background="black";
-toast.style.color="white";
-toast.style.padding="12px 18px";
-toast.style.borderRadius="14px";
-toast.style.zIndex="9999";
-toast.style.fontWeight="bold";
+message.innerHTML=
+"⭐ Your ratings are successfully saved";
 
-document.body.appendChild(toast);
+message.style.position="fixed";
+message.style.bottom="25px";
+message.style.left="50%";
+message.style.transform=
+"translateX(-50%)";
+
+message.style.background=
+"linear-gradient(90deg,#111,#333)";
+
+message.style.color="white";
+
+message.style.padding=
+"14px 22px";
+
+message.style.borderRadius="16px";
+
+message.style.fontWeight="bold";
+
+message.style.fontSize="15px";
+
+message.style.zIndex="9999";
+
+message.style.boxShadow=
+"0 5px 20px rgba(0,0,0,0.25)";
+
+document.body.appendChild(message);
 
 setTimeout(()=>{
 
-toast.remove();
+message.remove();
 
-},1200);
+},1800);
 
 }
 
@@ -875,18 +898,23 @@ document
 
 function toggleComments(id){
 
-const div=
-document.getElementById(
+document
+.getElementById(
 "comments-"+id
-);
+)
+.classList.toggle("hidden");
 
-div.classList.toggle("hidden");
+}
+
+function addComment(foodId){
+
+alert("Comment Added");
 
 }
 
 function uploadUserFood(){
 
-alert("User upload saved successfully");
+alert("Photo Uploaded Successfully");
 
 }
 
