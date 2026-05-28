@@ -15,82 +15,49 @@ body{
 margin:0;
 padding:0;
 font-family:Arial,sans-serif;
-background:#f5f5f5;
+background:#f4f4f4;
 }
 
 .container{
-max-width:900px;
+max-width:950px;
 margin:auto;
 padding:15px;
 }
 
 .card{
 background:white;
-padding:15px;
-border-radius:18px;
-margin-bottom:18px;
-box-shadow:0 2px 8px rgba(0,0,0,0.08);
+border-radius:20px;
+padding:18px;
+margin-bottom:20px;
+box-shadow:0 4px 15px rgba(0,0,0,0.08);
 }
 
-.logo-header{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
+.logo-section{
+text-align:center;
 margin-bottom:20px;
 }
 
-.logo-img{
-width:130px;
-height:130px;
+.logo{
+width:140px;
+height:140px;
 object-fit:contain;
 border-radius:25px;
 background:white;
 padding:10px;
-box-shadow:0 6px 20px rgba(0,0,0,0.12);
+box-shadow:0 4px 20px rgba(0,0,0,0.12);
 }
 
-.logo-title{
+.title{
 font-size:32px;
 font-weight:bold;
 margin-top:10px;
-color:#0d3b3b;
+color:#123;
 }
 
-.logo-sub{
+.subtitle{
 font-size:15px;
 color:#666;
-margin-top:5px;
-text-align:center;
-}
-
-.topbar{
-display:flex;
-align-items:center;
-gap:12px;
-background:white;
-padding:12px 18px;
-border-radius:18px;
-margin-bottom:20px;
-box-shadow:0 2px 8px rgba(0,0,0,0.08);
-}
-
-.topbar-logo{
-width:55px;
-height:55px;
-border-radius:14px;
-object-fit:contain;
-}
-
-.topbar-title{
-font-size:22px;
-font-weight:bold;
-color:#0d3b3b;
-}
-
-.topbar-sub{
-font-size:13px;
-color:#666;
+margin-top:6px;
 }
 
 input,textarea{
@@ -105,30 +72,58 @@ font-size:15px;
 
 button{
 border:none;
-padding:14px;
 border-radius:14px;
-cursor:pointer;
+padding:14px;
 font-weight:bold;
+cursor:pointer;
 }
 
-.full-btn{
+.main-btn{
 width:100%;
 background:black;
 color:white;
 margin-top:15px;
 }
 
+.hidden{
+display:none;
+}
+
+.topbar{
+display:flex;
+align-items:center;
+gap:12px;
+background:white;
+padding:14px;
+border-radius:18px;
+margin-bottom:20px;
+box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+.top-logo{
+width:55px;
+height:55px;
+border-radius:14px;
+object-fit:contain;
+}
+
+.top-title{
+font-size:22px;
+font-weight:bold;
+}
+
 .tabs{
 display:flex;
-gap:8px;
+gap:10px;
 overflow:auto;
 margin-bottom:20px;
 }
 
 .tab-btn{
 flex:1;
-background:#e5e5e5;
+background:#e7e7e7;
 padding:12px;
+border-radius:12px;
 font-weight:bold;
 white-space:nowrap;
 }
@@ -138,46 +133,26 @@ background:black;
 color:white;
 }
 
-.hidden{
-display:none;
-}
-
 .food-image{
 width:100%;
-height:320px;
+height:340px;
 object-fit:cover;
 border-radius:18px;
-margin-bottom:12px;
 cursor:pointer;
 }
 
 .stars{
 display:flex;
 gap:8px;
-margin-top:14px;
+margin-top:15px;
 }
 
 .star{
 font-size:42px;
-cursor:pointer;
 color:#d4d4d4;
+cursor:pointer;
 transition:0.2s;
 user-select:none;
-}
-
-.star.selected{
-color:#FFD700;
-text-shadow:
-0 0 12px rgba(255,215,0,0.9);
-transform:scale(1.08);
-}
-
-.comment{
-background:#fafafa;
-padding:10px;
-border-radius:12px;
-margin-top:10px;
-border:1px solid #eee;
 }
 
 .comment-actions{
@@ -190,13 +165,21 @@ margin-top:15px;
 flex:1;
 }
 
+.comment-box{
+background:#fafafa;
+padding:12px;
+border-radius:14px;
+margin-top:12px;
+border:1px solid #eee;
+}
+
 .gauge{
 width:100%;
 height:18px;
 background:#ddd;
 border-radius:30px;
 overflow:hidden;
-margin-top:15px;
+margin-top:12px;
 }
 
 .gauge-fill{
@@ -204,77 +187,30 @@ height:100%;
 background:linear-gradient(
 90deg,
 #00c853,
-#64dd17
+#69f0ae
 );
 }
 
-.top3-wrap{
-display:flex;
-justify-content:center;
-align-items:flex-end;
-gap:15px;
-margin-top:30px;
-flex-wrap:wrap;
-}
-
-.podium{
-width:120px;
-border-radius:25px;
-text-align:center;
-padding:15px;
-position:relative;
-box-shadow:0 4px 15px rgba(0,0,0,0.08);
-}
-
-.first{
-background:#ffe082;
-height:240px;
-}
-
-.second{
-background:#eeeeee;
-height:190px;
-}
-
-.third{
-background:#ffccbc;
-height:170px;
-}
-
-.rank-avatar{
-width:80px;
-height:80px;
-border-radius:50%;
-object-fit:cover;
-margin-top:-50px;
-border:5px solid white;
-cursor:pointer;
-}
-
-.crown{
-position:absolute;
-top:-35px;
-right:35px;
-font-size:40px;
-}
-
-.rank-name{
-font-size:18px;
-font-weight:bold;
+.comment-item{
+background:#fafafa;
+padding:12px;
+border-radius:12px;
 margin-top:10px;
+border:1px solid #eee;
 }
 
-.rank-score{
-font-size:18px;
-margin-top:10px;
+.toast{
+position:fixed;
+bottom:25px;
+left:50%;
+transform:translateX(-50%);
+background:black;
+color:white;
+padding:14px 22px;
+border-radius:16px;
 font-weight:bold;
-}
-
-.rank-number{
-font-size:70px;
-font-weight:bold;
-margin-top:15px;
-opacity:0.25;
+z-index:9999;
+box-shadow:0 4px 15px rgba(0,0,0,0.2);
 }
 
 @media(max-width:768px){
@@ -283,7 +219,7 @@ opacity:0.25;
 height:250px;
 }
 
-.logo-img{
+.logo{
 width:110px;
 height:110px;
 }
@@ -301,15 +237,15 @@ height:110px;
 
 <div id="loginPage" class="card">
 
-<div class="logo-header">
+<div class="logo-section">
 
-<img src="logo.png" class="logo-img">
+<img src="logo.png" class="logo">
 
-<div class="logo-title">
+<div class="title">
 ShifPlatter
 </div>
 
-<div class="logo-sub">
+<div class="subtitle">
 Rate • Review • Discover Amazing Food
 </div>
 
@@ -332,28 +268,28 @@ placeholder="Your Name"
 >
 
 <button
-class="full-btn"
+class="main-btn"
 onclick="loginUser()">
 Continue
 </button>
 
 </div>
 
-<!-- MAIN APP -->
+<!-- APP -->
 
 <div id="mainApp" class="hidden">
 
 <div class="topbar">
 
-<img src="logo.png" class="topbar-logo">
+<img src="logo.png" class="top-logo">
 
 <div>
 
-<div class="topbar-title">
+<div class="top-title">
 ShifPlatter
 </div>
 
-<div class="topbar-sub">
+<div style="font-size:13px;color:#666;">
 Food Community Ratings
 </div>
 
@@ -366,8 +302,6 @@ margin-left:auto;
 background:black;
 color:white;
 padding:10px 16px;
-border:none;
-border-radius:12px;
 ">
 Logout
 </button>
@@ -396,12 +330,6 @@ onclick="showTab('uploadTab',this)">
 Upload Your Image
 </button>
 
-<button
-class="tab-btn"
-onclick="showTab('leaderboardTab',this)">
-Leaderboard
-</button>
-
 </div>
 
 <!-- GALLERY -->
@@ -416,7 +344,7 @@ Leaderboard
 <div id="overallRatings"></div>
 </div>
 
-<!-- USER UPLOAD -->
+<!-- UPLOAD -->
 
 <div id="uploadTab" class="hidden">
 
@@ -448,7 +376,7 @@ placeholder="Food Details">
 </textarea>
 
 <button
-class="full-btn"
+class="main-btn"
 onclick="uploadUserFood()">
 Upload Photo
 </button>
@@ -458,17 +386,11 @@ margin-top:12px;
 font-size:14px;
 color:#666;
 ">
-Only admin can see uploaded photos.
+Only admin can see uploaded images.
 </p>
 
 </div>
 
-</div>
-
-<!-- LEADERBOARD -->
-
-<div id="leaderboardTab" class="hidden">
-<div id="leaderboard"></div>
 </div>
 
 </div>
@@ -486,7 +408,6 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
-
 
 firebase.initializeApp(firebaseConfig);
 
@@ -525,13 +446,11 @@ loadFoods();
 function loginUser(){
 
 const username=
-document
-.getElementById("username")
+document.getElementById("username")
 .value.trim();
 
 const instaName=
-document
-.getElementById("instaName")
+document.getElementById("instaName")
 .value.trim();
 
 if(!username || !instaName){
@@ -569,8 +488,7 @@ loadFoods();
 
 function logoutUser(){
 
-localStorage.removeItem("shiftUser");
-localStorage.removeItem("shiftName");
+localStorage.clear();
 
 location.reload();
 
@@ -580,7 +498,7 @@ function showTab(tabId,btn){
 
 document
 .querySelectorAll(
-"#galleryTab,#ratingsTab,#uploadTab,#leaderboardTab"
+"#galleryTab,#ratingsTab,#uploadTab"
 )
 .forEach((tab)=>{
 
@@ -612,15 +530,11 @@ document.getElementById("gallery");
 const overall=
 document.getElementById("overallRatings");
 
-const leaderboard=
-document.getElementById("leaderboard");
-
 db.ref("foods")
 .on("value",(snapshot)=>{
 
 gallery.innerHTML="";
 overall.innerHTML="";
-leaderboard.innerHTML="";
 
 const data=snapshot.val();
 
@@ -636,8 +550,6 @@ return;
 
 }
 
-const foods=[];
-
 Object.keys(data).forEach((id)=>{
 
 const item=data[id];
@@ -652,7 +564,7 @@ let total=0;
 
 item.ratings.forEach((r)=>{
 
-total+=Number(r.rating||0);
+total += Number(r.rating || 0);
 
 });
 
@@ -665,29 +577,13 @@ total/item.ratings.length;
 
 }
 
-foods.push({
-id,
-avg,
-item
-});
-
-});
-
-foods.sort((a,b)=>b.avg-a.avg);
-
-foods.forEach((food)=>{
-
-const id=food.id;
-const item=food.item;
-const avg=food.avg;
-
-gallery.innerHTML+=`
+gallery.innerHTML += `
 
 <div class="card">
 
 <img
-class="food-image"
 src="${item.image}"
+class="food-image"
 onclick="openImage('${item.image}')"
 >
 
@@ -724,13 +620,13 @@ onclick="rateFood(this,'${id}',5)">
 <div class="comment-actions">
 
 <button
-class="full-btn"
+class="main-btn"
 onclick="toggleCommentBox('${id}')">
 Comment
 </button>
 
 <button
-class="full-btn"
+class="main-btn"
 onclick="toggleComments('${id}')">
 View Comments
 </button>
@@ -743,13 +639,13 @@ class="hidden">
 
 <textarea
 id="comment-${id}"
-placeholder="Write review...">
+placeholder="Write your review">
 </textarea>
 
 <button
-class="full-btn"
+class="main-btn"
 onclick="addComment('${id}')">
-Post
+Post Comment
 </button>
 
 </div>
@@ -763,7 +659,7 @@ class="hidden">
 
 `;
 
-overall.innerHTML+=`
+overall.innerHTML += `
 
 <div class="card">
 
@@ -802,23 +698,22 @@ el.parentElement;
 const stars =
 starsContainer.querySelectorAll(".star");
 
-/* RESET */
-
 stars.forEach((star)=>{
 
-star.classList.remove("selected");
+star.style.color="#d4d4d4";
+
+star.style.textShadow="none";
 
 });
 
-/* FILL YELLOW */
-
 for(let i=0;i<rating;i++){
 
-stars[i].classList.add("selected");
+stars[i].style.color="#FFD700";
+
+stars[i].style.textShadow=
+"0 0 12px rgba(255,215,0,0.9)";
 
 }
-
-/* SAVE */
 
 db.ref("foods/"+foodId+"/ratings")
 .once("value")
@@ -844,45 +739,9 @@ db.ref("foods/"+foodId+"/ratings")
 
 });
 
-/* MESSAGE */
-
-const message=document.createElement("div");
-
-message.innerHTML=
-"⭐ Your ratings are successfully saved";
-
-message.style.position="fixed";
-message.style.bottom="25px";
-message.style.left="50%";
-message.style.transform=
-"translateX(-50%)";
-
-message.style.background=
-"linear-gradient(90deg,#111,#333)";
-
-message.style.color="white";
-
-message.style.padding=
-"14px 22px";
-
-message.style.borderRadius="16px";
-
-message.style.fontWeight="bold";
-
-message.style.fontSize="15px";
-
-message.style.zIndex="9999";
-
-message.style.boxShadow=
-"0 5px 20px rgba(0,0,0,0.25)";
-
-document.body.appendChild(message);
-
-setTimeout(()=>{
-
-message.remove();
-
-},1800);
+showToast(
+"⭐ Your ratings are successfully saved"
+);
 
 }
 
@@ -896,25 +755,201 @@ document
 
 }
 
-function toggleComments(id){
+function addComment(foodId){
 
+const text =
 document
 .getElementById(
-"comments-"+id
+"comment-"+foodId
 )
-.classList.toggle("hidden");
+.value
+.trim();
+
+if(!text){
+
+alert("Write comment");
+
+return;
 
 }
 
-function addComment(foodId){
+db.ref(
+"foods/"+foodId+"/comments"
+)
+.once("value")
+.then((snapshot)=>{
 
-alert("Comment Added");
+let comments =
+snapshot.val() || [];
+
+comments.push({
+
+user:currentUser,
+name:currentName,
+comment:text
+
+});
+
+db.ref(
+"foods/"+foodId+"/comments"
+)
+.set(comments);
+
+document
+.getElementById(
+"comment-"+foodId
+)
+.value="";
+
+showToast("✅ Comment Posted");
+
+});
+
+}
+
+function toggleComments(id){
+
+const commentsDiv =
+document.getElementById(
+"comments-"+id
+);
+
+if(
+!commentsDiv.classList.contains("hidden")
+){
+
+commentsDiv.classList.add("hidden");
+
+return;
+
+}
+
+commentsDiv.classList.remove("hidden");
+
+db.ref(
+"foods/"+id+"/comments"
+)
+.once("value")
+.then((snapshot)=>{
+
+const comments =
+snapshot.val() || [];
+
+commentsDiv.innerHTML="";
+
+if(comments.length===0){
+
+commentsDiv.innerHTML=`
+
+<div class="comment-item">
+No comments yet
+</div>
+
+`;
+
+return;
+
+}
+
+comments.forEach((c)=>{
+
+commentsDiv.innerHTML += `
+
+<div class="comment-item">
+
+<b>@${c.user}</b>
+
+<p style="
+margin-top:6px;
+">
+${c.comment}
+</p>
+
+</div>
+
+`;
+
+});
+
+});
 
 }
 
 function uploadUserFood(){
 
-alert("Photo Uploaded Successfully");
+const file=
+document
+.getElementById("userFoodImage")
+.files[0];
+
+const restaurant=
+document
+.getElementById("userRestaurant")
+.value;
+
+const foodname=
+document
+.getElementById("userFoodName")
+.value;
+
+const details=
+document
+.getElementById("userFoodDetails")
+.value;
+
+if(!file){
+
+alert("Upload image");
+
+return;
+
+}
+
+const reader=
+new FileReader();
+
+reader.onload=function(e){
+
+const data={
+
+restaurant,
+foodname,
+details,
+image:e.target.result,
+uploadedBy:currentUser,
+name:currentName
+
+};
+
+db.ref("userUploads")
+.push(data);
+
+showToast(
+"✅ Photo Uploaded Successfully"
+);
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+function showToast(text){
+
+const toast=
+document.createElement("div");
+
+toast.className="toast";
+
+toast.innerHTML=text;
+
+document.body.appendChild(toast);
+
+setTimeout(()=>{
+
+toast.remove();
+
+},1800);
 
 }
 
