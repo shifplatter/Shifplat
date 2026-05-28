@@ -165,11 +165,11 @@ margin-top:15px;
 flex:1;
 }
 
-.comment-box{
+.comment-item{
 background:#fafafa;
 padding:12px;
-border-radius:14px;
-margin-top:12px;
+border-radius:12px;
+margin-top:10px;
 border:1px solid #eee;
 }
 
@@ -189,14 +189,6 @@ background:linear-gradient(
 #00c853,
 #69f0ae
 );
-}
-
-.comment-item{
-background:#fafafa;
-padding:12px;
-border-radius:12px;
-margin-top:10px;
-border:1px solid #eee;
 }
 
 .toast{
@@ -275,7 +267,7 @@ Continue
 
 </div>
 
-<!-- APP -->
+<!-- MAIN APP -->
 
 <div id="mainApp" class="hidden">
 
@@ -344,7 +336,7 @@ Upload Your Image
 <div id="overallRatings"></div>
 </div>
 
-<!-- UPLOAD -->
+<!-- USER UPLOAD -->
 
 <div id="uploadTab" class="hidden">
 
@@ -398,6 +390,7 @@ Only admin can see uploaded images.
 </div>
 
 <script>
+
 const firebaseConfig = {
     apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
     authDomain: "shifplatter-e0449.firebaseapp.com",
@@ -407,7 +400,6 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
-
 
 firebase.initializeApp(firebaseConfig);
 
@@ -613,7 +605,7 @@ selected=`
 style="
 color:#FFD700;
 text-shadow:
-0 0 12px rgba(255,215,0,0.9)
+0 0 14px rgba(255,215,0,0.95)
 "
 `;
 
@@ -714,41 +706,37 @@ el.parentElement;
 const stars =
 starsContainer.querySelectorAll(".star");
 
-stars.forEach((star)=>{
+stars.forEach((star,index)=>{
+
+if(index < rating){
+
+star.style.color="#FFD700";
+
+star.style.textShadow=
+"0 0 14px rgba(255,215,0,0.95)";
+
+}else{
 
 star.style.color="#d4d4d4";
 
 star.style.textShadow="none";
 
-});
-
-for(let i=0;i<rating;i++){
-
-stars[i].style.color="#FFD700";
-
-stars[i].style.textShadow=
-"0 0 12px rgba(255,215,0,0.9)";
-
 }
 
-db.ref("foods/"+foodId)
+});
+
+db.ref("foods/"+foodId+"/ratings")
 .once("value")
 .then((snapshot)=>{
 
-let item=snapshot.val();
+let ratings=snapshot.val() || [];
 
-if(!item.ratings){
-
-item.ratings=[];
-
-}
-
-item.ratings =
-item.ratings.filter(
+ratings =
+ratings.filter(
 (r)=>r.user!==currentUser
 );
 
-item.ratings.push({
+ratings.push({
 
 user:currentUser,
 name:currentName,
@@ -756,14 +744,18 @@ rating:rating
 
 });
 
-db.ref("foods/"+foodId)
-.set(item);
+return db.ref(
+"foods/"+foodId+"/ratings"
+).set(ratings);
 
-});
+})
+.then(()=>{
 
 showToast(
 "⭐ Your ratings are successfully saved"
 );
+
+});
 
 }
 
@@ -779,62 +771,60 @@ document
 
 function addComment(foodId){
 
-const text =
-document
-.getElementById(
+const input =
+document.getElementById(
 "comment-"+foodId
-)
-.value
-.trim();
+);
+
+const text =
+input.value.trim();
 
 if(!text){
 
-alert("Write comment");
+showToast("Write comment first");
 
 return;
 
 }
 
 db.ref(
-"foods/"+foodId
+"foods/"+foodId+"/comments"
 )
 .once("value")
 .then((snapshot)=>{
 
-let item=snapshot.val();
+let comments =
+snapshot.val() || [];
 
-if(!item.comments){
-
-item.comments=[];
-
-}
-
-item.comments.push({
+comments.push({
 
 user:currentUser,
 name:currentName,
-comment:text
+comment:text,
+time:Date.now()
 
 });
 
-db.ref(
-"foods/"+foodId
-)
-.set(item);
+return db.ref(
+"foods/"+foodId+"/comments"
+).set(comments);
 
-document
-.getElementById(
-"comment-"+foodId
-)
-.value="";
+})
+.then(()=>{
 
-showToast("✅ Comment Posted");
+input.value="";
+
+toggleComments(foodId,true);
+
+showToast(
+"✅ Comment posted"
+);
 
 });
 
 }
 
-function toggleComments(id){
+function toggleComments(id,forceOpen=false){
 
 const commentsDiv =
 document.getElementById(
@@ -842,6 +832,7 @@ document.getElementById(
 );
 
 if(
+!forceOpen &&
 !commentsDiv.classList.contains("hidden")
 ){
 
@@ -878,19 +869,32 @@ return;
 
 }
 
+comments.reverse();
+
 comments.forEach((c)=>{
 
 commentsDiv.innerHTML += `
 
 <div class="comment-item">
 
-<b>@${c.user}</b>
-
-<p style="
-margin-top:6px;
+<div style="
+font-weight:bold;
+margin-bottom:6px;
+color:#111;
 ">
+
+@${c.user}
+
+</div>
+
+<div style="
+font-size:15px;
+line-height:1.5;
+">
+
 ${c.comment}
-</p>
+
+</div>
 
 </div>
 
