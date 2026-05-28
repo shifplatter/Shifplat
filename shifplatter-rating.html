@@ -158,6 +158,16 @@ font-weight:bold;
 margin-bottom:10px;
 }
 
+.comment-actions{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.comment-actions button{
+flex:1;
+}
+
 </style>
 
 </head>
@@ -535,21 +545,42 @@ onclick="openImage('${item.image}')"
 
 </div>
 
-<div class="comment-box">
+<div class="comment-actions">
+
+<button
+class="full-btn"
+onclick="toggleCommentBox('${id}')">
+Comment
+</button>
+
+<button
+class="full-btn"
+onclick="toggleComments('${id}')">
+View Comments
+</button>
+
+</div>
+
+<div
+id="commentBox-${id}"
+class="hidden">
 
 <textarea
 id="comment-${id}"
-placeholder="Write a review...">
+placeholder="Write your review...">
 </textarea>
 
 <button
 class="full-btn"
 onclick="addComment('${id}')">
-Post Review
+Post
 </button>
 
-<div id="comments-${id}"></div>
+</div>
 
+<div
+id="comments-${id}"
+class="hidden">
 </div>
 
 </div>
@@ -895,6 +926,28 @@ alert(
 });
 
 });
+
+}
+
+function toggleCommentBox(id){
+
+const box=
+document.getElementById(
+"commentBox-"+id
+);
+
+box.classList.toggle("hidden");
+
+}
+
+function toggleComments(id){
+
+const comments=
+document.getElementById(
+"comments-"+id
+);
+
+comments.classList.toggle("hidden");
 
 }
 
