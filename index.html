@@ -398,7 +398,6 @@ Only admin can see uploaded images.
 </div>
 
 <script>
-
 const firebaseConfig = {
     apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
     authDomain: "shifplatter-e0449.firebaseapp.com",
@@ -408,6 +407,7 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
+
 
 firebase.initializeApp(firebaseConfig);
 
@@ -577,6 +577,11 @@ total/item.ratings.length;
 
 }
 
+const existingRating =
+item.ratings.find(
+(r)=>r.user===currentUser
+);
+
 gallery.innerHTML += `
 
 <div class="card">
@@ -595,25 +600,36 @@ onclick="openImage('${item.image}')"
 
 <div class="stars">
 
-<span class="star"
-onclick="rateFood(this,'${id}',1)">
-★</span>
+${[1,2,3,4,5].map(num=>{
+
+let selected="";
+
+if(
+existingRating &&
+num <= existingRating.rating
+){
+
+selected=`
+style="
+color:#FFD700;
+text-shadow:
+0 0 12px rgba(255,215,0,0.9)
+"
+`;
+
+}
+
+return `
 
 <span class="star"
-onclick="rateFood(this,'${id}',2)">
-★</span>
+${selected}
+onclick="rateFood(this,'${id}',${num})">
+★
+</span>
 
-<span class="star"
-onclick="rateFood(this,'${id}',3)">
-★</span>
+`;
 
-<span class="star"
-onclick="rateFood(this,'${id}',4)">
-★</span>
-
-<span class="star"
-onclick="rateFood(this,'${id}',5)">
-★</span>
+}).join("")}
 
 </div>
 
@@ -715,18 +731,24 @@ stars[i].style.textShadow=
 
 }
 
-db.ref("foods/"+foodId+"/ratings")
+db.ref("foods/"+foodId)
 .once("value")
 .then((snapshot)=>{
 
-let ratings=snapshot.val() || [];
+let item=snapshot.val();
 
-ratings =
-ratings.filter(
+if(!item.ratings){
+
+item.ratings=[];
+
+}
+
+item.ratings =
+item.ratings.filter(
 (r)=>r.user!==currentUser
 );
 
-ratings.push({
+item.ratings.push({
 
 user:currentUser,
 name:currentName,
@@ -734,8 +756,8 @@ rating:rating
 
 });
 
-db.ref("foods/"+foodId+"/ratings")
-.set(ratings);
+db.ref("foods/"+foodId)
+.set(item);
 
 });
 
@@ -774,15 +796,20 @@ return;
 }
 
 db.ref(
-"foods/"+foodId+"/comments"
+"foods/"+foodId
 )
 .once("value")
 .then((snapshot)=>{
 
-let comments =
-snapshot.val() || [];
+let item=snapshot.val();
 
-comments.push({
+if(!item.comments){
+
+item.comments=[];
+
+}
+
+item.comments.push({
 
 user:currentUser,
 name:currentName,
@@ -791,9 +818,9 @@ comment:text
 });
 
 db.ref(
-"foods/"+foodId+"/comments"
+"foods/"+foodId
 )
-.set(comments);
+.set(item);
 
 document
 .getElementById(
