@@ -152,12 +152,6 @@ margin-top:10px;
 border:1px solid #eee;
 }
 
-.rank{
-font-size:26px;
-font-weight:bold;
-margin-bottom:10px;
-}
-
 .comment-actions{
 display:flex;
 gap:10px;
@@ -166,6 +160,103 @@ margin-top:15px;
 
 .comment-actions button{
 flex:1;
+}
+
+.top3-wrap{
+display:flex;
+justify-content:center;
+align-items:flex-end;
+gap:15px;
+margin-top:25px;
+margin-bottom:35px;
+flex-wrap:wrap;
+}
+
+.podium{
+width:120px;
+border-radius:25px;
+text-align:center;
+padding:15px;
+position:relative;
+box-shadow:0 4px 15px rgba(0,0,0,0.08);
+transition:0.3s;
+}
+
+.podium:hover{
+transform:translateY(-5px);
+}
+
+.first{
+background:#ffe082;
+height:240px;
+}
+
+.second{
+background:#eeeeee;
+height:190px;
+}
+
+.third{
+background:#ffccbc;
+height:170px;
+}
+
+.rank-avatar{
+width:80px;
+height:80px;
+border-radius:50%;
+object-fit:cover;
+margin-top:-50px;
+border:5px solid white;
+cursor:pointer;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.crown{
+position:absolute;
+top:-35px;
+right:35px;
+font-size:40px;
+}
+
+.rank-name{
+font-size:18px;
+font-weight:bold;
+margin-top:10px;
+}
+
+.rank-score{
+font-size:18px;
+margin-top:10px;
+font-weight:bold;
+}
+
+.rank-number{
+font-size:70px;
+font-weight:bold;
+margin-top:15px;
+opacity:0.25;
+}
+
+@media(max-width:768px){
+
+.top3-wrap{
+gap:10px;
+}
+
+.podium{
+width:100px;
+}
+
+.rank-avatar{
+width:65px;
+height:65px;
+}
+
+.rank-number{
+font-size:55px;
+}
+
 }
 
 </style>
@@ -232,30 +323,18 @@ Upload Your Image
 </div>
 
 <div id="galleryTab">
-
 <div id="gallery"></div>
-
 </div>
 
-<div
-id="ratingsTab"
-class="hidden">
-
+<div id="ratingsTab" class="hidden">
 <div id="overallRatings"></div>
-
 </div>
 
-<div
-id="leaderboardTab"
-class="hidden">
-
+<div id="leaderboardTab" class="hidden">
 <div id="leaderboard"></div>
-
 </div>
 
-<div
-id="uploadTab"
-class="hidden">
+<div id="uploadTab" class="hidden">
 
 <div class="card">
 
@@ -492,11 +571,9 @@ total/item.ratings.length;
 }
 
 foods.push({
-
 id,
 avg,
 item
-
 });
 
 });
@@ -524,8 +601,6 @@ src="${item.image}"
 loading="lazy"
 onclick="openImage('${item.image}')"
 >
-
-<div>
 
 <h2>${item.foodname}</h2>
 
@@ -581,8 +656,6 @@ Post
 <div
 id="comments-${id}"
 class="hidden">
-</div>
-
 </div>
 
 </div>
@@ -643,47 +716,120 @@ Overall Audience Rating
 
 `;
 
+if(index===0){
+
 leaderboard.innerHTML+=`
 
 <div class="card">
 
-<div class="rank">
-#${index+1}
+<h1 style="
+text-align:center;
+margin-bottom:25px;
+font-size:32px;
+">
+🏆 Top Food Leaderboard
+</h1>
+
+<div class="top3-wrap">
+
+${
+foods[1]
+? `
+<div class="podium second">
+
+<img
+class="rank-avatar"
+src="${foods[1].item.image}"
+onclick="openImage('${foods[1].item.image}')"
+>
+
+<div class="rank-name">
+${foods[1].item.foodname}
+</div>
+
+<div class="rank-score">
+⭐ ${foods[1].avg.toFixed(1)}
+</div>
+
+<div class="rank-number">
+2
+</div>
+
+</div>
+`
+:
+""
+}
+
+${
+foods[0]
+? `
+<div class="podium first">
+
+<div class="crown">
+👑
 </div>
 
 <img
-class="food-image"
-src="${item.image}"
-onclick="openImage('${item.image}')"
+class="rank-avatar"
+src="${foods[0].item.image}"
+onclick="openImage('${foods[0].item.image}')"
 >
 
-<h2>${item.foodname}</h2>
+<div class="rank-name">
+${foods[0].item.foodname}
+</div>
 
-<p><b>${item.restaurant}</b></p>
+<div class="rank-score">
+⭐ ${foods[0].avg.toFixed(1)}
+</div>
 
-<div class="gauge-wrap">
-
-<div class="gauge">
-
-<div
-class="gauge-fill"
-style="width:${avg*20}%">
+<div class="rank-number">
+1
 </div>
 
 </div>
+`
+:
+""
+}
 
-<div class="gauge-text">
+${
+foods[2]
+? `
+<div class="podium third">
 
-${avg.toFixed(1)}/5
-Top Audience Rating
+<img
+class="rank-avatar"
+src="${foods[2].item.image}"
+onclick="openImage('${foods[2].item.image}')"
+>
+
+<div class="rank-name">
+${foods[2].item.foodname}
+</div>
+
+<div class="rank-score">
+⭐ ${foods[2].avg.toFixed(1)}
+</div>
+
+<div class="rank-number">
+3
+</div>
 
 </div>
+`
+:
+""
+}
 
 </div>
 
 </div>
 
 `;
+
+}
 
 const commentsDiv=
 card.querySelector(
