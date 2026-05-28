@@ -158,15 +158,18 @@ margin-top:12px;
 }
 
 .star{
-font-size:34px;
+font-size:36px;
 cursor:pointer;
-color:#ccc;
+color:#d4d4d4;
 transition:0.2s;
+user-select:none;
 }
 
 .star.active{
-color:gold;
+color:#FFD700;
 transform:scale(1.12);
+text-shadow:
+0 0 10px rgba(255,215,0,0.7);
 }
 
 .comment{
@@ -413,7 +416,7 @@ Leaderboard
 <div id="overallRatings"></div>
 </div>
 
-<!-- UPLOAD -->
+<!-- USER UPLOAD -->
 
 <div id="uploadTab" class="hidden">
 
@@ -483,7 +486,6 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
-
 
 firebase.initializeApp(firebaseConfig);
 
@@ -612,10 +614,6 @@ document.getElementById("overallRatings");
 const leaderboard=
 document.getElementById("leaderboard");
 
-gallery.innerHTML="";
-overall.innerHTML="";
-leaderboard.innerHTML="";
-
 db.ref("foods")
 .on("value",(snapshot)=>{
 
@@ -694,33 +692,31 @@ onclick="openImage('${item.image}')"
 
 <h2>${item.foodname}</h2>
 
-<p>
-<b>${item.restaurant}</b>
-</p>
+<p><b>${item.restaurant}</b></p>
 
 <p>${item.details}</p>
 
-<div class="stars">
+<div class="stars" id="stars-${id}">
 
 <span class="star"
 onclick="rateFood('${id}',1,event)">
-☆</span>
+★</span>
 
 <span class="star"
 onclick="rateFood('${id}',2,event)">
-☆</span>
+★</span>
 
 <span class="star"
 onclick="rateFood('${id}',3,event)">
-☆</span>
+★</span>
 
 <span class="star"
 onclick="rateFood('${id}',4,event)">
-☆</span>
+★</span>
 
 <span class="star"
 onclick="rateFood('${id}',5,event)">
-☆</span>
+★</span>
 
 </div>
 
@@ -835,9 +831,7 @@ ${foods[1].item.foodname}
 ${foods[0] ? `
 <div class="podium first">
 
-<div class="crown">
-👑
-</div>
+<div class="crown">👑</div>
 
 <img
 class="rank-avatar"
@@ -898,25 +892,25 @@ ${foods[2].item.foodname}
 
 function rateFood(foodId,rating,event){
 
+const starsContainer =
+document.getElementById(
+"stars-"+foodId
+);
+
 const stars =
-event.target.parentElement
-.querySelectorAll(".star");
+starsContainer.querySelectorAll(".star");
 
-stars.forEach((s,index)=>{
+stars.forEach((star)=>{
 
-if(index < rating){
-
-s.classList.add("active");
-s.innerHTML="★";
-
-}else{
-
-s.classList.remove("active");
-s.innerHTML="☆";
-
-}
+star.classList.remove("active");
 
 });
+
+for(let i=0;i<rating;i++){
+
+stars[i].classList.add("active");
+
+}
 
 db.ref("foods/"+foodId+"/ratings")
 .once("value")
@@ -924,7 +918,8 @@ db.ref("foods/"+foodId+"/ratings")
 
 let ratings=snapshot.val() || [];
 
-ratings = ratings.filter(
+ratings =
+ratings.filter(
 (r)=>r.user!==currentUser
 );
 
@@ -953,6 +948,7 @@ toast.style.background="black";
 toast.style.color="white";
 toast.style.padding="12px 20px";
 toast.style.borderRadius="14px";
+toast.style.fontWeight="bold";
 toast.style.zIndex="9999";
 
 document.body.appendChild(toast);
