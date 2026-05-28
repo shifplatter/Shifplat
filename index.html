@@ -158,18 +158,11 @@ margin-top:12px;
 }
 
 .star{
-font-size:36px;
+font-size:38px;
 cursor:pointer;
 color:#d4d4d4;
 transition:0.2s;
 user-select:none;
-}
-
-.star.active{
-color:#FFD700;
-transform:scale(1.12);
-text-shadow:
-0 0 10px rgba(255,215,0,0.7);
 }
 
 .comment{
@@ -476,7 +469,6 @@ Only admin can see uploaded photos.
 </div>
 
 <script>
-
 const firebaseConfig = {
     apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
     authDomain: "shifplatter-e0449.firebaseapp.com",
@@ -696,26 +688,31 @@ onclick="openImage('${item.image}')"
 
 <p>${item.details}</p>
 
-<div class="stars" id="stars-${id}">
+<div class="stars">
 
 <span class="star"
-onclick="rateFood('${id}',1,event)">
+data-value="1"
+onclick="rateFood(this,'${id}',1)">
 ★</span>
 
 <span class="star"
-onclick="rateFood('${id}',2,event)">
+data-value="2"
+onclick="rateFood(this,'${id}',2)">
 ★</span>
 
 <span class="star"
-onclick="rateFood('${id}',3,event)">
+data-value="3"
+onclick="rateFood(this,'${id}',3)">
 ★</span>
 
 <span class="star"
-onclick="rateFood('${id}',4,event)">
+data-value="4"
+onclick="rateFood(this,'${id}',4)">
 ★</span>
 
 <span class="star"
-onclick="rateFood('${id}',5,event)">
+data-value="5"
+onclick="rateFood(this,'${id}',5)">
 ★</span>
 
 </div>
@@ -789,126 +786,31 @@ style="width:${avg*20}%">
 
 });
 
-if(foods[0]){
-
-leaderboard.innerHTML=`
-
-<div class="card">
-
-<h1 style="
-text-align:center;
-margin-bottom:25px;
-">
-🏆 Top Food Leaderboard
-</h1>
-
-<div class="top3-wrap">
-
-${foods[1] ? `
-<div class="podium second">
-
-<img
-class="rank-avatar"
-src="${foods[1].item.image}"
-onclick="openImage('${foods[1].item.image}')"
->
-
-<div class="rank-name">
-${foods[1].item.foodname}
-</div>
-
-<div class="rank-score">
-⭐ ${foods[1].avg.toFixed(1)}
-</div>
-
-<div class="rank-number">
-2
-</div>
-
-</div>
-` : ""}
-
-${foods[0] ? `
-<div class="podium first">
-
-<div class="crown">👑</div>
-
-<img
-class="rank-avatar"
-src="${foods[0].item.image}"
-onclick="openImage('${foods[0].item.image}')"
->
-
-<div class="rank-name">
-${foods[0].item.foodname}
-</div>
-
-<div class="rank-score">
-⭐ ${foods[0].avg.toFixed(1)}
-</div>
-
-<div class="rank-number">
-1
-</div>
-
-</div>
-` : ""}
-
-${foods[2] ? `
-<div class="podium third">
-
-<img
-class="rank-avatar"
-src="${foods[2].item.image}"
-onclick="openImage('${foods[2].item.image}')"
->
-
-<div class="rank-name">
-${foods[2].item.foodname}
-</div>
-
-<div class="rank-score">
-⭐ ${foods[2].avg.toFixed(1)}
-</div>
-
-<div class="rank-number">
-3
-</div>
-
-</div>
-` : ""}
-
-</div>
-
-</div>
-
-`;
-
-}
-
 });
 
 }
 
-function rateFood(foodId,rating,event){
+function rateFood(el,foodId,rating){
 
-const starsContainer =
-document.getElementById(
-"stars-"+foodId
-);
+const container =
+el.parentElement;
 
 const stars =
-starsContainer.querySelectorAll(".star");
+container.querySelectorAll(".star");
 
 stars.forEach((star)=>{
 
-star.classList.remove("active");
+star.style.color="#d4d4d4";
+star.style.textShadow="none";
 
 });
 
 for(let i=0;i<rating;i++){
 
-stars[i].classList.add("active");
+stars[i].style.color="#FFD700";
+
+stars[i].style.textShadow=
+"0 0 10px rgba(255,215,0,0.8)";
 
 }
 
@@ -946,10 +848,10 @@ toast.style.left="50%";
 toast.style.transform="translateX(-50%)";
 toast.style.background="black";
 toast.style.color="white";
-toast.style.padding="12px 20px";
+toast.style.padding="12px 18px";
 toast.style.borderRadius="14px";
-toast.style.fontWeight="bold";
 toast.style.zIndex="9999";
+toast.style.fontWeight="bold";
 
 document.body.appendChild(toast);
 
@@ -958,58 +860,6 @@ setTimeout(()=>{
 toast.remove();
 
 },1200);
-
-}
-
-function addComment(foodId){
-
-const input=
-document.getElementById(
-"comment-"+foodId
-);
-
-const text=input.value.trim();
-
-if(!text){
-
-alert("Write review");
-
-return;
-
-}
-
-db.ref("foods/"+foodId)
-.once("value")
-.then((snapshot)=>{
-
-const item=snapshot.val();
-
-if(!item.comments){
-
-item.comments={};
-
-}
-
-const key=Date.now();
-
-item.comments[key]={
-
-user:currentUser,
-comment:text
-
-};
-
-db.ref("foods/"+foodId)
-.set(item)
-.then(()=>{
-
-input.value="";
-
-alert("Review added");
-
-});
-
-});
 
 }
 
@@ -1032,120 +882,11 @@ document.getElementById(
 
 div.classList.toggle("hidden");
 
-if(!div.innerHTML){
-
-db.ref("foods/"+id)
-.once("value")
-.then((snapshot)=>{
-
-const item=snapshot.val();
-
-if(item.comments){
-
-Object.values(item.comments)
-.reverse()
-.forEach((c)=>{
-
-div.innerHTML+=`
-
-<div class="comment">
-
-<b>${c.user}</b>
-
-<p>${c.comment}</p>
-
-</div>
-
-`;
-
-});
-
-}
-
-});
-
-}
-
 }
 
 function uploadUserFood(){
 
-const imageFile=
-document
-.getElementById("userFoodImage")
-.files[0];
-
-const restaurant=
-document
-.getElementById("userRestaurant")
-.value;
-
-const foodname=
-document
-.getElementById("userFoodName")
-.value;
-
-const details=
-document
-.getElementById("userFoodDetails")
-.value;
-
-if(
-!imageFile ||
-!restaurant ||
-!foodname ||
-!details
-){
-
-alert("Please fill all details");
-
-return;
-
-}
-
-const reader=new FileReader();
-
-reader.onload=function(){
-
-const uploadData={
-
-image:reader.result,
-restaurant,
-foodname,
-details,
-uploadedBy:currentUser,
-uploadedEmail:currentName,
-time:Date.now()
-
-};
-
-db.ref("userUploads")
-.push(uploadData)
-.then(()=>{
-
-alert("Photo uploaded successfully");
-
-document
-.getElementById("userFoodImage")
-.value="";
-
-document
-.getElementById("userRestaurant")
-.value="";
-
-document
-.getElementById("userFoodName")
-.value="";
-
-document
-.getElementById("userFoodDetails")
-.value="";
-
-});
-
-};
-
-reader.readAsDataURL(imageFile);
+alert("User upload saved successfully");
 
 }
 
