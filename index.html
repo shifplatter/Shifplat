@@ -11,25 +11,35 @@
 
 <style>
 
+*{
+box-sizing:border-box;
+}
+
 body{
 margin:0;
 padding:0;
 font-family:Arial,sans-serif;
-background:#f4f4f4;
+background:#f5f5f5;
+color:#111;
 }
 
 .container{
 max-width:950px;
 margin:auto;
-padding:15px;
+padding:16px;
 }
 
 .card{
 background:white;
-border-radius:20px;
+border-radius:24px;
 padding:18px;
-margin-bottom:20px;
-box-shadow:0 4px 15px rgba(0,0,0,0.08);
+margin-bottom:22px;
+box-shadow:0 6px 25px rgba(0,0,0,0.08);
+transition:0.2s;
+}
+
+.card:hover{
+transform:translateY(-2px);
 }
 
 .logo-section{
@@ -38,20 +48,20 @@ margin-bottom:20px;
 }
 
 .logo{
-width:140px;
-height:140px;
+width:130px;
+height:130px;
 object-fit:contain;
-border-radius:25px;
+border-radius:24px;
 background:white;
 padding:10px;
-box-shadow:0 4px 20px rgba(0,0,0,0.12);
+box-shadow:0 6px 20px rgba(0,0,0,0.1);
 }
 
 .title{
-font-size:32px;
+font-size:34px;
 font-weight:bold;
-margin-top:10px;
-color:#123;
+margin-top:12px;
+color:#111;
 }
 
 .subtitle{
@@ -60,22 +70,35 @@ color:#666;
 margin-top:6px;
 }
 
-input,textarea{
+input,
+textarea{
 width:100%;
-padding:14px;
+padding:15px;
 margin-top:12px;
-border-radius:14px;
+border-radius:16px;
 border:1px solid #ddd;
-box-sizing:border-box;
 font-size:15px;
+outline:none;
+transition:0.2s;
+background:white;
+}
+
+input:focus,
+textarea:focus{
+border-color:black;
 }
 
 button{
 border:none;
-border-radius:14px;
+border-radius:16px;
 padding:14px;
 font-weight:bold;
 cursor:pointer;
+transition:0.2s;
+}
+
+button:hover{
+opacity:0.92;
 }
 
 .main-btn{
@@ -83,6 +106,7 @@ width:100%;
 background:black;
 color:white;
 margin-top:15px;
+font-size:15px;
 }
 
 .hidden{
@@ -95,20 +119,20 @@ align-items:center;
 gap:12px;
 background:white;
 padding:14px;
-border-radius:18px;
+border-radius:20px;
 margin-bottom:20px;
-box-shadow:0 2px 10px rgba(0,0,0,0.08);
+box-shadow:0 4px 15px rgba(0,0,0,0.08);
 }
 
 .top-logo{
-width:55px;
-height:55px;
+width:58px;
+height:58px;
 border-radius:14px;
 object-fit:contain;
 }
 
 .top-title{
-font-size:22px;
+font-size:23px;
 font-weight:bold;
 }
 
@@ -122,10 +146,11 @@ margin-bottom:20px;
 .tab-btn{
 flex:1;
 background:#e7e7e7;
-padding:12px;
-border-radius:12px;
+padding:13px;
+border-radius:14px;
 font-weight:bold;
 white-space:nowrap;
+font-size:14px;
 }
 
 .active-tab{
@@ -135,42 +160,56 @@ color:white;
 
 .food-image{
 width:100%;
-height:340px;
+height:360px;
 object-fit:cover;
-border-radius:18px;
+border-radius:20px;
 cursor:pointer;
+margin-bottom:14px;
+}
+
+.food-title{
+font-size:28px;
+font-weight:bold;
+margin-top:8px;
+}
+
+.food-sub{
+font-size:15px;
+color:#555;
+margin-top:6px;
+}
+
+.food-desc{
+margin-top:10px;
+font-size:15px;
+line-height:1.6;
+color:#333;
 }
 
 .stars{
 display:flex;
-gap:8px;
-margin-top:15px;
+gap:10px;
+margin-top:18px;
 }
 
 .star{
-font-size:42px;
-color:#d4d4d4;
+font-size:46px;
+color:#d7d7d7;
 cursor:pointer;
-transition:0.2s;
+transition:0.18s ease;
 user-select:none;
 }
 
-.comment-actions{
-display:flex;
-gap:10px;
-margin-top:15px;
+.star:hover{
+transform:scale(1.12);
 }
 
-.comment-actions button{
-flex:1;
-}
-
-.comment-item{
-background:#fafafa;
-padding:12px;
-border-radius:12px;
-margin-top:10px;
-border:1px solid #eee;
+.selected-star{
+color:#FFD700 !important;
+text-shadow:
+0 0 10px rgba(255,215,0,0.95),
+0 0 20px rgba(255,215,0,0.6);
+transform:scale(1.08);
 }
 
 .gauge{
@@ -179,7 +218,7 @@ height:18px;
 background:#ddd;
 border-radius:30px;
 overflow:hidden;
-margin-top:12px;
+margin-top:14px;
 }
 
 .gauge-fill{
@@ -189,6 +228,7 @@ background:linear-gradient(
 #00c853,
 #69f0ae
 );
+border-radius:30px;
 }
 
 .toast{
@@ -199,10 +239,25 @@ transform:translateX(-50%);
 background:black;
 color:white;
 padding:14px 22px;
-border-radius:16px;
+border-radius:18px;
 font-weight:bold;
 z-index:9999;
-box-shadow:0 4px 15px rgba(0,0,0,0.2);
+box-shadow:0 6px 18px rgba(0,0,0,0.25);
+animation:fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn{
+
+from{
+opacity:0;
+transform:translateX(-50%) translateY(20px);
+}
+
+to{
+opacity:1;
+transform:translateX(-50%) translateY(0);
+}
+
 }
 
 @media(max-width:768px){
@@ -214,6 +269,14 @@ height:250px;
 .logo{
 width:110px;
 height:110px;
+}
+
+.food-title{
+font-size:23px;
+}
+
+.star{
+font-size:40px;
 }
 
 }
@@ -238,7 +301,7 @@ ShifPlatter
 </div>
 
 <div class="subtitle">
-Rate • Review • Discover Amazing Food
+Rate • Discover • Share Amazing Food
 </div>
 
 </div>
@@ -282,7 +345,7 @@ ShifPlatter
 </div>
 
 <div style="font-size:13px;color:#666;">
-Food Community Ratings
+Community Food Ratings
 </div>
 
 </div>
@@ -293,7 +356,7 @@ style="
 margin-left:auto;
 background:black;
 color:white;
-padding:10px 16px;
+padding:11px 18px;
 ">
 Logout
 </button>
@@ -336,7 +399,7 @@ Upload Your Image
 <div id="overallRatings"></div>
 </div>
 
-<!-- USER UPLOAD -->
+<!-- UPLOAD -->
 
 <div id="uploadTab" class="hidden">
 
@@ -400,6 +463,7 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
+
 
 firebase.initializeApp(firebaseConfig);
 
@@ -584,11 +648,17 @@ class="food-image"
 onclick="openImage('${item.image}')"
 >
 
-<h2>${item.foodname}</h2>
+<div class="food-title">
+${item.foodname}
+</div>
 
-<p><b>${item.restaurant}</b></p>
+<div class="food-sub">
+${item.restaurant}
+</div>
 
-<p>${item.details}</p>
+<div class="food-desc">
+${item.details}
+</div>
 
 <div class="stars">
 
@@ -601,20 +671,14 @@ existingRating &&
 num <= existingRating.rating
 ){
 
-selected=`
-style="
-color:#FFD700;
-text-shadow:
-0 0 14px rgba(255,215,0,0.95)
-"
-`;
+selected="selected-star";
 
 }
 
 return `
 
-<span class="star"
-${selected}
+<span
+class="star ${selected}"
 onclick="rateFood(this,'${id}',${num})">
 ★
 </span>
@@ -625,44 +689,6 @@ onclick="rateFood(this,'${id}',${num})">
 
 </div>
 
-<div class="comment-actions">
-
-<button
-class="main-btn"
-onclick="toggleCommentBox('${id}')">
-Comment
-</button>
-
-<button
-class="main-btn"
-onclick="toggleComments('${id}')">
-View Comments
-</button>
-
-</div>
-
-<div
-id="commentBox-${id}"
-class="hidden">
-
-<textarea
-id="comment-${id}"
-placeholder="Write your review">
-</textarea>
-
-<button
-class="main-btn"
-onclick="addComment('${id}')">
-Post Comment
-</button>
-
-</div>
-
-<div
-id="comments-${id}"
-class="hidden">
-</div>
-
 </div>
 
 `;
@@ -671,7 +697,7 @@ overall.innerHTML += `
 
 <div class="card">
 
-<h3>${item.foodname}</h3>
+<h2>${item.foodname}</h2>
 
 <p>${item.restaurant}</p>
 
@@ -684,7 +710,10 @@ style="width:${avg*20}%">
 
 </div>
 
-<p>
+<p style="
+margin-top:10px;
+font-weight:bold;
+">
 ⭐ ${avg.toFixed(1)}/5
 </p>
 
@@ -706,24 +735,27 @@ el.parentElement;
 const stars =
 starsContainer.querySelectorAll(".star");
 
+/* RESET */
+
 stars.forEach((star,index)=>{
 
 if(index < rating){
 
-star.style.color="#FFD700";
-
-star.style.textShadow=
-"0 0 14px rgba(255,215,0,0.95)";
+star.classList.add(
+"selected-star"
+);
 
 }else{
 
-star.style.color="#d4d4d4";
-
-star.style.textShadow="none";
+star.classList.remove(
+"selected-star"
+);
 
 }
 
 });
+
+/* SAVE */
 
 db.ref("foods/"+foodId+"/ratings")
 .once("value")
@@ -752,155 +784,8 @@ return db.ref(
 .then(()=>{
 
 showToast(
-"⭐ Your ratings are successfully saved"
+"⭐ Your rating has been saved"
 );
-
-});
-
-}
-
-function toggleCommentBox(id){
-
-document
-.getElementById(
-"commentBox-"+id
-)
-.classList.toggle("hidden");
-
-}
-
-function addComment(foodId){
-
-const input =
-document.getElementById(
-"comment-"+foodId
-);
-
-const text =
-input.value.trim();
-
-if(!text){
-
-showToast("Write comment first");
-
-return;
-
-}
-
-db.ref(
-"foods/"+foodId+"/comments"
-)
-.once("value")
-.then((snapshot)=>{
-
-let comments =
-snapshot.val() || [];
-
-comments.push({
-
-user:currentUser,
-name:currentName,
-comment:text,
-time:Date.now()
-
-});
-
-return db.ref(
-"foods/"+foodId+"/comments"
-).set(comments);
-
-})
-.then(()=>{
-
-input.value="";
-
-toggleComments(foodId,true);
-
-showToast(
-"✅ Comment posted"
-);
-
-});
-
-}
-
-function toggleComments(id,forceOpen=false){
-
-const commentsDiv =
-document.getElementById(
-"comments-"+id
-);
-
-if(
-!forceOpen &&
-!commentsDiv.classList.contains("hidden")
-){
-
-commentsDiv.classList.add("hidden");
-
-return;
-
-}
-
-commentsDiv.classList.remove("hidden");
-
-db.ref(
-"foods/"+id+"/comments"
-)
-.once("value")
-.then((snapshot)=>{
-
-const comments =
-snapshot.val() || [];
-
-commentsDiv.innerHTML="";
-
-if(comments.length===0){
-
-commentsDiv.innerHTML=`
-
-<div class="comment-item">
-No comments yet
-</div>
-
-`;
-
-return;
-
-}
-
-comments.reverse();
-
-comments.forEach((c)=>{
-
-commentsDiv.innerHTML += `
-
-<div class="comment-item">
-
-<div style="
-font-weight:bold;
-margin-bottom:6px;
-color:#111;
-">
-
-@${c.user}
-
-</div>
-
-<div style="
-font-size:15px;
-line-height:1.5;
-">
-
-${c.comment}
-
-</div>
-
-</div>
-
-`;
-
-});
 
 });
 
