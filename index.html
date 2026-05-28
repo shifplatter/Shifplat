@@ -28,7 +28,7 @@ padding:15px;
 background:white;
 padding:15px;
 border-radius:18px;
-margin-bottom:15px;
+margin-bottom:18px;
 box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 
@@ -53,6 +53,7 @@ width:100%;
 background:black;
 color:white;
 margin-top:15px;
+font-weight:bold;
 }
 
 .tabs{
@@ -80,16 +81,16 @@ display:none;
 
 .food-card{
 display:flex;
-gap:15px;
+flex-direction:column;
 }
 
 .food-image{
-width:90px;
-height:90px;
+width:100%;
+height:260px;
 object-fit:cover;
-border-radius:14px;
+border-radius:18px;
 cursor:pointer;
-flex-shrink:0;
+margin-bottom:12px;
 }
 
 .stars{
@@ -99,9 +100,10 @@ margin-top:10px;
 }
 
 .star{
-font-size:28px;
+font-size:30px;
 cursor:pointer;
 color:#ccc;
+transition:0.2s;
 }
 
 .star.active{
@@ -355,8 +357,6 @@ loadFoods();
 
 function showTab(tabId,btn){
 
-requestAnimationFrame(()=>{
-
 document
 .querySelectorAll(
 "#galleryTab,#ratingsTab,#uploadTab"
@@ -380,8 +380,6 @@ b.classList.remove("active-tab");
 });
 
 btn.classList.add("active-tab");
-
-});
 
 }
 
@@ -462,7 +460,7 @@ onclick="window.open('${item.image}')"
 
 <div>
 
-<h3>${item.foodname}</h3>
+<h2>${item.foodname}</h2>
 
 <p>
 <b>${item.restaurant}</b>
