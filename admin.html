@@ -3,38 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShifPlatter Admin Panel</title>
+<title>ShifPlatter Admin - User Photos</title>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
 body{
-  background: linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)), url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop");
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+  background: linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),
+  url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop");
   background-size: cover;
   background-position: center;
-  min-height: 100vh;
-  color: white;
+  color:white;
+  min-height:100vh;
 }
-.container{width:100%;max-width:1200px;margin:auto;padding:16px;}
-.login-card{padding:35px 22px;border-radius:32px;margin-top:35px;box-shadow:0 8px 30px rgba(0,0,0,0.3);text-align:center;background:rgba(255,255,255,0.12);backdrop-filter:blur(18px);}
-.logo{width:135px;height:135px;object-fit:contain;border-radius:28px;display:block;margin:auto;background:white;padding:10px;}
-.main-title{font-size:44px;font-weight:900;margin-top:18px;letter-spacing:1px;color:#FFD700;}
-.sub-title{font-size:15px;margin-top:8px;color:#f1f1f1;}
-input,textarea{width:100%;padding:16px;border-radius:18px;border:none;margin-top:14px;font-size:15px;outline:none;background:rgba(255,255,255,0.92);color:#111;}
-textarea{min-height:120px;resize:none;}
-.main-btn{width:100%;padding:16px;border:none;border-radius:18px;background:#FFD700;color:black;font-size:16px;font-weight:900;margin-top:18px;cursor:pointer;transition:0.2s;}
-.main-btn:hover{transform:scale(1.02);}
-.tabs{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px;}
-.tab-btn{flex:1;padding:15px;border:none;border-radius:18px;font-size:15px;font-weight:bold;cursor:pointer;background:rgba(255,255,255,0.2);color:white;backdrop-filter:blur(10px);}
-.active-tab{background:#FFD700;color:black;}
-.card{padding:20px;border-radius:30px;margin-bottom:22px;box-shadow:0 8px 25px rgba(0,0,0,0.22);}
-.food-image{width:100%;height:300px;object-fit:cover;border-radius:24px;cursor:pointer;}
-.food-title{font-size:28px;font-weight:900;margin-top:16px;}
-.food-sub{font-size:15px;margin-top:6px;color:#ddd;}
-.food-desc{margin-top:12px;font-size:14px;line-height:1.7;color:#f1f1f1;}
-.download-btn{padding:12px 16px;border-radius:16px;background:#FFD700;color:black;border:none;font-weight:900;cursor:pointer;margin-top:12px;}
+.container{
+  width:100%;
+  max-width:1200px;
+  margin:auto;
+  padding:16px;
+}
+.topbar{
+  padding:15px 18px;
+  border-radius:24px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:18px;
+  background: rgba(0,0,0,0.35);
+}
+.top-title{
+  font-size:26px;
+  font-weight:900;
+}
+.card{
+  padding:20px;
+  border-radius:30px;
+  margin-bottom:22px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.22);
+  background: rgba(255,255,255,0.12);
+  backdrop-filter:blur(15px);
+}
+.food-image{
+  width:100%;
+  height:300px;
+  object-fit:cover;
+  border-radius:24px;
+  cursor:pointer;
+}
+.food-title{
+  font-size:28px;
+  font-weight:900;
+  margin-top:16px;
+}
+.food-sub{
+  font-size:15px;
+  margin-top:6px;
+  color:#ddd;
+}
+.food-desc{
+  margin-top:12px;
+  font-size:14px;
+  line-height:1.7;
+  color:#f1f1f1;
+}
+.download-btn{
+  padding:12px 16px;
+  border-radius:16px;
+  background:#FFD700;
+  color:black;
+  border:none;
+  font-weight:900;
+  cursor:pointer;
+  margin-top:12px;
+}
 @media(max-width:768px){
   .food-image{height:200px;}
   .food-title{font-size:22px;}
@@ -44,29 +90,12 @@ textarea{min-height:120px;resize:none;}
 <body>
 
 <div class="container">
-
-<!-- LOGIN -->
-<div id="loginPage" class="login-card glass">
-<img src="logo.png" class="logo">
-<div class="main-title">Admin Panel Management</div>
-<div class="sub-title">Login to manage content</div>
-<input type="text" id="adminName" placeholder="Admin Name">
-<input type="password" id="adminPass" placeholder="Password">
-<button class="main-btn" onclick="loginAdmin()">Login</button>
+<div class="topbar">
+<div class="top-title">ShifPlatter Admin - User Photos</div>
 </div>
 
-<!-- MAIN APP -->
-<div id="mainApp" class="hidden">
+<div id="userPhotosContainer"></div>
 
-<div class="tabs">
-<button class="tab-btn active-tab" onclick="showTab('galleryTab',this)">Gallery</button>
-<button class="tab-btn" onclick="showTab('userPhotosTab',this)">User Photos</button>
-</div>
-
-<div id="galleryTab" class="tab-content active"></div>
-<div id="userPhotosTab" class="tab-content"></div>
-
-</div>
 </div>
 
 <script>
@@ -80,61 +109,30 @@ const firebaseConfig = {
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
 firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
+const db = firebase.database();
 
-function loginAdmin(){
-  const name=document.getElementById('adminName').value.trim();
-  const pass=document.getElementById('adminPass').value.trim();
-  if(!name || !pass){alert("Enter admin credentials"); return;}
-  document.getElementById('loginPage').classList.add('hidden');
-  document.getElementById('mainApp').classList.remove('hidden');
-  loadAdminData();
-}
-
-function showTab(tabId,btn){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.getElementById(tabId).classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active-tab'));
-  btn.classList.add('active-tab');
-}
-
-function loadAdminData(){
-  const gallery = document.getElementById('galleryTab');
-  const userPhotos = document.getElementById('userPhotosTab');
-
-  // Gallery - approved foods
-  db.ref('foods').on('value',snap=>{
-    const data = snap.val() || {};
-    gallery.innerHTML = '';
+function loadUserPhotos(){
+  const container = document.getElementById('userPhotosContainer');
+  db.ref('userUploads').on('value', snapshot=>{
+    const data = snapshot.val() || {};
+    container.innerHTML = '';
     Object.keys(data).reverse().forEach(id=>{
       const item = data[id];
-      gallery.innerHTML+=`
-      <div class="card">
-        <img src="${item.image}" class="food-image" onclick="window.open('${item.image}')">
-        <div class="food-title">${item.foodname}</div>
-        <div class="food-sub">${item.restaurant}</div>
-        <div class="food-desc">${item.details}</div>
-      </div>`;
-    });
-  });
-
-  // User Photos - uploaded from users
-  db.ref('userUploads').on('value',snap=>{
-    const data = snap.val() || {};
-    userPhotos.innerHTML = '';
-    Object.keys(data).reverse().forEach(id=>{
-      const item = data[id];
-      userPhotos.innerHTML+=`
-      <div class="card">
-        <img src="${item.image}" class="food-image" onclick="window.open('${item.image}')">
-        <div class="food-title">${item.foodname}</div>
-        <div class="food-sub">${item.restaurant}</div>
-        <div class="food-desc">Uploaded by: ${item.uploadedName} (${item.uploadedBy})</div>
-        <a href="${item.image}" download="food-image.jpg"><button class="download-btn">Download HD</button></a>
-      </div>`;
+      container.innerHTML += `
+        <div class="card">
+          <img src="${item.image}" class="food-image" onclick="window.open('${item.image}')">
+          <div class="food-title">${item.foodname}</div>
+          <div class="food-sub">${item.restaurant}</div>
+          <div class="food-desc">Uploaded by: ${item.uploadedName} (${item.uploadedBy})</div>
+          <a href="${item.image}" download="food-image.jpg"><button class="download-btn">Download HD</button></a>
+        </div>
+      `;
     });
   });
 }
+
+// Load photos on page load
+loadUserPhotos();
 </script>
 
 </body>
