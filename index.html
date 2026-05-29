@@ -7,7 +7,6 @@
 <title>ShifPlatter</title>
 
 <!-- FIREBASE -->
-
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
@@ -23,42 +22,44 @@ font-family:Arial,sans-serif;
 body{
 background:#f5f5f5;
 color:#111;
+overflow-x:hidden;
 }
 
 .container{
+width:100%;
 max-width:1200px;
 margin:auto;
-padding:20px;
+padding:16px;
 }
 
 /* LOGIN */
 
 .login-card{
 background:white;
-padding:40px 25px;
-border-radius:35px;
-margin-top:40px;
-box-shadow:0 8px 30px rgba(0,0,0,0.08);
+padding:35px 22px;
+border-radius:28px;
+margin-top:25px;
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
 text-align:center;
 }
 
 .logo{
-width:180px;
-height:180px;
+width:140px;
+height:140px;
 object-fit:contain;
-border-radius:30px;
+border-radius:24px;
 margin:auto;
 display:block;
 }
 
 .main-title{
-font-size:52px;
+font-size:42px;
 font-weight:900;
-margin-top:15px;
+margin-top:12px;
 }
 
 .sub-title{
-font-size:16px;
+font-size:15px;
 color:#666;
 margin-top:8px;
 }
@@ -66,25 +67,26 @@ margin-top:8px;
 input,
 textarea{
 width:100%;
-padding:16px;
-border-radius:18px;
+padding:15px;
+border-radius:16px;
 border:1px solid #ddd;
-margin-top:15px;
-font-size:16px;
+margin-top:14px;
+font-size:15px;
 outline:none;
 }
 
 .main-btn{
 width:100%;
-padding:16px;
+padding:15px;
 background:black;
 color:white;
 border:none;
-border-radius:18px;
-font-size:17px;
+border-radius:16px;
+font-size:16px;
 font-weight:bold;
-margin-top:18px;
+margin-top:16px;
 cursor:pointer;
+transition:0.2s;
 }
 
 .main-btn:hover{
@@ -99,24 +101,25 @@ display:none;
 
 .topbar{
 background:white;
-padding:15px 20px;
-border-radius:24px;
+padding:14px 16px;
+border-radius:22px;
 display:flex;
 align-items:center;
-gap:15px;
-margin-bottom:20px;
-box-shadow:0 6px 20px rgba(0,0,0,0.08);
+gap:12px;
+margin-bottom:18px;
+box-shadow:0 5px 18px rgba(0,0,0,0.08);
+flex-wrap:wrap;
 }
 
 .top-logo{
-width:70px;
-height:70px;
-border-radius:18px;
+width:58px;
+height:58px;
+border-radius:16px;
 object-fit:contain;
 }
 
 .top-title{
-font-size:30px;
+font-size:24px;
 font-weight:900;
 }
 
@@ -124,20 +127,22 @@ font-weight:900;
 
 .tabs{
 display:flex;
-gap:15px;
+gap:12px;
 flex-wrap:wrap;
-margin-bottom:25px;
+margin-bottom:22px;
 }
 
 .tab-btn{
 flex:1;
-padding:18px;
+min-width:140px;
+padding:15px;
 border:none;
-border-radius:22px;
+border-radius:18px;
 background:#ececec;
-font-size:20px;
+font-size:16px;
 font-weight:bold;
 cursor:pointer;
+transition:0.2s;
 }
 
 .active-tab{
@@ -149,38 +154,38 @@ color:white;
 
 .card{
 background:white;
-padding:25px;
-border-radius:35px;
-margin-bottom:25px;
-box-shadow:0 8px 25px rgba(0,0,0,0.08);
+padding:20px;
+border-radius:28px;
+margin-bottom:20px;
+box-shadow:0 6px 22px rgba(0,0,0,0.08);
 }
 
 /* FOOD */
 
 .food-image{
 width:100%;
-height:450px;
+height:360px;
 object-fit:cover;
-border-radius:28px;
+border-radius:22px;
 cursor:pointer;
 }
 
 .food-title{
-font-size:38px;
+font-size:30px;
 font-weight:900;
-margin-top:18px;
+margin-top:16px;
 }
 
 .food-sub{
-font-size:18px;
+font-size:16px;
 color:#555;
 margin-top:6px;
 }
 
 .food-desc{
-margin-top:12px;
-font-size:15px;
-line-height:1.7;
+margin-top:10px;
+font-size:14px;
+line-height:1.6;
 color:#444;
 }
 
@@ -188,12 +193,13 @@ color:#444;
 
 .stars{
 display:flex;
-gap:10px;
-margin-top:18px;
+gap:8px;
+margin-top:16px;
+flex-wrap:wrap;
 }
 
 .star{
-font-size:55px;
+font-size:52px;
 cursor:pointer;
 color:#d8d8d8;
 transition:0.2s;
@@ -204,23 +210,15 @@ user-select:none;
 transform:scale(1.1);
 }
 
-.selected-star{
-color:#FFD700 !important;
-text-shadow:
-0 0 12px rgba(255,215,0,0.9),
-0 0 22px rgba(255,215,0,0.6);
-transform:scale(1.08);
-}
-
 /* TRACKER */
 
 .gauge{
 width:100%;
-height:20px;
+height:18px;
 background:#ddd;
-border-radius:30px;
+border-radius:25px;
 overflow:hidden;
-margin-top:15px;
+margin-top:14px;
 }
 
 .gauge-fill{
@@ -235,157 +233,227 @@ background:linear-gradient(
 /* LEADERBOARD */
 
 .leaderboard-card{
-padding:50px 20px;
+padding:40px 18px;
 text-align:center;
 overflow:hidden;
 }
 
 .leaderboard-title{
-font-size:60px;
+font-size:48px;
 font-weight:900;
-margin-bottom:110px;
+margin-bottom:90px;
 }
 
 .leaderboard-container{
 display:flex;
 justify-content:center;
 align-items:flex-end;
-gap:35px;
+gap:24px;
 flex-wrap:wrap;
-padding-top:40px;
+padding-top:30px;
 }
 
 .leaderboard-box{
-width:280px;
-border-radius:40px;
-padding:25px 20px;
+width:260px;
+border-radius:34px;
+padding:22px 18px;
 position:relative;
 text-align:center;
-box-shadow:0 12px 35px rgba(0,0,0,0.08);
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
 .first-place{
 background:#f8de78;
-height:600px;
+height:520px;
 }
 
 .second-place{
 background:#ededed;
-height:480px;
+height:430px;
 }
 
 .third-place{
 background:#f5c8ba;
-height:430px;
+height:390px;
 }
 
 .rank-image{
-width:180px;
-height:180px;
+width:150px;
+height:150px;
 border-radius:50%;
 object-fit:cover;
-border:10px solid white;
-margin-top:-120px;
-box-shadow:0 8px 25px rgba(0,0,0,0.15);
+border:8px solid white;
+margin-top:-95px;
+box-shadow:0 8px 22px rgba(0,0,0,0.14);
 }
 
 .crown{
 position:absolute;
-top:-70px;
+top:-58px;
 left:50%;
 transform:translateX(-50%);
-font-size:100px;
+font-size:82px;
 }
 
 .rank-food{
-font-size:34px;
+font-size:28px;
 font-weight:900;
-margin-top:25px;
+margin-top:18px;
 }
 
 .rank-rating{
-font-size:30px;
+font-size:24px;
 font-weight:bold;
-margin-top:15px;
+margin-top:12px;
 }
 
 .rank-number{
 position:absolute;
-bottom:5px;
+bottom:0;
 left:50%;
 transform:translateX(-50%);
-font-size:170px;
+font-size:140px;
 font-weight:900;
-opacity:0.15;
+opacity:0.12;
 }
 
 /* TOAST */
 
 .toast{
 position:fixed;
-bottom:25px;
+bottom:20px;
 left:50%;
 transform:translateX(-50%);
 background:black;
 color:white;
-padding:14px 24px;
-border-radius:18px;
+padding:12px 22px;
+border-radius:16px;
 font-weight:bold;
 z-index:9999;
+font-size:14px;
 }
 
-/* MOBILE */
+/* TABLET */
 
-@media(max-width:768px){
+@media(max-width:992px){
 
 .food-image{
-height:250px;
-}
-
-.main-title{
-font-size:38px;
-}
-
-.food-title{
-font-size:28px;
-}
-
-.star{
-font-size:42px;
+height:300px;
 }
 
 .leaderboard-title{
-font-size:38px;
-margin-bottom:80px;
+font-size:40px;
 }
 
 .leaderboard-box{
-width:100%;
-height:auto !important;
-padding-bottom:120px;
+width:220px;
 }
 
 .rank-image{
 width:130px;
 height:130px;
-margin-top:-80px;
 }
 
 .rank-food{
-font-size:26px;
-}
-
-.rank-rating{
-font-size:22px;
+font-size:24px;
 }
 
 .rank-number{
 font-size:110px;
 }
 
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.container{
+padding:12px;
+}
+
+.logo{
+width:110px;
+height:110px;
+}
+
+.main-title{
+font-size:34px;
+}
+
+.top-title{
+font-size:20px;
+}
+
+.tab-btn{
+font-size:14px;
+padding:13px;
+min-width:120px;
+}
+
+.card{
+padding:16px;
+border-radius:24px;
+}
+
+.food-image{
+height:220px;
+border-radius:18px;
+}
+
+.food-title{
+font-size:24px;
+}
+
+.food-sub{
+font-size:14px;
+}
+
+.food-desc{
+font-size:13px;
+}
+
+.star{
+font-size:40px;
+}
+
+.leaderboard-title{
+font-size:32px;
+margin-bottom:70px;
+}
+
+.leaderboard-container{
+gap:18px;
+}
+
+.leaderboard-box{
+width:100%;
+max-width:320px;
+height:auto !important;
+padding-bottom:95px;
+}
+
+.rank-image{
+width:110px;
+height:110px;
+margin-top:-70px;
+}
+
+.rank-food{
+font-size:22px;
+}
+
+.rank-rating{
+font-size:20px;
+}
+
+.rank-number{
+font-size:90px;
+}
+
 .crown{
-font-size:70px;
-top:-45px;
+font-size:64px;
+top:-42px;
 }
 
 }
@@ -489,7 +557,7 @@ Overall Ratings
 <button
 class="tab-btn"
 onclick="showTab('uploadTab',this)">
-Upload Your Image
+Upload Food
 </button>
 
 <button
@@ -518,7 +586,7 @@ Leaderboard
 
 <div class="card">
 
-<h2>Upload Food Photo</h2>
+<h2>Upload Food</h2>
 
 <input
 type="file"
@@ -580,16 +648,16 @@ class="leaderboard-container">
 <script>
 
 /* FIREBASE CONFIG */
-
 const firebaseConfig = {
-  apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
-  authDomain: "shifplatter-e0449.firebaseapp.com",
-  databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "shifplatter-e0449",
-  storageBucket: "shifplatter-e0449.firebasestorage.app",
-  messagingSenderId: "873786528833",
-  appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
-};
+    apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
+    authDomain: "shifplatter-e0449.firebaseapp.com",
+    databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "shifplatter-e0449",
+    storageBucket: "shifplatter-e0449.firebasestorage.app",
+    messagingSenderId: "873786528833",
+    appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
+  };
+
 
 firebase.initializeApp(firebaseConfig);
 
@@ -645,11 +713,9 @@ location.reload();
 
 function showTab(tabId,btn){
 
-document
-.querySelectorAll(
+document.querySelectorAll(
 "#galleryTab,#ratingsTab,#uploadTab,#leaderboardTab"
-)
-.forEach((tab)=>{
+).forEach((tab)=>{
 
 tab.classList.add("hidden");
 
@@ -659,8 +725,7 @@ document
 .getElementById(tabId)
 .classList.remove("hidden");
 
-document
-.querySelectorAll(".tab-btn")
+document.querySelectorAll(".tab-btn")
 .forEach((b)=>{
 
 b.classList.remove("active-tab");
@@ -687,7 +752,7 @@ db.ref("foods")
 gallery.innerHTML="";
 ratings.innerHTML="";
 
-const data = snapshot.val();
+const data=snapshot.val();
 
 if(!data){
 return;
@@ -697,7 +762,7 @@ loadLeaderboard(data);
 
 Object.keys(data).forEach((id)=>{
 
-const item = data[id];
+const item=data[id];
 
 if(!item.ratings){
 
@@ -717,7 +782,7 @@ let avg=0;
 
 if(item.ratings.length>0){
 
-avg = total/item.ratings.length;
+avg=total/item.ratings.length;
 
 }
 
@@ -749,7 +814,6 @@ ${[1,2,3,4,5].map(num=>`
 
 <span
 class="star"
-data-rating="${num}"
 onclick="rateFood(this,'${id}',${num})">
 ★
 </span>
@@ -797,7 +861,7 @@ font-size:18px;
 
 }
 
-/* RATE */
+/* RATE FOOD */
 
 function rateFood(el,foodId,rating){
 
@@ -811,30 +875,25 @@ starsContainer.querySelectorAll(".star");
 
 stars.forEach((star)=>{
 
-star.classList.remove(
-"selected-star"
-);
+star.style.color="#d8d8d8";
+star.style.textShadow="none";
+star.style.transform="scale(1)";
 
 });
 
-/* FILL */
+/* FILL YELLOW */
 
-stars.forEach((star)=>{
+for(let i=0;i<rating;i++){
 
-const value =
-Number(
-star.getAttribute("data-rating")
-);
+stars[i].style.color="#FFD700";
 
-if(value <= rating){
+stars[i].style.textShadow=
+"0 0 12px rgba(255,215,0,0.9)";
 
-star.classList.add(
-"selected-star"
-);
+stars[i].style.transform=
+"scale(1.08)";
 
 }
-
-});
 
 /* SAVE */
 
@@ -868,28 +927,24 @@ showToast(
 
 }
 
-/* UPLOAD */
+/* UPLOAD FOOD */
 
 function uploadFood(){
 
 const file =
-document
-.getElementById("foodImage")
+document.getElementById("foodImage")
 .files[0];
 
 const restaurant =
-document
-.getElementById("restaurant")
+document.getElementById("restaurant")
 .value;
 
 const foodname =
-document
-.getElementById("foodname")
+document.getElementById("foodname")
 .value;
 
 const details =
-document
-.getElementById("details")
+document.getElementById("details")
 .value;
 
 if(!file){
@@ -900,8 +955,7 @@ return;
 
 }
 
-const reader =
-new FileReader();
+const reader = new FileReader();
 
 reader.onload=function(e){
 
@@ -918,9 +972,7 @@ ratings:[]
 db.ref("foods")
 .push(data);
 
-showToast(
-"✅ Food Uploaded"
-);
+showToast("✅ Food Uploaded");
 
 };
 
@@ -962,7 +1014,7 @@ let avg=0;
 if(item.ratings.length>0){
 
 avg =
-total / item.ratings.length;
+total/item.ratings.length;
 
 }
 
@@ -978,30 +1030,24 @@ rating:avg
 
 foods.sort((a,b)=>b.rating-a.rating);
 
-const top3 = foods.slice(0,3);
+const top3=foods.slice(0,3);
 
-const order = [
-
+const order=[
 top3[1],
 top3[0],
 top3[2]
-
 ];
 
-const positions = [
-
+const positions=[
 "second-place",
 "first-place",
 "third-place"
-
 ];
 
-const rankNumbers = [
-
+const rankNumbers=[
 2,
 1,
 3
-
 ];
 
 order.forEach((food,index)=>{
@@ -1064,7 +1110,7 @@ toast.remove();
 
 }
 
-/* IMAGE VIEW */
+/* OPEN IMAGE */
 
 function openImage(src){
 
@@ -1092,6 +1138,7 @@ height:100vh;
 img{
 max-width:100%;
 max-height:100%;
+object-fit:contain;
 }
 
 </style>
