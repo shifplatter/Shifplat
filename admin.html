@@ -15,24 +15,11 @@ body{
   url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop");
   background-size:cover;
   background-position:center;
-  background-attachment:fixed;
   min-height:100vh;
   color:white;
 }
-.glass{
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,0.2);
-}
 .container{width:100%;max-width:1200px;margin:auto;padding:16px;}
-.login-card{
-  padding:35px 22px;
-  border-radius:32px;
-  margin-top:35px;
-  box-shadow:0 8px 30px rgba(0,0,0,0.3);
-  text-align:center;
-}
+.login-card{padding:35px 22px;border-radius:32px;margin-top:35px;box-shadow:0 8px 30px rgba(0,0,0,0.3);text-align:center;background:rgba(255,255,255,0.12);backdrop-filter:blur(18px);}
 .logo{width:135px;height:135px;object-fit:contain;border-radius:28px;display:block;margin:auto;background:white;padding:10px;}
 .main-title{font-size:44px;font-weight:900;margin-top:18px;letter-spacing:1px;color:#FFD700;}
 .sub-title{font-size:15px;margin-top:8px;color:#f1f1f1;}
@@ -66,7 +53,7 @@ textarea{min-height:120px;resize:none;}
 <div id="loginPage" class="login-card glass">
 <img src="logo.png" class="logo">
 <div class="main-title">Admin Panel Management</div>
-<div class="sub-title">Login to manage your platform</div>
+<div class="sub-title">Login to manage content</div>
 <input type="text" id="adminName" placeholder="Admin Name">
 <input type="password" id="adminPass" placeholder="Password">
 <button class="main-btn" onclick="loginAdmin()">Login</button>
@@ -104,8 +91,8 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
 function loginAdmin(){
-  const name = document.getElementById('adminName').value.trim();
-  const pass = document.getElementById('adminPass').value.trim();
+  const name=document.getElementById('adminName').value.trim();
+  const pass=document.getElementById('adminPass').value.trim();
   if(!name || !pass){alert("Enter admin credentials"); return;}
   document.getElementById('loginPage').classList.add('hidden');
   document.getElementById('mainApp').classList.remove('hidden');
@@ -119,23 +106,24 @@ function showTab(tabId,btn){
   btn.classList.add('active-tab');
 }
 
-// Load admin data
 function loadAdminData(){
-  const gallery = document.getElementById('galleryTab');
-  const ratings = document.getElementById('ratingsTab');
-  const leaderboard = document.getElementById('leaderboardTab');
-  const userPhotos = document.getElementById('userPhotosTab');
+  const gallery=document.getElementById('galleryTab');
+  const ratings=document.getElementById('ratingsTab');
+  const leaderboard=document.getElementById('leaderboardTab');
+  const userPhotos=document.getElementById('userPhotosTab');
 
   // Gallery - approved foods
   db.ref('foods').on('value',snap=>{
-    const data = snap.val()||{};
-    gallery.innerHTML = ratings.innerHTML = leaderboard.innerHTML = '';
+    const data=snap.val()||{};
+    gallery.innerHTML=ratings.innerHTML=leaderboard.innerHTML='';
     let leaderboardArr=[];
     Object.keys(data).reverse().forEach(id=>{
-      const item = data[id];
-      const ratingsArr = item.ratings||[];
-      const avg = ratingsArr.length ? ratingsArr.reduce((a,b)=>a+b.rating,0)/ratingsArr.length : 0;
+      const item=data[id];
+      const ratingsArr=item.ratings||[];
+      const avg=ratingsArr.length ? ratingsArr.reduce((a,b)=>a+b.rating,0)/ratingsArr.length : 0;
+      leaderboardArr.push({name:item.foodname,image:item.image,rating:avg});
 
+      // Gallery
       gallery.innerHTML+=`
       <div class="card">
         <img src="${item.image}" class="food-image" onclick="window.open('${item.image}')">
@@ -144,34 +132,37 @@ function loadAdminData(){
         <div class="food-desc">${item.details}</div>
       </div>`;
 
+      // Ratings
       ratings.innerHTML+=`
       <div class="card">
         <div>${item.foodname} - ${item.restaurant}</div>
         <div class="gauge"><div class="gauge-fill" style="width:${avg*20}%"></div></div>
         <div class="gauge-text">${avg.toFixed(1)}/5</div>
       </div>`;
-
-      leaderboardArr.push({name:item.foodname,image:item.image,rating:avg});
     });
 
     // Leaderboard top 3
     leaderboardArr.sort((a,b)=>b.rating-a.rating);
-    const top3 = leaderboardArr.slice(0,3);
-    const positions=['first','second','third'];
-    leaderboard.innerHTML+=top3.map((food,i)=>food?`
-    <div class="card glass leaderboard-box ${positions[i]}">
-      <img src="${food.image}" class="food-image">
-      <div class="food-title">${food.name}</div>
-      <div class="gauge-text">⭐ ${food.rating.toFixed(1)}</div>
-    </div>`:'').join('');
+    const top3=leaderboardArr.slice(0,3);
+    const order=[top3[1],top3[0],top3[2]];
+    const positions=["second-place","first-place","third-place"];
+    order.forEach((food,i)=>{
+      if(!food) return;
+      leaderboard.innerHTML+=`
+      <div class="card glass leaderboard-box ${positions[i]}">
+        <img src="${food.image}" class="food-image">
+        <div class="food-title">${food.name}</div>
+        <div class="gauge-text">⭐ ${food.rating.toFixed(1)}</div>
+      </div>`;
+    });
   });
 
   // User uploaded photos
   db.ref('userUploads').on('value',snap=>{
-    const data = snap.val()||{};
+    const data=snap.val()||{};
     userPhotos.innerHTML='';
     Object.keys(data).reverse().forEach(id=>{
-      const item = data[id];
+      const item=data[id];
       userPhotos.innerHTML+=`
       <div class="card">
         <img src="${item.image}" class="food-image" onclick="window.open('${item.image}')">
@@ -179,8 +170,7 @@ function loadAdminData(){
         <div class="food-sub">${item.restaurant}</div>
         <div class="food-desc">Uploaded by: ${item.uploadedName} (${item.uploadedBy})</div>
         <a href="${item.image}" download="food-image.jpg"><button class="download-btn">Download HD</button></a>
-      </div>
-      `;
+      </div>`;
     });
   });
 }
