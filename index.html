@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -22,8 +23,8 @@ font-family:Arial,sans-serif;
 body{
 background:
 linear-gradient(
-rgba(0,0,0,0.55),
-rgba(0,0,0,0.55)
+rgba(0,0,0,0.60),
+rgba(0,0,0,0.60)
 ),
 url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop");
 
@@ -35,12 +36,16 @@ overflow-x:hidden;
 color:white;
 }
 
+/* GLASS */
+
 .glass{
 background:rgba(255,255,255,0.12);
 backdrop-filter:blur(18px);
 -webkit-backdrop-filter:blur(18px);
 border:1px solid rgba(255,255,255,0.15);
 }
+
+/* CONTAINER */
 
 .container{
 width:100%;
@@ -55,32 +60,31 @@ padding:16px;
 padding:35px 22px;
 border-radius:32px;
 margin-top:35px;
-box-shadow:0 8px 30px rgba(0,0,0,0.25);
 text-align:center;
+box-shadow:0 10px 35px rgba(0,0,0,0.3);
 }
 
 .logo{
-width:135px;
-height:135px;
+width:140px;
+height:140px;
 object-fit:contain;
-border-radius:28px;
-display:block;
-margin:auto;
+border-radius:30px;
 background:white;
 padding:10px;
+display:block;
+margin:auto;
 }
 
 .main-title{
-font-size:48px;
+font-size:52px;
 font-weight:900;
 margin-top:18px;
-letter-spacing:1px;
 }
 
 .sub-title{
-font-size:15px;
 margin-top:8px;
-color:#f1f1f1;
+font-size:15px;
+color:#eee;
 }
 
 /* INPUTS */
@@ -89,17 +93,17 @@ input,
 textarea{
 width:100%;
 padding:16px;
-border-radius:18px;
 border:none;
+outline:none;
+border-radius:18px;
 margin-top:14px;
 font-size:15px;
-outline:none;
 background:rgba(255,255,255,0.92);
-color:#111;
+color:black;
 }
 
 textarea{
-min-height:110px;
+min-height:120px;
 resize:none;
 }
 
@@ -110,11 +114,11 @@ width:100%;
 padding:16px;
 border:none;
 border-radius:18px;
+margin-top:18px;
 background:#FFD700;
 color:black;
 font-size:16px;
 font-weight:900;
-margin-top:18px;
 cursor:pointer;
 transition:0.2s;
 }
@@ -126,28 +130,30 @@ transform:scale(1.02);
 /* TOPBAR */
 
 .topbar{
-padding:15px 18px;
-border-radius:24px;
 display:flex;
 align-items:center;
 gap:14px;
-margin-bottom:18px;
+padding:16px;
+border-radius:24px;
+margin-bottom:20px;
 flex-wrap:wrap;
 }
 
 .top-logo{
-width:62px;
-height:62px;
+width:65px;
+height:65px;
+object-fit:contain;
 border-radius:18px;
 background:white;
-padding:6px;
-object-fit:contain;
+padding:5px;
 }
 
 .top-title{
-font-size:26px;
+font-size:28px;
 font-weight:900;
 }
+
+/* HIDDEN */
 
 .hidden{
 display:none;
@@ -159,7 +165,7 @@ display:none;
 display:flex;
 gap:12px;
 flex-wrap:wrap;
-margin-bottom:22px;
+margin-bottom:24px;
 }
 
 .tab-btn{
@@ -167,12 +173,11 @@ flex:1;
 padding:15px;
 border:none;
 border-radius:18px;
-font-size:15px;
-font-weight:bold;
-cursor:pointer;
-background:rgba(255,255,255,0.2);
+background:rgba(255,255,255,0.18);
 color:white;
-backdrop-filter:blur(10px);
+font-weight:bold;
+font-size:15px;
+cursor:pointer;
 }
 
 .active-tab{
@@ -183,13 +188,13 @@ color:black;
 /* CARD */
 
 .card{
-padding:20px;
+padding:22px;
 border-radius:30px;
-margin-bottom:22px;
-box-shadow:0 8px 25px rgba(0,0,0,0.22);
+margin-bottom:24px;
+box-shadow:0 8px 25px rgba(0,0,0,0.25);
 }
 
-/* FOOD IMAGE */
+/* FOOD */
 
 .food-image{
 width:100%;
@@ -205,15 +210,15 @@ margin-top:16px;
 }
 
 .food-sub{
-font-size:15px;
 margin-top:6px;
 color:#ddd;
+font-size:15px;
 }
 
 .food-desc{
 margin-top:12px;
-font-size:14px;
 line-height:1.7;
+font-size:14px;
 color:#f1f1f1;
 }
 
@@ -221,33 +226,32 @@ color:#f1f1f1;
 
 .stars{
 display:flex;
-gap:8px;
+gap:10px;
 margin-top:18px;
 flex-wrap:wrap;
 }
 
 .star{
-font-size:56px;
+font-size:58px;
 cursor:pointer;
-color:#cfcfcf;
+color:#ccc;
 transition:0.2s;
 user-select:none;
 }
 
 .star:hover{
-transform:scale(1.12);
+transform:scale(1.1);
 }
 
 .active-star{
 color:#FFD700 !important;
 text-shadow:
-0 0 12px rgba(255,215,0,1),
+0 0 10px rgba(255,215,0,1),
 0 0 20px rgba(255,215,0,0.9),
-0 0 30px rgba(255,215,0,0.7);
-transform:scale(1.08);
+0 0 30px rgba(255,215,0,0.8);
 }
 
-/* COMMENT BUTTONS */
+/* COMMENT */
 
 .action-row{
 display:flex;
@@ -259,11 +263,11 @@ flex-wrap:wrap;
 .comment-btn,
 .view-btn{
 flex:1;
-padding:13px;
+padding:14px;
 border:none;
 border-radius:16px;
 font-size:14px;
-font-weight:800;
+font-weight:900;
 cursor:pointer;
 transition:0.2s;
 }
@@ -292,9 +296,9 @@ margin-top:16px;
 .post-comment-btn{
 width:100%;
 padding:14px;
-margin-top:12px;
 border:none;
 border-radius:16px;
+margin-top:12px;
 background:#FFD700;
 font-weight:900;
 cursor:pointer;
@@ -313,11 +317,9 @@ gap:12px;
 background:rgba(255,255,255,0.15);
 padding:14px;
 border-radius:18px;
-backdrop-filter:blur(12px);
 }
 
 .comment-user{
-font-size:14px;
 font-weight:900;
 color:#FFD700;
 margin-bottom:6px;
@@ -326,7 +328,6 @@ margin-bottom:6px;
 .comment-text{
 font-size:14px;
 line-height:1.5;
-color:white;
 }
 
 /* TRACKER */
@@ -334,7 +335,7 @@ color:white;
 .gauge{
 width:100%;
 height:18px;
-background:rgba(255,255,255,0.25);
+background:rgba(255,255,255,0.22);
 border-radius:30px;
 overflow:hidden;
 margin-top:15px;
@@ -345,42 +346,42 @@ height:100%;
 background:linear-gradient(
 90deg,
 #FFD700,
-#ffef8a
+#ffe98a
 );
 }
 
 /* LEADERBOARD */
 
 .leaderboard-title{
-font-size:44px;
+font-size:42px;
 font-weight:900;
 text-align:center;
-margin-bottom:90px;
+margin-bottom:80px;
 }
 
 .leaderboard-container{
 display:flex;
 justify-content:center;
 align-items:flex-end;
-gap:26px;
+gap:24px;
 flex-wrap:wrap;
-padding-top:35px;
+padding-top:40px;
 }
 
 .leaderboard-box{
 width:260px;
 border-radius:36px;
-padding:22px 18px;
+padding:22px;
 position:relative;
 text-align:center;
-box-shadow:0 10px 30px rgba(0,0,0,0.25);
+box-shadow:0 8px 25px rgba(0,0,0,0.25);
 }
 
 .first-place{
 background:linear-gradient(
 180deg,
 #ffe27a,
-#f8c400
+#f5c400
 );
 height:530px;
 color:black;
@@ -389,8 +390,8 @@ color:black;
 .second-place{
 background:linear-gradient(
 180deg,
-#f0f0f0,
-#d9d9d9
+#f3f3f3,
+#d8d8d8
 );
 height:440px;
 color:black;
@@ -400,7 +401,7 @@ color:black;
 background:linear-gradient(
 180deg,
 #f8d2c5,
-#e6a78f
+#e0a085
 );
 height:400px;
 color:black;
@@ -413,7 +414,6 @@ border-radius:50%;
 object-fit:cover;
 border:8px solid white;
 margin-top:-95px;
-box-shadow:0 8px 22px rgba(0,0,0,0.18);
 }
 
 .rank-food{
@@ -425,7 +425,7 @@ margin-top:18px;
 .rank-rating{
 font-size:24px;
 font-weight:bold;
-margin-top:12px;
+margin-top:10px;
 }
 
 .rank-number{
@@ -435,7 +435,7 @@ left:50%;
 transform:translateX(-50%);
 font-size:140px;
 font-weight:900;
-opacity:0.15;
+opacity:0.12;
 }
 
 .crown{
@@ -459,7 +459,6 @@ padding:13px 22px;
 border-radius:16px;
 font-weight:900;
 z-index:9999;
-box-shadow:0 6px 20px rgba(0,0,0,0.25);
 }
 
 /* MOBILE */
@@ -475,11 +474,11 @@ font-size:24px;
 }
 
 .star{
-font-size:42px;
+font-size:44px;
 }
 
 .main-title{
-font-size:36px;
+font-size:38px;
 }
 
 .leaderboard-box{
@@ -496,7 +495,7 @@ margin-top:-65px;
 }
 
 .rank-number{
-font-size:95px;
+font-size:90px;
 }
 
 }
@@ -525,14 +524,12 @@ Login with your Instagram username
 <input
 type="text"
 id="username"
-placeholder="@instagram_username"
->
+placeholder="@instagram_username">
 
 <input
 type="text"
 id="name"
-placeholder="Your Name"
->
+placeholder="Your Name">
 
 <button
 class="main-btn"
@@ -558,7 +555,7 @@ Continue
 ShifPlatter
 </div>
 
-<div style="font-size:13px;color:#f1f1f1;">
+<div style="font-size:13px;color:#eee;">
 Community Food Ratings
 </div>
 
@@ -616,15 +613,25 @@ Leaderboard
 
 <h2>Upload Food</h2>
 
-<input type="file" id="foodImage" accept="image/*">
+<input type="file" id="foodImage">
 
-<input type="text" id="restaurant" placeholder="Restaurant / Cafe Name">
+<input
+type="text"
+id="restaurant"
+placeholder="Restaurant / Cafe Name">
 
-<input type="text" id="foodname" placeholder="Food Name">
+<input
+type="text"
+id="foodname"
+placeholder="Food Name">
 
-<textarea id="details" placeholder="Food Details"></textarea>
+<textarea
+id="details"
+placeholder="Food Details"></textarea>
 
-<button class="main-btn" onclick="uploadFood()">
+<button
+class="main-btn"
+onclick="uploadFood()">
 Upload Food
 </button>
 
@@ -656,6 +663,9 @@ class="leaderboard-container">
 </div>
 
 <script>
+
+/* FIREBASE CONFIG */
+
 const firebaseConfig = {
     apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
     authDomain: "shifplatter-e0449.firebaseapp.com",
@@ -665,9 +675,6 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
-
-
-
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
@@ -676,13 +683,17 @@ let currentUser="";
 let currentName="";
 const userRatings={};
 
+/* LOGIN */
+
 function loginUser(){
 
 const username =
-document.getElementById("username").value.trim();
+document.getElementById("username")
+.value.trim();
 
 const name =
-document.getElementById("name").value.trim();
+document.getElementById("name")
+.value.trim();
 
 if(!username || !name){
 
@@ -703,6 +714,8 @@ document.getElementById("mainApp")
 loadFoods();
 
 }
+
+/* TAB SWITCH */
 
 function showTab(tabId,btn){
 
@@ -728,15 +741,20 @@ btn.classList.add("active-tab");
 
 }
 
+/* LOAD FOODS */
+
 function loadFoods(){
 
 db.ref("foods")
 .on("value",(snapshot)=>{
 
-const data=snapshot.val();
+const data = snapshot.val();
 
-const gallery=document.getElementById("gallery");
-const ratings=document.getElementById("ratingsContainer");
+const gallery =
+document.getElementById("gallery");
+
+const ratings =
+document.getElementById("ratingsContainer");
 
 gallery.innerHTML="";
 ratings.innerHTML="";
@@ -749,25 +767,30 @@ loadLeaderboard(data);
 
 Object.keys(data).forEach((id)=>{
 
-const item=data[id];
+const item = data[id];
 
-if(!item.ratings){
-item.ratings=[];
+let ratingsArray = [];
+
+if(item.ratings){
+
+ratingsArray =
+Object.values(item.ratings);
+
 }
 
-let total=0;
+let total = 0;
 
-item.ratings.forEach((r)=>{
+ratingsArray.forEach((r)=>{
 
 total += Number(r.rating || 0);
 
 });
 
-let avg=0;
+let avg = 0;
 
-if(item.ratings.length>0){
+if(ratingsArray.length>0){
 
-avg=total/item.ratings.length;
+avg = total / ratingsArray.length;
 
 }
 
@@ -775,7 +798,9 @@ gallery.innerHTML += `
 
 <div class="card glass">
 
-<img src="${item.image}" class="food-image">
+<img
+src="${item.image}"
+class="food-image">
 
 <div class="food-title">
 ${item.foodname}
@@ -794,7 +819,8 @@ ${item.details}
 ${[1,2,3,4,5].map(num=>`
 
 <span
-class="star ${userRatings[id] >= num ? 'active-star' : ''}"
+class="star
+${userRatings[id] >= num ? 'active-star' : ''}"
 onclick="rateFood(this,'${id}',${num})">
 ★
 </span>
@@ -819,7 +845,9 @@ onclick="toggleComments('${id}')">
 
 </div>
 
-<div id="commentBox-${id}" class="comment-box hidden">
+<div
+id="commentBox-${id}"
+class="comment-box hidden">
 
 <textarea
 id="commentInput-${id}"
@@ -834,7 +862,9 @@ Post Comment
 
 </div>
 
-<div id="commentsList-${id}" class="comments-list hidden">
+<div
+id="commentsList-${id}"
+class="comments-list hidden">
 </div>
 
 </div>
@@ -876,6 +906,8 @@ font-weight:bold;
 
 }
 
+/* RATE FOOD */
+
 function rateFood(el,foodId,rating){
 
 const starsContainer =
@@ -884,7 +916,7 @@ el.parentElement;
 const stars =
 starsContainer.querySelectorAll(".star");
 
-userRatings[foodId]=rating;
+userRatings[foodId] = rating;
 
 stars.forEach((star,index)=>{
 
@@ -900,40 +932,47 @@ star.classList.remove("active-star");
 
 });
 
-db.ref("foods/"+foodId+"/ratings")
+db.ref(`foods/${foodId}/ratings`)
 .push({
 
-user:currentUser,
-name:currentName,
-rating:rating
+user: currentUser,
+name: currentName,
+rating: rating
 
 });
 
-showToast("⭐ Rating Saved Successfully");
+showToast("⭐ Rating Saved");
 
 }
 
-/* COMMENT FUNCTIONS */
+/* COMMENT BOX */
 
 function openCommentBox(foodId){
 
 const box =
 document.getElementById(
-"commentBox-"+foodId
+`commentBox-${foodId}`
 );
 
 box.classList.toggle("hidden");
 
 }
 
+/* POST COMMENT */
+
 function postComment(foodId){
 
 const input =
 document.getElementById(
-"commentInput-"+foodId
+`commentInput-${foodId}`
 );
 
-const text = input.value.trim();
+if(!input){
+return;
+}
+
+const text =
+input.value.trim();
 
 if(!text){
 
@@ -942,74 +981,111 @@ return;
 
 }
 
+const button =
+input.parentElement.querySelector(
+".post-comment-btn"
+);
+
+button.disabled = true;
+button.innerHTML = "Posting...";
+
 db.ref(`foods/${foodId}/comments`)
 .push({
 
-user:currentUser,
-comment:text
+user: currentUser,
+comment: text,
+time: Date.now()
 
 })
 .then(()=>{
 
-input.value="";
+input.value = "";
 
 showToast("💬 Comment Posted");
 
 loadComments(foodId);
 
+})
+.catch(()=>{
+
+alert("Failed to post");
+
+})
+.finally(()=>{
+
+button.disabled = false;
+button.innerHTML = "Post Comment";
+
 });
 
 }
+
+/* VIEW COMMENTS */
 
 function toggleComments(foodId){
 
 const list =
 document.getElementById(
-"commentsList-"+foodId
+`commentsList-${foodId}`
 );
 
-list.classList.toggle("hidden");
+if(!list){
+return;
+}
 
-if(
-!list.classList.contains("hidden")
-){
+if(list.classList.contains("hidden")){
+
+list.classList.remove("hidden");
 
 loadComments(foodId);
 
+}else{
+
+list.classList.add("hidden");
+
 }
 
 }
+
+/* LOAD COMMENTS */
 
 function loadComments(foodId){
 
 const list =
 document.getElementById(
-"commentsList-"+foodId
+`commentsList-${foodId}`
 );
 
-list.innerHTML="";
+if(!list){
+return;
+}
 
-db.ref(`foods/${foodId}/comments`)
-.on("value",(snapshot)=>{
-
-const data =
-snapshot.val() || {};
-
-const comments =
-Object.values(data);
-
-list.innerHTML="";
-
-if(comments.length===0){
-
-list.innerHTML=`
+list.innerHTML = `
 
 <div class="single-comment">
+<div class="comment-text">
+Loading comments...
+</div>
+</div>
 
+`;
+
+db.ref(`foods/${foodId}/comments`)
+.once("value")
+.then((snapshot)=>{
+
+const data = snapshot.val();
+
+list.innerHTML = "";
+
+if(!data){
+
+list.innerHTML = `
+
+<div class="single-comment">
 <div class="comment-text">
 No comments yet
 </div>
-
 </div>
 
 `;
@@ -1018,7 +1094,14 @@ return;
 
 }
 
-comments.reverse().forEach((c)=>{
+const comments =
+Object.values(data);
+
+comments.sort((a,b)=>
+b.time - a.time
+);
+
+comments.forEach((c)=>{
 
 list.innerHTML += `
 
@@ -1038,9 +1121,24 @@ ${c.comment}
 
 });
 
+})
+.catch(()=>{
+
+list.innerHTML = `
+
+<div class="single-comment">
+<div class="comment-text">
+Failed to load comments
+</div>
+</div>
+
+`;
+
 });
 
 }
+
+/* UPLOAD FOOD */
 
 function uploadFood(){
 
@@ -1063,26 +1161,23 @@ document.getElementById("details")
 if(!file){
 
 alert("Upload image");
-
 return;
 
 }
 
 const reader = new FileReader();
 
-reader.onload=function(e){
+reader.onload = function(e){
 
-const data={
+db.ref("foods")
+.push({
 
 restaurant,
 foodname,
 details,
-image:e.target.result,
-ratings:[]
+image:e.target.result
 
-};
-
-db.ref("foods").push(data);
+});
 
 showToast("✅ Food Uploaded");
 
@@ -1091,6 +1186,8 @@ showToast("✅ Food Uploaded");
 reader.readAsDataURL(file);
 
 }
+
+/* LEADERBOARD */
 
 function loadLeaderboard(data){
 
@@ -1107,13 +1204,18 @@ Object.keys(data).forEach((id)=>{
 
 const item=data[id];
 
-if(!item.ratings){
-return;
+let ratingsArray=[];
+
+if(item.ratings){
+
+ratingsArray =
+Object.values(item.ratings);
+
 }
 
 let total=0;
 
-item.ratings.forEach((r)=>{
+ratingsArray.forEach((r)=>{
 
 total += Number(r.rating || 0);
 
@@ -1121,9 +1223,9 @@ total += Number(r.rating || 0);
 
 let avg=0;
 
-if(item.ratings.length>0){
+if(ratingsArray.length>0){
 
-avg=total/item.ratings.length;
+avg=total/ratingsArray.length;
 
 }
 
@@ -1139,21 +1241,21 @@ rating:avg
 
 foods.sort((a,b)=>b.rating-a.rating);
 
-const top3=foods.slice(0,3);
+const top3 = foods.slice(0,3);
 
-const order=[
+const order = [
 top3[1],
 top3[0],
 top3[2]
 ];
 
-const positions=[
+const positions = [
 "second-place",
 "first-place",
 "third-place"
 ];
 
-const rankNumbers=[
+const rankNumbers = [
 2,
 1,
 3
@@ -1175,8 +1277,7 @@ ${rankNumbers[index]===1 ? `
 
 <img
 src="${food.image}"
-class="rank-image"
->
+class="rank-image">
 
 <div class="rank-food">
 ${food.name}
@@ -1198,14 +1299,16 @@ ${rankNumbers[index]}
 
 }
 
+/* TOAST */
+
 function showToast(text){
 
 const toast =
 document.createElement("div");
 
-toast.className="toast";
+toast.className = "toast";
 
-toast.innerHTML=text;
+toast.innerHTML = text;
 
 document.body.appendChild(toast);
 
