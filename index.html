@@ -99,7 +99,7 @@ color:#111;
 }
 
 textarea{
-min-height:120px;
+min-height:110px;
 resize:none;
 }
 
@@ -667,6 +667,7 @@ const firebaseConfig = {
   };
 
 
+
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
@@ -678,12 +679,10 @@ const userRatings={};
 function loginUser(){
 
 const username =
-document.getElementById("username")
-.value.trim();
+document.getElementById("username").value.trim();
 
 const name =
-document.getElementById("name")
-.value.trim();
+document.getElementById("name").value.trim();
 
 if(!username || !name){
 
@@ -736,11 +735,8 @@ db.ref("foods")
 
 const data=snapshot.val();
 
-const gallery=
-document.getElementById("gallery");
-
-const ratings=
-document.getElementById("ratingsContainer");
+const gallery=document.getElementById("gallery");
+const ratings=document.getElementById("ratingsContainer");
 
 gallery.innerHTML="";
 ratings.innerHTML="";
@@ -779,10 +775,7 @@ gallery.innerHTML += `
 
 <div class="card glass">
 
-<img
-src="${item.image}"
-class="food-image"
->
+<img src="${item.image}" class="food-image">
 
 <div class="food-title">
 ${item.foodname}
@@ -801,8 +794,7 @@ ${item.details}
 ${[1,2,3,4,5].map(num=>`
 
 <span
-class="star
-${userRatings[id] >= num ? 'active-star' : ''}"
+class="star ${userRatings[id] >= num ? 'active-star' : ''}"
 onclick="rateFood(this,'${id}',${num})">
 ★
 </span>
@@ -827,9 +819,7 @@ onclick="toggleComments('${id}')">
 
 </div>
 
-<div
-id="commentBox-${id}"
-class="comment-box hidden">
+<div id="commentBox-${id}" class="comment-box hidden">
 
 <textarea
 id="commentInput-${id}"
@@ -844,9 +834,7 @@ Post Comment
 
 </div>
 
-<div
-id="commentsList-${id}"
-class="comments-list hidden">
+<div id="commentsList-${id}" class="comments-list hidden">
 </div>
 
 </div>
@@ -913,12 +901,7 @@ star.classList.remove("active-star");
 });
 
 db.ref("foods/"+foodId+"/ratings")
-.once("value")
-.then((snapshot)=>{
-
-let ratings=snapshot.val() || [];
-
-ratings.push({
+.push({
 
 user:currentUser,
 name:currentName,
@@ -926,18 +909,7 @@ rating:rating
 
 });
 
-return db.ref(
-"foods/"+foodId+"/ratings"
-).set(ratings);
-
-})
-.then(()=>{
-
-showToast(
-"⭐ Rating Saved Successfully"
-);
-
-});
+showToast("⭐ Rating Saved Successfully");
 
 }
 
@@ -970,32 +942,18 @@ return;
 
 }
 
-db.ref("foods/"+foodId+"/comments")
-.once("value")
-.then((snapshot)=>{
-
-let comments =
-snapshot.val() || [];
-
-comments.push({
+db.ref(`foods/${foodId}/comments`)
+.push({
 
 user:currentUser,
 comment:text
-
-});
-
-return db.ref(
-"foods/"+foodId+"/comments"
-).set(comments);
 
 })
 .then(()=>{
 
 input.value="";
 
-showToast(
-"💬 Comment Posted"
-);
+showToast("💬 Comment Posted");
 
 loadComments(foodId);
 
@@ -1010,17 +968,13 @@ document.getElementById(
 "commentsList-"+foodId
 );
 
+list.classList.toggle("hidden");
+
 if(
-list.classList.contains("hidden")
+!list.classList.contains("hidden")
 ){
 
-list.classList.remove("hidden");
-
 loadComments(foodId);
-
-}else{
-
-list.classList.add("hidden");
 
 }
 
@@ -1033,11 +987,16 @@ document.getElementById(
 "commentsList-"+foodId
 );
 
-db.ref("foods/"+foodId+"/comments")
+list.innerHTML="";
+
+db.ref(`foods/${foodId}/comments`)
 .on("value",(snapshot)=>{
 
+const data =
+snapshot.val() || {};
+
 const comments =
-snapshot.val() || [];
+Object.values(data);
 
 list.innerHTML="";
 
