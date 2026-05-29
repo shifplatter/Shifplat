@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ShifPlatter Admin Panel</title>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
@@ -38,13 +37,12 @@ h1{text-align:center;margin-bottom:24px;}
 <h1>ShifPlatter Admin Panel</h1>
 
 <div class="tabs">
-<button class="tab-btn active-tab" onclick="showTab('galleryTab',this)">Food Gallery</button>
-<button class="tab-btn" onclick="showTab('trackerTab',this)">Overall Ratings</button>
-<button class="tab-btn" onclick="showTab('audienceTab',this)">Audience Ratings</button>
-<button class="tab-btn" onclick="showTab('usersPhotoTab',this)">Users Photo</button>
+<button class="tab-btn active-tab" onclick="showTab('galleryTab', this)">Food Gallery</button>
+<button class="tab-btn" onclick="showTab('trackerTab', this)">Overall Ratings</button>
+<button class="tab-btn" onclick="showTab('audienceTab', this)">Audience Ratings</button>
+<button class="tab-btn" onclick="showTab('usersPhotoTab', this)">Users Photo</button>
 </div>
 
-<!-- Tabs -->
 <div id="galleryTab" class="tab-content active"></div>
 <div id="trackerTab" class="tab-content"></div>
 <div id="audienceTab" class="tab-content"></div>
@@ -66,10 +64,10 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
 // Tab switching
-function showTab(tabId,btn){
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+function showTab(tabId, btn){
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.getElementById(tabId).classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active-tab'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
   btn.classList.add('active-tab');
 }
 
@@ -82,16 +80,15 @@ function loadAdminData(){
 
   gallery.innerHTML=tracker.innerHTML=audience.innerHTML=userUploads.innerHTML="";
 
-  // Load foods
   db.ref('foods').limitToLast(50).once('value').then(snapshot=>{
     const data=snapshot.val();
-    if(!data){gallery.innerHTML='<div class="card">No foods uploaded</div>'; return;}
+    if(!data){ gallery.innerHTML='<div class="card">No foods uploaded</div>'; return;}
     Object.keys(data).reverse().forEach(id=>{
       const item=data[id];
       const ratingsArray = item.ratings || [];
       const avg = ratingsArray.length ? (ratingsArray.reduce((a,b)=>a+b.rating,0)/ratingsArray.length).toFixed(1) : 0;
 
-      // Food Gallery
+      // Gallery
       gallery.innerHTML+=`
         <div class="card">
           <div class="food-card">
@@ -131,10 +128,10 @@ function loadAdminData(){
     });
   });
 
-  // Load user uploads
+  // User uploads
   db.ref('userUploads').limitToLast(50).once('value').then(snapshot=>{
     const data=snapshot.val();
-    if(!data){userUploads.innerHTML='<div class="card">No user uploads</div>'; return;}
+    if(!data){ userUploads.innerHTML='<div class="card">No user uploads</div>'; return;}
     Object.keys(data).reverse().forEach(id=>{
       const item=data[id];
       userUploads.innerHTML+=`
@@ -156,7 +153,6 @@ function loadAdminData(){
   });
 }
 
-// Initialize
 window.onload=loadAdminData;
 </script>
 
