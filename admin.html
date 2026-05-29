@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShifPlatter Admin Panel Management</title>
+<title>ShifPlatter Admin Panel</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -11,12 +11,11 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
 body{
-  background:linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),
-  url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop");
-  background-size:cover;
-  background-position:center;
-  min-height:100vh;
-  color:white;
+  background: linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)), url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop");
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  color: white;
 }
 .container{width:100%;max-width:1200px;margin:auto;padding:16px;}
 .login-card{padding:35px 22px;border-radius:32px;margin-top:35px;box-shadow:0 8px 30px rgba(0,0,0,0.3);text-align:center;background:rgba(255,255,255,0.12);backdrop-filter:blur(18px);}
@@ -32,12 +31,9 @@ textarea{min-height:120px;resize:none;}
 .active-tab{background:#FFD700;color:black;}
 .card{padding:20px;border-radius:30px;margin-bottom:22px;box-shadow:0 8px 25px rgba(0,0,0,0.22);}
 .food-image{width:100%;height:300px;object-fit:cover;border-radius:24px;cursor:pointer;}
-.food-title{font-size:30px;font-weight:900;margin-top:16px;}
+.food-title{font-size:28px;font-weight:900;margin-top:16px;}
 .food-sub{font-size:15px;margin-top:6px;color:#ddd;}
 .food-desc{margin-top:12px;font-size:14px;line-height:1.7;color:#f1f1f1;}
-.gauge{width:100%;height:18px;background:rgba(255,255,255,0.25);border-radius:30px;overflow:hidden;margin-top:15px;}
-.gauge-fill{height:100%;background:linear-gradient(90deg,#FFD700,#ffef8a);}
-.gauge-text{margin-top:12px;font-size:18px;font-weight:bold;}
 .download-btn{padding:12px 16px;border-radius:16px;background:#FFD700;color:black;border:none;font-weight:900;cursor:pointer;margin-top:12px;}
 @media(max-width:768px){
   .food-image{height:200px;}
@@ -64,14 +60,10 @@ textarea{min-height:120px;resize:none;}
 
 <div class="tabs">
 <button class="tab-btn active-tab" onclick="showTab('galleryTab',this)">Gallery</button>
-<button class="tab-btn" onclick="showTab('ratingsTab',this)">Ratings</button>
-<button class="tab-btn" onclick="showTab('leaderboardTab',this)">Leaderboard</button>
 <button class="tab-btn" onclick="showTab('userPhotosTab',this)">User Photos</button>
 </div>
 
 <div id="galleryTab" class="tab-content active"></div>
-<div id="ratingsTab" class="tab-content"></div>
-<div id="leaderboardTab" class="tab-content"></div>
 <div id="userPhotosTab" class="tab-content"></div>
 
 </div>
@@ -107,23 +99,15 @@ function showTab(tabId,btn){
 }
 
 function loadAdminData(){
-  const gallery=document.getElementById('galleryTab');
-  const ratings=document.getElementById('ratingsTab');
-  const leaderboard=document.getElementById('leaderboardTab');
-  const userPhotos=document.getElementById('userPhotosTab');
+  const gallery = document.getElementById('galleryTab');
+  const userPhotos = document.getElementById('userPhotosTab');
 
   // Gallery - approved foods
   db.ref('foods').on('value',snap=>{
-    const data=snap.val()||{};
-    gallery.innerHTML=ratings.innerHTML=leaderboard.innerHTML='';
-    let leaderboardArr=[];
+    const data = snap.val() || {};
+    gallery.innerHTML = '';
     Object.keys(data).reverse().forEach(id=>{
-      const item=data[id];
-      const ratingsArr=item.ratings||[];
-      const avg=ratingsArr.length ? ratingsArr.reduce((a,b)=>a+b.rating,0)/ratingsArr.length : 0;
-      leaderboardArr.push({name:item.foodname,image:item.image,rating:avg});
-
-      // Gallery
+      const item = data[id];
       gallery.innerHTML+=`
       <div class="card">
         <img src="${item.image}" class="food-image" onclick="window.open('${item.image}')">
@@ -131,38 +115,15 @@ function loadAdminData(){
         <div class="food-sub">${item.restaurant}</div>
         <div class="food-desc">${item.details}</div>
       </div>`;
-
-      // Ratings
-      ratings.innerHTML+=`
-      <div class="card">
-        <div>${item.foodname} - ${item.restaurant}</div>
-        <div class="gauge"><div class="gauge-fill" style="width:${avg*20}%"></div></div>
-        <div class="gauge-text">${avg.toFixed(1)}/5</div>
-      </div>`;
-    });
-
-    // Leaderboard top 3
-    leaderboardArr.sort((a,b)=>b.rating-a.rating);
-    const top3=leaderboardArr.slice(0,3);
-    const order=[top3[1],top3[0],top3[2]];
-    const positions=["second-place","first-place","third-place"];
-    order.forEach((food,i)=>{
-      if(!food) return;
-      leaderboard.innerHTML+=`
-      <div class="card glass leaderboard-box ${positions[i]}">
-        <img src="${food.image}" class="food-image">
-        <div class="food-title">${food.name}</div>
-        <div class="gauge-text">⭐ ${food.rating.toFixed(1)}</div>
-      </div>`;
     });
   });
 
-  // User uploaded photos
+  // User Photos - uploaded from users
   db.ref('userUploads').on('value',snap=>{
-    const data=snap.val()||{};
-    userPhotos.innerHTML='';
+    const data = snap.val() || {};
+    userPhotos.innerHTML = '';
     Object.keys(data).reverse().forEach(id=>{
-      const item=data[id];
+      const item = data[id];
       userPhotos.innerHTML+=`
       <div class="card">
         <img src="${item.image}" class="food-image" onclick="window.open('${item.image}')">
@@ -175,5 +136,6 @@ function loadAdminData(){
   });
 }
 </script>
+
 </body>
 </html>
