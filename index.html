@@ -19,8 +19,6 @@ box-sizing:border-box;
 font-family:Arial,sans-serif;
 }
 
-/* BEAUTIFUL FOOD BACKGROUND */
-
 body{
 background:
 linear-gradient(
@@ -28,6 +26,7 @@ rgba(0,0,0,0.55),
 rgba(0,0,0,0.55)
 ),
 url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop");
+
 background-size:cover;
 background-position:center;
 background-attachment:fixed;
@@ -35,8 +34,6 @@ min-height:100vh;
 overflow-x:hidden;
 color:white;
 }
-
-/* GLASS EFFECT */
 
 .glass{
 background:rgba(255,255,255,0.12);
@@ -248,6 +245,88 @@ text-shadow:
 0 0 20px rgba(255,215,0,0.9),
 0 0 30px rgba(255,215,0,0.7);
 transform:scale(1.08);
+}
+
+/* COMMENT BUTTONS */
+
+.action-row{
+display:flex;
+gap:12px;
+margin-top:18px;
+flex-wrap:wrap;
+}
+
+.comment-btn,
+.view-btn{
+flex:1;
+padding:13px;
+border:none;
+border-radius:16px;
+font-size:14px;
+font-weight:800;
+cursor:pointer;
+transition:0.2s;
+}
+
+.comment-btn{
+background:#FFD700;
+color:black;
+}
+
+.view-btn{
+background:white;
+color:black;
+}
+
+.comment-btn:hover,
+.view-btn:hover{
+transform:scale(1.03);
+}
+
+/* COMMENT BOX */
+
+.comment-box{
+margin-top:16px;
+}
+
+.post-comment-btn{
+width:100%;
+padding:14px;
+margin-top:12px;
+border:none;
+border-radius:16px;
+background:#FFD700;
+font-weight:900;
+cursor:pointer;
+}
+
+/* COMMENTS */
+
+.comments-list{
+margin-top:16px;
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.single-comment{
+background:rgba(255,255,255,0.15);
+padding:14px;
+border-radius:18px;
+backdrop-filter:blur(12px);
+}
+
+.comment-user{
+font-size:14px;
+font-weight:900;
+color:#FFD700;
+margin-bottom:6px;
+}
+
+.comment-text{
+font-size:14px;
+line-height:1.5;
+color:white;
 }
 
 /* TRACKER */
@@ -587,7 +666,6 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
-
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
@@ -595,8 +673,6 @@ const db = firebase.database();
 let currentUser="";
 let currentName="";
 const userRatings={};
-
-/* LOGIN */
 
 function loginUser(){
 
@@ -628,8 +704,6 @@ loadFoods();
 
 }
 
-/* TABS */
-
 function showTab(tabId,btn){
 
 document.querySelectorAll(
@@ -653,8 +727,6 @@ btn.classList.remove("active-tab");
 btn.classList.add("active-tab");
 
 }
-
-/* LOAD FOODS */
 
 function loadFoods(){
 
@@ -738,6 +810,44 @@ onclick="rateFood(this,'${id}',${num})">
 
 </div>
 
+<div class="action-row">
+
+<button
+class="comment-btn"
+onclick="openCommentBox('${id}')">
+💬 Comment
+</button>
+
+<button
+class="view-btn"
+onclick="toggleComments('${id}')">
+👀 View Comments
+</button>
+
+</div>
+
+<div
+id="commentBox-${id}"
+class="comment-box hidden">
+
+<textarea
+id="commentInput-${id}"
+placeholder="Write your comment...">
+</textarea>
+
+<button
+class="post-comment-btn"
+onclick="postComment('${id}')">
+Post Comment
+</button>
+
+</div>
+
+<div
+id="commentsList-${id}"
+class="comments-list hidden">
+</div>
+
 </div>
 
 `;
@@ -777,8 +887,6 @@ font-weight:bold;
 
 }
 
-/* RATE FOOD */
-
 function rateFood(el,foodId,rating){
 
 const starsContainer =
@@ -787,11 +895,7 @@ el.parentElement;
 const stars =
 starsContainer.querySelectorAll(".star");
 
-/* LOCAL SAVE */
-
 userRatings[foodId]=rating;
-
-/* HIGHLIGHT */
 
 stars.forEach((star,index)=>{
 
@@ -806,8 +910,6 @@ star.classList.remove("active-star");
 }
 
 });
-
-/* FIREBASE SAVE */
 
 db.ref("foods/"+foodId+"/ratings")
 .once("value")
@@ -838,7 +940,147 @@ showToast(
 
 }
 
-/* UPLOAD */
+/* COMMENT FUNCTIONS */
+
+function openCommentBox(foodId){
+
+const box =
+document.getElementById(
+"commentBox-"+foodId
+);
+
+box.classList.toggle("hidden");
+
+}
+
+function postComment(foodId){
+
+const input =
+document.getElementById(
+"commentInput-"+foodId
+);
+
+const text = input.value.trim();
+
+if(!text){
+
+alert("Write comment");
+return;
+
+}
+
+db.ref("foods/"+foodId+"/comments")
+.once("value")
+.then((snapshot)=>{
+
+let comments =
+snapshot.val() || [];
+
+comments.push({
+
+user:currentUser,
+comment:text
+
+});
+
+return db.ref(
+"foods/"+foodId+"/comments"
+).set(comments);
+
+})
+.then(()=>{
+
+input.value="";
+
+showToast(
+"💬 Comment Posted"
+);
+
+loadComments(foodId);
+
+});
+
+}
+
+function toggleComments(foodId){
+
+const list =
+document.getElementById(
+"commentsList-"+foodId
+);
+
+if(
+list.classList.contains("hidden")
+){
+
+list.classList.remove("hidden");
+
+loadComments(foodId);
+
+}else{
+
+list.classList.add("hidden");
+
+}
+
+}
+
+function loadComments(foodId){
+
+const list =
+document.getElementById(
+"commentsList-"+foodId
+);
+
+db.ref("foods/"+foodId+"/comments")
+.on("value",(snapshot)=>{
+
+const comments =
+snapshot.val() || [];
+
+list.innerHTML="";
+
+if(comments.length===0){
+
+list.innerHTML=`
+
+<div class="single-comment">
+
+<div class="comment-text">
+No comments yet
+</div>
+
+</div>
+
+`;
+
+return;
+
+}
+
+comments.reverse().forEach((c)=>{
+
+list.innerHTML += `
+
+<div class="single-comment">
+
+<div class="comment-user">
+@${c.user}
+</div>
+
+<div class="comment-text">
+${c.comment}
+</div>
+
+</div>
+
+`;
+
+});
+
+});
+
+}
 
 function uploadFood(){
 
@@ -889,8 +1131,6 @@ showToast("✅ Food Uploaded");
 reader.readAsDataURL(file);
 
 }
-
-/* LEADERBOARD */
 
 function loadLeaderboard(data){
 
@@ -997,8 +1237,6 @@ ${rankNumbers[index]}
 });
 
 }
-
-/* TOAST */
 
 function showToast(text){
 
