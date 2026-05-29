@@ -3,55 +3,425 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShifPlatter - User</title>
 
+<title>ShifPlatter</title>
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+/* BEAUTIFUL FOOD BACKGROUND */
+
 body{
-background:linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),
+background:
+linear-gradient(
+rgba(0,0,0,0.55),
+rgba(0,0,0,0.55)
+),
 url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop");
 background-size:cover;
 background-position:center;
+background-attachment:fixed;
 min-height:100vh;
+overflow-x:hidden;
 color:white;
 }
-.container{width:100%;max-width:1200px;margin:auto;padding:16px;}
-.login-card{padding:35px 22px;border-radius:32px;margin-top:35px;box-shadow:0 8px 30px rgba(0,0,0,0.25);text-align:center;background:rgba(255,255,255,0.12);backdrop-filter:blur(18px);}
-.logo{width:135px;height:135px;object-fit:contain;border-radius:28px;display:block;margin:auto;background:white;padding:10px;}
-.main-title{font-size:44px;font-weight:900;margin-top:18px;letter-spacing:1px;color:#FFD700;}
-.sub-title{font-size:15px;margin-top:8px;color:#f1f1f1;}
-input,textarea{width:100%;padding:16px;border-radius:18px;border:none;margin-top:14px;font-size:15px;outline:none;background:rgba(255,255,255,0.92);color:#111;}
-textarea{min-height:120px;resize:none;}
-.main-btn{width:100%;padding:16px;border:none;border-radius:18px;background:#FFD700;color:black;font-size:16px;font-weight:900;margin-top:18px;cursor:pointer;transition:0.2s;}
-.main-btn:hover{transform:scale(1.02);}
-.tabs{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px;}
-.tab-btn{flex:1;padding:15px;border:none;border-radius:18px;font-size:15px;font-weight:bold;cursor:pointer;background:rgba(255,255,255,0.2);color:white;backdrop-filter:blur(10px);}
-.active-tab{background:#FFD700;color:black;}
-.card{padding:20px;border-radius:30px;margin-bottom:22px;box-shadow:0 8px 25px rgba(0,0,0,0.22);}
-.food-image{width:100%;height:300px;object-fit:cover;border-radius:24px;cursor:pointer;}
-.food-title{font-size:30px;font-weight:900;margin-top:16px;}
-.food-sub{font-size:15px;margin-top:6px;color:#ddd;}
-.food-desc{margin-top:12px;font-size:14px;line-height:1.7;color:#f1f1f1;}
-.stars{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;}
-.star{font-size:56px;cursor:pointer;color:#cfcfcf;transition:0.2s;user-select:none;}
-.star:hover{transform:scale(1.12);}
-.active-star{color:#FFD700 !important;text-shadow:0 0 12px rgba(255,215,0,1),0 0 20px rgba(255,215,0,0.9),0 0 30px rgba(255,215,0,0.7);transform:scale(1.08);}
-.leaderboard-title{font-size:44px;font-weight:900;text-align:center;margin-bottom:90px;}
-.leaderboard-container{display:flex;justify-content:center;align-items:flex-end;gap:26px;flex-wrap:wrap;padding-top:35px;}
-.leaderboard-box{width:260px;border-radius:36px;padding:22px 18px;position:relative;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.25);}
-.first-place{background:linear-gradient(180deg,#ffe27a,#f8c400);height:530px;color:black;}
-.second-place{background:linear-gradient(180deg,#f0f0f0,#d9d9d9);height:440px;color:black;}
-.third-place{background:linear-gradient(180deg,#f8d2c5,#e6a78f);height:400px;color:black;}
-.rank-image{width:150px;height:150px;border-radius:50%;object-fit:cover;border:8px solid white;margin-top:-95px;box-shadow:0 8px 22px rgba(0,0,0,0.18);}
-.rank-food{font-size:28px;font-weight:900;margin-top:18px;}
-.rank-rating{font-size:24px;font-weight:bold;margin-top:12px;}
-.rank-number{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:140px;font-weight:900;opacity:0.15;}
-.crown{position:absolute;top:-58px;left:50%;transform:translateX(-50%);font-size:82px;}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#FFD700;color:black;padding:13px 22px;border-radius:16px;font-weight:900;z-index:9999;box-shadow:0 6px 20px rgba(0,0,0,0.25);}
-@media(max-width:768px){.food-image{height:220px;}.food-title{font-size:24px;}.star{font-size:42px;}.leaderboard-box{width:100%;max-width:320px;height:auto !important;padding-bottom:90px;}.rank-image{width:110px;height:110px;margin-top:-65px;}.rank-number{font-size:95px;}}
+
+/* GLASS EFFECT */
+
+.glass{
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,0.15);
+}
+
+.container{
+width:100%;
+max-width:1200px;
+margin:auto;
+padding:16px;
+}
+
+/* LOGIN */
+
+.login-card{
+padding:35px 22px;
+border-radius:32px;
+margin-top:35px;
+box-shadow:0 8px 30px rgba(0,0,0,0.25);
+text-align:center;
+}
+
+.logo{
+width:135px;
+height:135px;
+object-fit:contain;
+border-radius:28px;
+display:block;
+margin:auto;
+background:white;
+padding:10px;
+}
+
+.main-title{
+font-size:48px;
+font-weight:900;
+margin-top:18px;
+letter-spacing:1px;
+}
+
+.sub-title{
+font-size:15px;
+margin-top:8px;
+color:#f1f1f1;
+}
+
+/* INPUTS */
+
+input,
+textarea{
+width:100%;
+padding:16px;
+border-radius:18px;
+border:none;
+margin-top:14px;
+font-size:15px;
+outline:none;
+background:rgba(255,255,255,0.92);
+color:#111;
+}
+
+textarea{
+min-height:120px;
+resize:none;
+}
+
+/* BUTTON */
+
+.main-btn{
+width:100%;
+padding:16px;
+border:none;
+border-radius:18px;
+background:#FFD700;
+color:black;
+font-size:16px;
+font-weight:900;
+margin-top:18px;
+cursor:pointer;
+transition:0.2s;
+}
+
+.main-btn:hover{
+transform:scale(1.02);
+}
+
+/* TOPBAR */
+
+.topbar{
+padding:15px 18px;
+border-radius:24px;
+display:flex;
+align-items:center;
+gap:14px;
+margin-bottom:18px;
+flex-wrap:wrap;
+}
+
+.top-logo{
+width:62px;
+height:62px;
+border-radius:18px;
+background:white;
+padding:6px;
+object-fit:contain;
+}
+
+.top-title{
+font-size:26px;
+font-weight:900;
+}
+
+.hidden{
+display:none;
+}
+
+/* TABS */
+
+.tabs{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+margin-bottom:22px;
+}
+
+.tab-btn{
+flex:1;
+padding:15px;
+border:none;
+border-radius:18px;
+font-size:15px;
+font-weight:bold;
+cursor:pointer;
+background:rgba(255,255,255,0.2);
+color:white;
+backdrop-filter:blur(10px);
+}
+
+.active-tab{
+background:#FFD700;
+color:black;
+}
+
+/* CARD */
+
+.card{
+padding:20px;
+border-radius:30px;
+margin-bottom:22px;
+box-shadow:0 8px 25px rgba(0,0,0,0.22);
+}
+
+/* FOOD IMAGE */
+
+.food-image{
+width:100%;
+height:340px;
+object-fit:cover;
+border-radius:24px;
+}
+
+.food-title{
+font-size:30px;
+font-weight:900;
+margin-top:16px;
+}
+
+.food-sub{
+font-size:15px;
+margin-top:6px;
+color:#ddd;
+}
+
+.food-desc{
+margin-top:12px;
+font-size:14px;
+line-height:1.7;
+color:#f1f1f1;
+}
+
+/* STARS */
+
+.stars{
+display:flex;
+gap:8px;
+margin-top:18px;
+flex-wrap:wrap;
+}
+
+.star{
+font-size:56px;
+cursor:pointer;
+color:#cfcfcf;
+transition:0.2s;
+user-select:none;
+}
+
+.star:hover{
+transform:scale(1.12);
+}
+
+.active-star{
+color:#FFD700 !important;
+text-shadow:
+0 0 12px rgba(255,215,0,1),
+0 0 20px rgba(255,215,0,0.9),
+0 0 30px rgba(255,215,0,0.7);
+transform:scale(1.08);
+}
+
+/* TRACKER */
+
+.gauge{
+width:100%;
+height:18px;
+background:rgba(255,255,255,0.25);
+border-radius:30px;
+overflow:hidden;
+margin-top:15px;
+}
+
+.gauge-fill{
+height:100%;
+background:linear-gradient(
+90deg,
+#FFD700,
+#ffef8a
+);
+}
+
+/* LEADERBOARD */
+
+.leaderboard-title{
+font-size:44px;
+font-weight:900;
+text-align:center;
+margin-bottom:90px;
+}
+
+.leaderboard-container{
+display:flex;
+justify-content:center;
+align-items:flex-end;
+gap:26px;
+flex-wrap:wrap;
+padding-top:35px;
+}
+
+.leaderboard-box{
+width:260px;
+border-radius:36px;
+padding:22px 18px;
+position:relative;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.25);
+}
+
+.first-place{
+background:linear-gradient(
+180deg,
+#ffe27a,
+#f8c400
+);
+height:530px;
+color:black;
+}
+
+.second-place{
+background:linear-gradient(
+180deg,
+#f0f0f0,
+#d9d9d9
+);
+height:440px;
+color:black;
+}
+
+.third-place{
+background:linear-gradient(
+180deg,
+#f8d2c5,
+#e6a78f
+);
+height:400px;
+color:black;
+}
+
+.rank-image{
+width:150px;
+height:150px;
+border-radius:50%;
+object-fit:cover;
+border:8px solid white;
+margin-top:-95px;
+box-shadow:0 8px 22px rgba(0,0,0,0.18);
+}
+
+.rank-food{
+font-size:28px;
+font-weight:900;
+margin-top:18px;
+}
+
+.rank-rating{
+font-size:24px;
+font-weight:bold;
+margin-top:12px;
+}
+
+.rank-number{
+position:absolute;
+bottom:0;
+left:50%;
+transform:translateX(-50%);
+font-size:140px;
+font-weight:900;
+opacity:0.15;
+}
+
+.crown{
+position:absolute;
+top:-58px;
+left:50%;
+transform:translateX(-50%);
+font-size:82px;
+}
+
+/* TOAST */
+
+.toast{
+position:fixed;
+bottom:22px;
+left:50%;
+transform:translateX(-50%);
+background:#FFD700;
+color:black;
+padding:13px 22px;
+border-radius:16px;
+font-weight:900;
+z-index:9999;
+box-shadow:0 6px 20px rgba(0,0,0,0.25);
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.food-image{
+height:220px;
+}
+
+.food-title{
+font-size:24px;
+}
+
+.star{
+font-size:42px;
+}
+
+.main-title{
+font-size:36px;
+}
+
+.leaderboard-box{
+width:100%;
+max-width:320px;
+height:auto !important;
+padding-bottom:90px;
+}
+
+.rank-image{
+width:110px;
+height:110px;
+margin-top:-65px;
+}
+
+.rank-number{
+font-size:95px;
+}
+
+}
+
 </style>
 </head>
 
@@ -60,31 +430,150 @@ textarea{min-height:120px;resize:none;}
 <div class="container">
 
 <!-- LOGIN -->
+
 <div id="loginPage" class="login-card glass">
+
 <img src="logo.png" class="logo">
-<div class="main-title">ShifPlatter</div>
-<div class="sub-title">Login with your Instagram username</div>
-<input type="text" id="username" placeholder="@instagram_username">
-<input type="text" id="name" placeholder="Your Name">
-<button class="main-btn" onclick="loginUser()">Continue</button>
+
+<div class="main-title">
+ShifPlatter
+</div>
+
+<div class="sub-title">
+Login with your Instagram username
+</div>
+
+<input
+type="text"
+id="username"
+placeholder="@instagram_username"
+>
+
+<input
+type="text"
+id="name"
+placeholder="Your Name"
+>
+
+<button
+class="main-btn"
+onclick="loginUser()">
+Continue
+</button>
+
 </div>
 
 <!-- MAIN APP -->
+
 <div id="mainApp" class="hidden">
 
+<!-- TOPBAR -->
+
+<div class="topbar glass">
+
+<img src="logo.png" class="top-logo">
+
+<div>
+
+<div class="top-title">
+ShifPlatter
+</div>
+
+<div style="font-size:13px;color:#f1f1f1;">
+Community Food Ratings
+</div>
+
+</div>
+
+</div>
+
+<!-- TABS -->
+
 <div class="tabs">
-<button class="tab-btn active-tab" onclick="showTab('galleryTab',this)">Gallery</button>
-<button class="tab-btn" onclick="showTab('ratingsTab',this)">Ratings</button>
-<button class="tab-btn" onclick="showTab('uploadTab',this)">Upload</button>
-<button class="tab-btn" onclick="showTab('leaderboardTab',this)">Leaderboard</button>
+
+<button
+class="tab-btn active-tab"
+onclick="showTab('galleryTab',this)">
+Gallery
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('ratingsTab',this)">
+Ratings
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('uploadTab',this)">
+Upload
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('leaderboardTab',this)">
+Leaderboard
+</button>
+
 </div>
 
-<div id="galleryTab"></div>
-<div id="ratingsTab" class="hidden"></div>
-<div id="uploadTab" class="hidden"></div>
-<div id="leaderboardTab" class="hidden"></div>
+<!-- GALLERY -->
+
+<div id="galleryTab">
+<div id="gallery"></div>
+</div>
+
+<!-- RATINGS -->
+
+<div id="ratingsTab" class="hidden">
+<div id="ratingsContainer"></div>
+</div>
+
+<!-- UPLOAD -->
+
+<div id="uploadTab" class="hidden">
+
+<div class="card glass">
+
+<h2>Upload Food</h2>
+
+<input type="file" id="foodImage" accept="image/*">
+
+<input type="text" id="restaurant" placeholder="Restaurant / Cafe Name">
+
+<input type="text" id="foodname" placeholder="Food Name">
+
+<textarea id="details" placeholder="Food Details"></textarea>
+
+<button class="main-btn" onclick="uploadFood()">
+Upload Food
+</button>
 
 </div>
+
+</div>
+
+<!-- LEADERBOARD -->
+
+<div id="leaderboardTab" class="hidden">
+
+<div class="card glass">
+
+<h1 class="leaderboard-title">
+🏆 Top Food Leaderboard
+</h1>
+
+<div
+id="leaderboardContainer"
+class="leaderboard-container">
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 <script>
@@ -97,132 +586,441 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
+
+
+
 firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
+
+const db = firebase.database();
 
 let currentUser="";
 let currentName="";
 const userRatings={};
 
+/* LOGIN */
+
 function loginUser(){
-  const username=document.getElementById("username").value.trim();
-  const name=document.getElementById("name").value.trim();
-  if(!username || !name){alert("Enter details"); return;}
-  currentUser=username;
-  currentName=name;
-  document.getElementById("loginPage").classList.add("hidden");
-  document.getElementById("mainApp").classList.remove("hidden");
-  loadFoods();
+
+const username =
+document.getElementById("username")
+.value.trim();
+
+const name =
+document.getElementById("name")
+.value.trim();
+
+if(!username || !name){
+
+alert("Enter details");
+return;
+
 }
+
+currentUser=username;
+currentName=name;
+
+document.getElementById("loginPage")
+.classList.add("hidden");
+
+document.getElementById("mainApp")
+.classList.remove("hidden");
+
+loadFoods();
+
+}
+
+/* TABS */
 
 function showTab(tabId,btn){
-  document.querySelectorAll('#galleryTab,#ratingsTab,#uploadTab,#leaderboardTab').forEach(tab=>tab.classList.add('hidden'));
-  document.getElementById(tabId).classList.remove('hidden');
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active-tab'));
-  btn.classList.add('active-tab');
+
+document.querySelectorAll(
+"#galleryTab,#ratingsTab,#uploadTab,#leaderboardTab"
+).forEach(tab=>{
+
+tab.classList.add("hidden");
+
+});
+
+document.getElementById(tabId)
+.classList.remove("hidden");
+
+document.querySelectorAll(".tab-btn")
+.forEach(btn=>{
+
+btn.classList.remove("active-tab");
+
+});
+
+btn.classList.add("active-tab");
+
 }
+
+/* LOAD FOODS */
 
 function loadFoods(){
-  const gallery=document.getElementById('galleryTab');
-  const ratingsContainer=document.getElementById('ratingsTab');
-  const leaderboardContainer=document.getElementById('leaderboardTab');
-  const uploadSection=document.getElementById('uploadTab');
 
-  // UPLOAD
-  uploadSection.innerHTML=`
-  <div class="card glass">
-    <h2>Upload Food</h2>
-    <input type="file" id="foodImage" accept="image/*">
-    <input type="text" id="restaurant" placeholder="Restaurant / Cafe Name">
-    <input type="text" id="foodname" placeholder="Food Name">
-    <textarea id="details" placeholder="Food Details"></textarea>
-    <button class="main-btn" onclick="uploadFood()">Upload Food</button>
-  </div>`;
+db.ref("foods")
+.on("value",(snapshot)=>{
 
-  db.ref("foods").on("value",snapshot=>{
-    const data=snapshot.val()||{};
-    gallery.innerHTML="";
-    ratingsContainer.innerHTML="";
-    let leaderboardArr=[];
+const data=snapshot.val();
 
-    Object.keys(data).forEach(id=>{
-      const item=data[id];
-      const ratingsArr=item.ratings||[];
-      const avg=ratingsArr.length?ratingsArr.reduce((a,b)=>a+b.rating,0)/ratingsArr.length:0;
-      leaderboardArr.push({name:item.foodname,image:item.image,rating:avg});
+const gallery=
+document.getElementById("gallery");
 
-      // Gallery
-      gallery.innerHTML+=`
-      <div class="card glass">
-        <img src="${item.image}" class="food-image">
-        <div class="food-title">${item.foodname}</div>
-        <div class="food-sub">${item.restaurant}</div>
-        <div class="food-desc">${item.details}</div>
-        <div class="stars">${[1,2,3,4,5].map(num=>`<span class="star ${userRatings[id]>=num?'active-star':''}" onclick="rateFood(this,'${id}',${num})">★</span>`).join("")}</div>
-      </div>`;
+const ratings=
+document.getElementById("ratingsContainer");
 
-      // Ratings Container
-      ratingsContainer.innerHTML+=`
-      <div class="card glass">
-        <div>${item.foodname} - ${item.restaurant}</div>
-        <div class="gauge"><div class="gauge-fill" style="width:${avg*20}%"></div></div>
-        <div class="gauge-text">${avg.toFixed(1)}/5</div>
-      </div>`;
-    });
+gallery.innerHTML="";
+ratings.innerHTML="";
 
-    // Leaderboard
-    leaderboardArr.sort((a,b)=>b.rating-a.rating);
-    const top3=leaderboardArr.slice(0,3);
-    leaderboardContainer.innerHTML="";
-    const order=[top3[1],top3[0],top3[2]];
-    const positions=["second-place","first-place","third-place"];
-    order.forEach((food,i)=>{
-      if(!food) return;
-      leaderboardContainer.innerHTML+=`
-      <div class="card glass leaderboard-box ${positions[i]}">
-        <img src="${food.image}" class="rank-image">
-        <div class="rank-food">${food.name}</div>
-        <div class="rank-rating">⭐ ${food.rating.toFixed(1)}</div>
-      </div>`;
-    });
-  });
+if(!data){
+return;
 }
+
+loadLeaderboard(data);
+
+Object.keys(data).forEach((id)=>{
+
+const item=data[id];
+
+if(!item.ratings){
+item.ratings=[];
+}
+
+let total=0;
+
+item.ratings.forEach((r)=>{
+
+total += Number(r.rating || 0);
+
+});
+
+let avg=0;
+
+if(item.ratings.length>0){
+
+avg=total/item.ratings.length;
+
+}
+
+gallery.innerHTML += `
+
+<div class="card glass">
+
+<img
+src="${item.image}"
+class="food-image"
+>
+
+<div class="food-title">
+${item.foodname}
+</div>
+
+<div class="food-sub">
+${item.restaurant}
+</div>
+
+<div class="food-desc">
+${item.details}
+</div>
+
+<div class="stars">
+
+${[1,2,3,4,5].map(num=>`
+
+<span
+class="star
+${userRatings[id] >= num ? 'active-star' : ''}"
+onclick="rateFood(this,'${id}',${num})">
+★
+</span>
+
+`).join("")}
+
+</div>
+
+</div>
+
+`;
+
+ratings.innerHTML += `
+
+<div class="card glass">
+
+<h2>${item.foodname}</h2>
+
+<p>${item.restaurant}</p>
+
+<div class="gauge">
+
+<div
+class="gauge-fill"
+style="width:${avg*20}%">
+</div>
+
+</div>
+
+<p style="
+margin-top:12px;
+font-size:18px;
+font-weight:bold;
+">
+⭐ ${avg.toFixed(1)}/5
+</p>
+
+</div>
+
+`;
+
+});
+
+});
+
+}
+
+/* RATE FOOD */
 
 function rateFood(el,foodId,rating){
-  const starsContainer=el.parentElement;
-  const stars=starsContainer.querySelectorAll(".star");
-  userRatings[foodId]=rating;
-  stars.forEach((star,index)=>{index<rating?star.classList.add("active-star"):star.classList.remove("active-star");});
-  db.ref("foods/"+foodId+"/ratings").once("value").then(snapshot=>{
-    let ratings=snapshot.val()||[];
-    const exists=ratings.find(r=>r.email===currentUser);
-    if(exists){alert("You already rated"); return;}
-    ratings.push({user:currentUser,name:currentName,rating});
-    db.ref("foods/"+foodId+"/ratings").set(ratings);
-  }).then(()=>{showToast("⭐ Rating Saved Successfully");});
+
+const starsContainer =
+el.parentElement;
+
+const stars =
+starsContainer.querySelectorAll(".star");
+
+/* LOCAL SAVE */
+
+userRatings[foodId]=rating;
+
+/* HIGHLIGHT */
+
+stars.forEach((star,index)=>{
+
+if(index < rating){
+
+star.classList.add("active-star");
+
+}else{
+
+star.classList.remove("active-star");
+
 }
+
+});
+
+/* FIREBASE SAVE */
+
+db.ref("foods/"+foodId+"/ratings")
+.once("value")
+.then((snapshot)=>{
+
+let ratings=snapshot.val() || [];
+
+ratings.push({
+
+user:currentUser,
+name:currentName,
+rating:rating
+
+});
+
+return db.ref(
+"foods/"+foodId+"/ratings"
+).set(ratings);
+
+})
+.then(()=>{
+
+showToast(
+"⭐ Rating Saved Successfully"
+);
+
+});
+
+}
+
+/* UPLOAD */
 
 function uploadFood(){
-  const file=document.getElementById("foodImage").files[0];
-  const restaurant=document.getElementById("restaurant").value;
-  const foodname=document.getElementById("foodname").value;
-  const details=document.getElementById("details").value;
-  if(!file||!restaurant||!foodname||!details){alert("Fill all fields");return;}
-  const reader=new FileReader();
-  reader.onload=function(e){
-    db.ref("userUploads").push({uploadedName:currentName,uploadedBy:currentUser,restaurant,foodname,details,image:e.target.result,time:Date.now()});
-    showToast("✅ Photo sent to admin for approval");
-  };
-  reader.readAsDataURL(file);
+
+const file =
+document.getElementById("foodImage")
+.files[0];
+
+const restaurant =
+document.getElementById("restaurant")
+.value;
+
+const foodname =
+document.getElementById("foodname")
+.value;
+
+const details =
+document.getElementById("details")
+.value;
+
+if(!file){
+
+alert("Upload image");
+
+return;
+
 }
 
-function showToast(text){
-  const toast=document.createElement("div");
-  toast.className="toast";
-  toast.innerHTML=text;
-  document.body.appendChild(toast);
-  setTimeout(()=>{toast.remove();},1800);
+const reader = new FileReader();
+
+reader.onload=function(e){
+
+const data={
+
+restaurant,
+foodname,
+details,
+image:e.target.result,
+ratings:[]
+
+};
+
+db.ref("foods").push(data);
+
+showToast("✅ Food Uploaded");
+
+};
+
+reader.readAsDataURL(file);
+
 }
+
+/* LEADERBOARD */
+
+function loadLeaderboard(data){
+
+const leaderboard =
+document.getElementById(
+"leaderboardContainer"
+);
+
+leaderboard.innerHTML="";
+
+let foods=[];
+
+Object.keys(data).forEach((id)=>{
+
+const item=data[id];
+
+if(!item.ratings){
+return;
+}
+
+let total=0;
+
+item.ratings.forEach((r)=>{
+
+total += Number(r.rating || 0);
+
+});
+
+let avg=0;
+
+if(item.ratings.length>0){
+
+avg=total/item.ratings.length;
+
+}
+
+foods.push({
+
+name:item.foodname,
+image:item.image,
+rating:avg
+
+});
+
+});
+
+foods.sort((a,b)=>b.rating-a.rating);
+
+const top3=foods.slice(0,3);
+
+const order=[
+top3[1],
+top3[0],
+top3[2]
+];
+
+const positions=[
+"second-place",
+"first-place",
+"third-place"
+];
+
+const rankNumbers=[
+2,
+1,
+3
+];
+
+order.forEach((food,index)=>{
+
+if(!food){
+return;
+}
+
+leaderboard.innerHTML += `
+
+<div class="leaderboard-box ${positions[index]}">
+
+${rankNumbers[index]===1 ? `
+<div class="crown">👑</div>
+` : ``}
+
+<img
+src="${food.image}"
+class="rank-image"
+>
+
+<div class="rank-food">
+${food.name}
+</div>
+
+<div class="rank-rating">
+⭐ ${food.rating.toFixed(1)}
+</div>
+
+<div class="rank-number">
+${rankNumbers[index]}
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+/* TOAST */
+
+function showToast(text){
+
+const toast =
+document.createElement("div");
+
+toast.className="toast";
+
+toast.innerHTML=text;
+
+document.body.appendChild(toast);
+
+setTimeout(()=>{
+
+toast.remove();
+
+},1800);
+
+}
+
 </script>
+
 </body>
 </html>
