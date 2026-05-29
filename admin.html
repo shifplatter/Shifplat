@@ -14,7 +14,8 @@ body{background:#f5f5f5;color:#222;min-height:100vh;}
 .container{max-width:1200px;margin:auto;padding:16px;}
 h1{text-align:center;margin-bottom:24px;}
 .tabs{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;}
-.tab-btn{flex:1;padding:12px;background:#e5e5e5;border:none;font-weight:bold;cursor:pointer;}
+.tab-btn{flex:1;padding:12px;background:#e5e5e5;border:none;font-weight:bold;cursor:pointer;border-radius:10px;transition:0.3s;}
+.tab-btn:hover{background:#ccc;}
 .tab-btn.active-tab{background:black;color:white;}
 .tab-content{display:none;}
 .tab-content.active{display:block;}
@@ -28,12 +29,15 @@ h1{text-align:center;margin-bottom:24px;}
 .gauge-fill{height:100%;background:linear-gradient(90deg,#00c853,#64dd17);}
 .gauge-text{margin-top:6px;font-size:14px;font-weight:bold;}
 .full-btn{border:none;padding:10px 12px;border-radius:12px;background:black;color:white;cursor:pointer;margin-top:8px;}
+.plus-btn{position:fixed;bottom:25px;right:25px;width:65px;height:65px;border-radius:50%;background:black;color:white;font-size:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.2);}
+#uploadModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;}
+#uploadModal .card{width:90%;max-width:400px;}
+@media (max-width:768px){.food-card{flex-direction:column;align-items:center;}.food-image{width:80%;height:auto;}}
 </style>
 </head>
 <body>
 
 <div class="container">
-
 <h1>ShifPlatter Admin Panel</h1>
 
 <div class="tabs">
@@ -47,6 +51,20 @@ h1{text-align:center;margin-bottom:24px;}
 <div id="trackerTab" class="tab-content"></div>
 <div id="audienceTab" class="tab-content"></div>
 <div id="usersPhotoTab" class="tab-content"></div>
+
+<div class="plus-btn" onclick="openUploadForm()">+</div>
+
+<div id="uploadModal" style="display:none;">
+<div class="card">
+<h2>Upload Food</h2>
+<input type="file" id="foodImage" accept="image/*">
+<input type="text" id="restaurant" placeholder="Restaurant / Cafe Name">
+<input type="text" id="foodname" placeholder="Food Name">
+<textarea id="details" placeholder="Food Details"></textarea>
+<button class="full-btn" onclick="uploadFood()">Save Food</button>
+<button class="full-btn" style="background:#888" onclick="closeUploadForm()">Close</button>
+</div>
+</div>
 
 </div>
 
@@ -63,15 +81,45 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db=firebase.database();
 
-// Tab switching
+window.onload=loadAdminData;
+
 function showTab(tabId, btn){
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   document.getElementById(tabId).classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active-tab'));
   btn.classList.add('active-tab');
 }
 
-// Load all data
+function openUploadForm(){document.getElementById('uploadModal').style.display='flex';}
+function closeUploadForm(){document.getElementById('uploadModal').style.display='none';}
+
+function uploadFood(){
+  const imageFile=document.getElementById("foodImage").files[0];
+  const restaurant=document.getElementById("restaurant").value;
+  const foodname=document.getElementById("foodname").value;
+  const details=document.getElementById("details").value;
+
+  if(!imageFile||!restaurant||!foodname||!details){alert("Please fill all details"); return;}
+
+  const reader=new FileReader();
+  reader.onload=function(){
+    const foodData={
+      image:reader.result,
+      restaurant,
+      foodname,
+      details,
+      ratings:[],
+      time:Date.now()
+    };
+    db.ref("foods").push(foodData).then(()=>{
+      alert("Food uploaded successfully");
+      closeUploadForm();
+      loadAdminData();
+    });
+  };
+  reader.readAsDataURL(imageFile);
+}
+
 function loadAdminData(){
   const gallery=document.getElementById('galleryTab');
   const tracker=document.getElementById('trackerTab');
@@ -88,7 +136,6 @@ function loadAdminData(){
       const ratingsArray = item.ratings || [];
       const avg = ratingsArray.length ? (ratingsArray.reduce((a,b)=>a+b.rating,0)/ratingsArray.length).toFixed(1) : 0;
 
-      // Gallery
       gallery.innerHTML+=`
         <div class="card">
           <div class="food-card">
@@ -101,7 +148,6 @@ function loadAdminData(){
           </div>
         </div>`;
 
-      // Tracker
       tracker.innerHTML+=`
         <div class="card">
           <h3>${item.foodname}</h3>
@@ -112,7 +158,6 @@ function loadAdminData(){
           </div>
         </div>`;
 
-      // Audience Ratings
       let tableRows='';
       ratingsArray.forEach(r=>{
         tableRows+=`<tr><td>${r.user}</td><td>${r.email||'N/A'}</td><td>${r.rating} ⭐</td></tr>`;
@@ -152,8 +197,6 @@ function loadAdminData(){
     });
   });
 }
-
-window.onload=loadAdminData;
 </script>
 
 </body>
