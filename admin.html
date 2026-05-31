@@ -1,1 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ShifPlatter Admin Panel</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:
+linear-gradient(
+rgba(0,0,0,.55),
+rgba(0,0,0,.55)
+),
+url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600");
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+color:white;
+min-height:100vh;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:20px;
+}
+
+.glass{
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.15);
+}
+
+.topbar{
+padding:20px;
+border-radius:24px;
+margin-bottom:20px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.title{
+font-size:32px;
+font-weight:900;
+}
+
+.subtitle{
+font-size:14px;
+color:#ddd;
+}
+
+.tabs{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:20px;
+}
+
+.tab-btn{
+flex:1;
+min-width:140px;
+padding:14px;
+border:none;
+border-radius:16px;
+cursor:pointer;
+font-weight:bold;
+background:rgba(255,255,255,.15);
+color:white;
+}
+
+.active-tab{
+background:#FFD700;
+color:black;
+}
+
+.hidden{
+display:none;
+}
+
+.card{
+padding:20px;
+border-radius:28px;
+margin-bottom:20px;
+box-shadow:0 8px 25px rgba(0,0,0,.25);
+}
+
+.food-image{
+width:100%;
+height:280px;
+object-fit:cover;
+border-radius:20px;
+cursor:pointer;
+}
+
+.food-title{
+font-size:28px;
+font-weight:900;
+margin-top:15px;
+}
+
+.food-sub{
+color:#ddd;
+margin-top:6px;
+}
+
+.food-desc{
+margin-top:10px;
+line-height:1.6;
+}
+
+input,
+textarea{
+width:100%;
+padding:15px;
+border:none;
+border-radius:16px;
+margin-top:12px;
+background:white;
+color:black;
+}
+
+textarea{
+min-height:120px;
+resize:none;
+}
+
+.main-btn{
+width:100%;
+padding:15px;
+margin-top:15px;
+border:none;
+border-radius:16px;
+background:#FFD700;
+font-weight:900;
+cursor:pointer;
+}
+
+.download-btn{
+padding:12px 18px;
+border:none;
+border-radius:14px;
+background:#FFD700;
+font-weight:bold;
+cursor:pointer;
+margin-top:15px;
+}
+
+.gauge{
+width:100%;
+height:18px;
+background:rgba(255,255,255,.25);
+border-radius:30px;
+overflow:hidden;
+margin-top:15px;
+}
+
+.gauge-fill{
+height:100%;
+background:linear-gradient(
+90deg,
+#00d26a,
+#00ff88
+);
+}
+
+.leaderboard-container{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+.rank-card{
+width:280px;
+padding:20px;
+border-radius:30px;
+text-align:center;
+background:rgba(255,255,255,.15);
+}
+
+.rank-card img{
+width:130px;
+height:130px;
+border-radius:50%;
+object-fit:cover;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="topbar glass">
+
+<div>
+
+<div class="title">
+🍔 ShifPlatter Admin
+</div>
+
+<div class="subtitle">
+Manage Foods, Ratings, Comments & User Uploads
+</div>
+
+</div>
+
+</div>
+
+<div class="tabs">
+
+<button
+class="tab-btn active-tab"
+onclick="showTab('galleryTab',this)">
+Gallery
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('uploadTab',this)">
+Upload Food
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('userPhotosTab',this)">
+User Photos
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('ratingsTab',this)">
+Ratings
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('commentsTab',this)">
+Comments
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('leaderboardTab',this)">
+Leaderboard
+</button>
+
+</div>
+
+<div id="galleryTab"></div>
+
+<div id="uploadTab" class="hidden"></div>
+
+<div id="userPhotosTab" class="hidden"></div>
+
+<div id="ratingsTab" class="hidden"></div>
+
+<div id="commentsTab" class="hidden"></div>
+
+<div id="leaderboardTab" class="hidden"></div>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f4f4;
+color:#222;
+}
+
+.container{
+max-width:1400px;
+margin:auto;
+padding:20px;
+}
+
+.topbar{
+background:black;
+color:white;
+padding:20px;
+border-radius:20px;
+margin-bottom:20px;
+}
+
+.topbar h1{
+font-size:32px;
+}
+
+.tabs{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+flex-wrap:wrap;
+}
+
+.tab-btn{
+padding:14px 20px;
+border:none;
+border-radius:14px;
+cursor:pointer;
+background:#e5e5e5;
+font-weight:bold;
+}
+
+.active-tab{
+background:black;
+color:white;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:20px;
+margin-bottom:20px;
+box-shadow:0 5px 20px rgba(0,0,0,0.08);
+}
+
+.hidden{
+display:none;
+}
+
+input,
+textarea{
+width:100%;
+padding:14px;
+margin-top:12px;
+border-radius:14px;
+border:1px solid #ddd;
+}
+
+button{
+cursor:pointer;
+}
+
+.upload-btn{
+width:100%;
+padding:15px;
+margin-top:15px;
+border:none;
+background:black;
+color:white;
+border-radius:14px;
+font-weight:bold;
+}
+
+.gallery-grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fill,minmax(320px,1fr));
+gap:20px;
+}
+
+.food-card{
+background:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+.food-image{
+width:100%;
+height:250px;
+object-fit:cover;
+cursor:pointer;
+}
+
+.food-content{
+padding:15px;
+}
+
+.food-name{
+font-size:24px;
+font-weight:bold;
+}
+
+.restaurant-name{
+margin-top:5px;
+color:#666;
+}
+
+.details{
+margin-top:10px;
+font-size:14px;
+line-height:1.6;
+}
+
+.download-btn{
+margin-top:15px;
+padding:12px 16px;
+border:none;
+border-radius:12px;
+background:#FFD700;
+font-weight:bold;
+}
+
+.gauge{
+height:18px;
+background:#ddd;
+border-radius:20px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.gauge-fill{
+height:100%;
+background:
+linear-gradient(
+90deg,
+#00c853,
+#64dd17
+);
+}
+
+.comment-box{
+background:#fafafa;
+padding:12px;
+border-radius:12px;
+margin-top:10px;
+border:1px solid #eee;
+}
+
+.comment-user{
+font-weight:bold;
+margin-bottom:5px;
+}
+
+.rating-table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+.rating-table th,
+.rating-table td{
+border:1px solid #ddd;
+padding:10px;
+text-align:left;
+}
+
+.rating-table th{
+background:#f5f5f5;
+}
+
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.modal img{
+max-width:95%;
+max-height:95%;
+border-radius:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="topbar">
+<h1>🍔 ShifPlatter Admin Dashboard</h1>
+<p>Manage Gallery, Ratings, Comments & User Uploads</p>
+</div>
+
+<div class="tabs">
+
+<button
+class="tab-btn active-tab"
+onclick="showTab('galleryTab',this)">
+Gallery
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('uploadTab',this)">
+Upload Food
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('ratingsTab',this)">
+Ratings
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('commentsTab',this)">
+Comments
+</button>
+
+<button
+class="tab-btn"
+onclick="showTab('userPhotosTab',this)">
+User Photos
+</button>
+
+</div>
+
+<!-- GALLERY TAB -->
+
+<div id="galleryTab">
+<div
+id="galleryContainer"
+class="gallery-grid">
+</div>
+</div>
+
+<!-- UPLOAD TAB -->
+
+<div
+id="uploadTab"
+class="hidden">
+
+<div class="card">
+
+<h2>Upload Food To Gallery</h2>
+
+<input
+type="file"
+id="foodImage"
+accept="image/*">
+
+<input
+type="text"
+id="restaurant"
+placeholder="Restaurant / Cafe Name">
+
+<input
+type="text"
+id="foodname"
+placeholder="Food Name">
+
+<textarea
+id="details"
+placeholder="Food Details">
+</textarea>
+
+<button
+class="upload-btn"
+onclick="uploadFood()">
+Upload Food
+</button>
+
+</div>
+
+</div>
+<!-- RATINGS TAB -->
+
+<div
+id="ratingsTab"
+class="hidden">
+
+<div class="card">
+
+<h2>Overall Ratings</h2>
+
+<div id="ratingsContainer"></div>
+
+</div>
+
+</div>
+
+<!-- COMMENTS TAB -->
+
+<div
+id="commentsTab"
+class="hidden">
+
+<div class="card">
+
+<h2>User Comments</h2>
+
+<div id="commentsContainer"></div>
+
+</div>
+
+</div>
+
+<!-- USER PHOTOS TAB -->
+
+<div
+id="userPhotosTab"
+class="hidden">
+
+<div class="card">
+
+<h2>Photos Uploaded By Users</h2>
+
+<div
+id="userPhotosContainer"
+class="gallery-grid">
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- IMAGE PREVIEW MODAL -->
+
+<div
+id="imageModal"
+class="modal"
+onclick="closeImage()">
+
+<img
+id="modalImage"
+src="">
+
+</div>
+
+<script>
+
+const firebaseConfig = {
+
+apiKey:"YOUR_API_KEY",
+authDomain:"YOUR_AUTH_DOMAIN",
+databaseURL:"YOUR_DATABASE_URL",
+projectId:"YOUR_PROJECT_ID",
+storageBucket:"YOUR_STORAGE_BUCKET",
+messagingSenderId:"YOUR_MSG_ID",
+appId:"YOUR_APP_ID"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+/* TAB SWITCH */
+
+function showTab(tabId,btn){
+
+document
+.querySelectorAll(
+'#galleryTab,#uploadTab,#ratingsTab,#commentsTab,#userPhotosTab'
+)
+.forEach(tab=>{
+
+tab.classList.add('hidden');
+
+});
+
+document
+.getElementById(tabId)
+.classList.remove('hidden');
+
+document
+.querySelectorAll('.tab-btn')
+.forEach(btn=>{
+
+btn.classList.remove('active-tab');
+
+});
+
+btn.classList.add('active-tab');
+
+}
+
+/* IMAGE MODAL */
+
+function openImage(src){
+
+document
+.getElementById("modalImage")
+.src = src;
+
+document
+.getElementById("imageModal")
+.style.display = "flex";
+
+}
+
+function closeImage(){
+
+document
+.getElementById("imageModal")
+.style.display = "none";
+
+}
+/* LOAD GALLERY */
+
+function loadGallery(){
+
+db.ref("foods")
+.on("value",(snapshot)=>{
+
+const data = snapshot.val();
+
+const gallery =
+document.getElementById(
+"galleryContainer"
+);
+
+gallery.innerHTML = "";
+
+if(!data){
+
+gallery.innerHTML = `
+<div class="card">
+No food items uploaded yet.
+</div>
+`;
+
+return;
+
+}
+
+Object.keys(data)
+.reverse()
+.forEach((id)=>{
+
+const item = data[id];
+
+gallery.innerHTML += `
+
+<div class="food-card">
+
+<img
+src="${item.image}"
+class="food-image"
+onclick="openImage('${item.image}')"
+>
+
+<div class="food-title">
+${item.foodname || ""}
+</div>
+
+<div class="food-sub">
+${item.restaurant || ""}
+</div>
+
+<div class="food-desc">
+${item.details || ""}
+</div>
+
+</div>
+
+`;
+
+});
+
+});
+
+}
+
+/* LOAD RATINGS */
+
+function loadRatings(){
+
+db.ref("foods")
+.on("value",(snapshot)=>{
+
+const data = snapshot.val();
+
+const ratingsContainer =
+document.getElementById(
+"ratingsContainer"
+);
+
+ratingsContainer.innerHTML = "";
+
+if(!data){
+
+ratingsContainer.innerHTML =
+"No ratings available.";
+
+return;
+
+}
+
+Object.keys(data)
+.forEach((id)=>{
+
+const item = data[id];
+
+const ratings =
+item.ratings || [];
+
+let total = 0;
+
+ratings.forEach((r)=>{
+
+total += Number(
+r.rating || 0
+);
+
+});
+
+const average =
+ratings.length > 0
+? (total / ratings.length)
+: 0;
+
+ratingsContainer.innerHTML += `
+
+<div class="rating-card">
+
+<h3>
+${item.foodname}
+</h3>
+
+<p>
+${item.restaurant}
+</p>
+
+<div class="progress">
+
+<div
+class="progress-fill"
+style="
+width:${average*20}%;
+">
+</div>
+
+</div>
+
+<p>
+
+⭐ ${average.toFixed(1)} / 5
+
+(${ratings.length}
+ratings)
+
+</p>
+
+</div>
+
+`;
+
+});
+
+});
+
+}
+
+/* LOAD COMMENTS */
+
+function loadComments(){
+
+db.ref("comments")
+.on("value",(snapshot)=>{
+
+const data = snapshot.val();
+
+const container =
+document.getElementById(
+"commentsContainer"
+);
+
+container.innerHTML = "";
+
+if(!data){
+
+container.innerHTML =
+"No comments yet.";
+
+return;
+
+}
+
+Object.keys(data)
+.reverse()
+.forEach((id)=>{
+
+const item = data[id];
+
+container.innerHTML += `
+
+<div class="comment-box">
+
+<b>
+${item.user || "User"}
+</b>
+
+<p>
+${item.comment || ""}
+</p>
+
+</div>
+
+`;
+
+});
+
+});
+
+}
+/* LOAD USER PHOTOS */
+
+function loadUserPhotos(){
+
+db.ref("userUploads")
+.on("value",(snapshot)=>{
+
+const data = snapshot.val();
+
+const container =
+document.getElementById(
+"userPhotosContainer"
+);
+
+container.innerHTML = "";
+
+if(!data){
+
+container.innerHTML = `
+<div class="card">
+No user uploads available.
+</div>
+`;
+
+return;
+
+}
+
+Object.keys(data)
+.reverse()
+.forEach((id)=>{
+
+const item = data[id];
+
+container.innerHTML += `
+
+<div class="food-card">
+
+<img
+src="${item.image}"
+class="food-image"
+onclick="openImage('${item.image}')"
+>
+
+<div class="food-content">
+
+<div class="food-name">
+${item.foodname || ""}
+</div>
+
+<div class="restaurant-name">
+${item.restaurant || ""}
+</div>
+
+<div class="details">
+${item.details || ""}
+</div>
+
+<p style="margin-top:10px;">
+
+<b>Uploaded By:</b>
+
+${item.uploadedName || "Unknown"}
+
+</p>
+
+<p>
+
+<b>Username:</b>
+
+${item.uploadedBy || "Unknown"}
+
+</p>
+
+<a
+href="${item.image}"
+download="food-image.jpg">
+
+<button
+class="download-btn">
+
+Download HD
+
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+});
+
+}
+
+/* ADMIN FOOD UPLOAD */
+
+function uploadFood(){
+
+const file =
+document.getElementById(
+"foodImage"
+).files[0];
+
+const restaurant =
+document.getElementById(
+"restaurant"
+).value;
+
+const foodname =
+document.getElementById(
+"foodname"
+).value;
+
+const details =
+document.getElementById(
+"details"
+).value;
+
+if(
+!file ||
+!restaurant ||
+!foodname
+){
+
+alert(
+"Please fill all details"
+);
+
+return;
+
+}
+
+const reader =
+new FileReader();
+
+reader.onload = function(e){
+
+const foodData = {
+
+restaurant,
+
+foodname,
+
+details,
+
+image:e.target.result,
+
+ratings:[],
+
+time:Date.now()
+
+};
+
+db.ref("foods")
+.push(foodData)
+.then(()=>{
+
+alert(
+"Food uploaded successfully"
+);
+
+document
+.getElementById(
+"foodImage"
+).value="";
+
+document
+.getElementById(
+"restaurant"
+).value="";
+
+document
+.getElementById(
+"foodname"
+).value="";
+
+document
+.getElementById(
+"details"
+).value="";
+
+});
+
+};
+
+reader.readAsDataURL(file);
+
+}
+
+/* START APP */
+
+loadGallery();
+
+loadRatings();
+
+loadComments();
+
+loadUserPhotos();
+
+</script>
+
+</body>
+</html>
