@@ -1,824 +1,403 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>ShifPlatter Admin</title>
+
+<!-- Firebase -->
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
 
-body{
+*{
 margin:0;
 padding:0;
-font-family:Arial,sans-serif;
-background:#f5f5f5;
-}
-
-/* LOGO UI */
-
-.logo-header{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-margin-bottom:20px;
-}
-
-.logo-img{
-width:140px;
-height:140px;
-object-fit:contain;
-border-radius:30px;
-box-shadow:0 6px 20px rgba(0,0,0,0.15);
-background:white;
-padding:10px;
-margin-bottom:10px;
-}
-
-.logo-title{
-font-size:32px;
-font-weight:bold;
-color:#0d3b3b;
-margin-top:5px;
-}
-
-.logo-sub{
-font-size:15px;
-color:#666;
-margin-top:5px;
-text-align:center;
-}
-
-.topbar{
-display:flex;
-align-items:center;
-gap:12px;
-background:white;
-padding:12px 18px;
-border-radius:20px;
-margin-bottom:20px;
-box-shadow:0 2px 10px rgba(0,0,0,0.08);
-}
-
-.topbar-logo{
-width:55px;
-height:55px;
-object-fit:contain;
-border-radius:14px;
-}
-
-.topbar-title{
-font-size:24px;
-font-weight:bold;
-color:#0d3b3b;
-}
-
-.topbar-sub{
-font-size:13px;
-color:#666;
-}
-
-.container{
-max-width:950px;
-margin:auto;
-padding:15px;
-}
-
-.card{
-background:white;
-padding:18px;
-border-radius:18px;
-margin-bottom:20px;
-box-shadow:0 2px 8px rgba(0,0,0,0.08);
-}
-
-input,textarea{
-width:100%;
-padding:14px;
-margin-top:12px;
-border-radius:14px;
-border:1px solid #ddd;
 box-sizing:border-box;
-font-size:15px;
+font-family:Arial,sans-serif;
 }
 
-button{
-border:none;
-padding:14px;
-border-radius:14px;
-cursor:pointer;
-font-weight:bold;
-}
+body{
 
-.full-btn{
-width:100%;
-background:black;
+background:
+linear-gradient(
+rgba(0,0,0,0.75),
+rgba(0,0,0,0.75)
+),
+url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1600&auto=format&fit=crop");
+
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+
 color:white;
-margin-top:15px;
+min-height:100vh;
+padding:20px;
+
 }
 
-.tabs{
-display:flex;
-gap:8px;
-margin-bottom:20px;
-overflow:auto;
+/* GLASS */
+
+.glass{
+
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,0.15);
+
 }
 
-.tab-btn{
-flex:1;
-background:#e5e5e5;
-white-space:nowrap;
-padding:12px;
-font-weight:bold;
-}
+/* HEADER */
 
-.active-tab{
-background:black;
-color:white;
-}
+.admin-header{
 
-.hidden{
-display:none;
-}
-
-.food-image{
-width:100%;
-height:260px;
-object-fit:cover;
-border-radius:18px;
-margin-bottom:12px;
-cursor:pointer;
-}
-
-.gauge{
-width:100%;
-height:18px;
-background:#ddd;
+padding:25px;
 border-radius:30px;
-overflow:hidden;
-margin-top:12px;
+margin-bottom:25px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:15px;
+
 }
 
-.gauge-fill{
-height:100%;
-background:linear-gradient(
-90deg,
-#00c853,
-#64dd17
-);
+.logo-area{
+
+display:flex;
+align-items:center;
+gap:15px;
+
 }
 
-.rating-table{
-width:100%;
-border-collapse:collapse;
-margin-top:15px;
+.logo{
+
+width:70px;
+height:70px;
+background:white;
+border-radius:18px;
+padding:5px;
+object-fit:contain;
+
 }
 
-.rating-table th,
-.rating-table td{
-border:1px solid #ddd;
-padding:10px;
-text-align:left;
+.admin-title{
+
+font-size:34px;
+font-weight:900;
+
+}
+
+.admin-sub{
+
+font-size:13px;
+color:#ddd;
+
+}
+
+/* STATS */
+
+.stats-grid{
+
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(220px,1fr));
+
+gap:18px;
+margin-bottom:25px;
+
+}
+
+.stat-card{
+
+padding:22px;
+border-radius:25px;
+text-align:center;
+
+}
+
+.stat-number{
+
+font-size:42px;
+font-weight:900;
+color:#FFD700;
+
+}
+
+.stat-label{
+
+margin-top:8px;
 font-size:14px;
+color:#eee;
+
 }
 
-.rating-table th{
-background:#fafafa;
+/* SEARCH */
+
+.search-card{
+
+padding:20px;
+border-radius:25px;
+margin-bottom:25px;
+
+}
+
+.search-box{
+
+width:100%;
+padding:16px;
+
+border:none;
+outline:none;
+
+border-radius:18px;
+
+font-size:15px;
+background:white;
+color:black;
+
+}
+
+/* UPLOADS */
+
+.uploads-grid{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(340px,1fr));
+
+gap:24px;
+
+}
+
+/* CARD */
+
+.upload-card{
+
+overflow:hidden;
+border-radius:30px;
+
+}
+
+/* IMAGE */
+
+.upload-image{
+
+width:100%;
+height:320px;
+
+object-fit:cover;
+cursor:pointer;
+
+transition:0.3s;
+
+}
+
+.upload-image:hover{
+
+transform:scale(1.03);
+
+}
+
+/* CONTENT */
+
+.upload-content{
+
+padding:18px;
+
+}
+
+.food-name{
+
+font-size:28px;
+font-weight:900;
+
+margin-bottom:8px;
+
+}
+
+.restaurant{
+
+color:#FFD700;
+font-size:15px;
+margin-bottom:12px;
+
+}
+
+.uploader{
+
+padding:10px;
+border-radius:14px;
+
+background:
+rgba(255,255,255,0.08);
+
+margin-bottom:12px;
+
+}
+
+.details{
+
+line-height:1.6;
+font-size:14px;
+
+color:#f0f0f0;
+
+margin-bottom:15px;
+
+}
+
+/* BADGES */
+
+.badges{
+
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+
+margin-bottom:15px;
+
+}
+
+.badge{
+
+padding:8px 14px;
+border-radius:30px;
+
+background:
+rgba(255,255,255,0.12);
+
+font-size:13px;
+font-weight:bold;
+
+}
+
+/* BUTTONS */
+
+.actions{
+
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+
+}
+
+.download-btn,
+.delete-btn{
+
+flex:1;
+
+padding:14px;
+
+border:none;
+border-radius:15px;
+
+font-weight:900;
+cursor:pointer;
+
 }
 
 .download-btn{
-background:#00c853;
+
+background:#FFD700;
+color:black;
+
+}
+
+.delete-btn{
+
+background:#ff4d4d;
 color:white;
-margin-top:10px;
+
+}
+
+/* IMAGE VIEWER */
+
+.image-modal{
+
+position:fixed;
+
+top:0;
+left:0;
+
 width:100%;
-}
+height:100%;
 
-@media(max-width:768px){
+background:
+rgba(0,0,0,0.95);
 
-.logo-img{
-width:110px;
-height:110px;
-}
-
-.topbar-title{
-font-size:20px;
-}
-
-.food-image{
-height:220px;
-}
-
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<!-- HEADER -->
-
-<div class="logo-header">
-
-<img
-src="logo.png"
-class="logo-img"
->
-
-<div class="logo-title">
-ShifPlatter Admin
-</div>
-
-<div class="logo-sub">
-Manage Food Ratings & Audience Reviews
-</div>
-
-</div>
-
-<div class="topbar">
-
-<img
-src="logo.png"
-class="topbar-logo"
->
-
-<div>
-
-<div class="topbar-title">
-ShifPlatter Admin
-</div>
-
-<div class="topbar-sub">
-Food Rating Management Panel
-</div>
-
-</div>
-
-</div>
-
-<!-- TABS -->
-
-<div class="tabs">
-
-<button
-class="tab-btn active-tab"
-onclick="showTab('uploadTab',this)">
-Upload Food
-</button>
-
-<button
-class="tab-btn"
-onclick="showTab('galleryTab',this)">
-Food Gallery
-</button>
-
-<button
-class="tab-btn"
-onclick="showTab('trackerTab',this)">
-Overall Tracker
-</button>
-
-<button
-class="tab-btn"
-onclick="showTab('ratingsTab',this)">
-Audience Ratings
-</button>
-
-<button
-class="tab-btn"
-onclick="showTab('usersPhotoTab',this)">
-Users Photo
-</button>
-
-</div>
-
-<!-- UPLOAD TAB -->
-
-<div id="uploadTab">
-
-<div class="card">
-
-<h2>Upload Food</h2>
-
-<input
-type="file"
-id="foodImage"
-accept="image/*"
->
-
-<input
-type="text"
-id="restaurant"
-placeholder="Restaurant / Cafe Name"
->
-
-<input
-type="text"
-id="foodName"
-placeholder="Food Name"
->
-
-<textarea
-id="foodDetails"
-placeholder="Food Details">
-</textarea>
-
-<button
-class="full-btn"
-onclick="uploadFood()">
-Upload Food
-</button>
-
-</div>
-
-</div>
-
-<!-- GALLERY -->
-
-<div id="galleryTab" class="hidden">
-<div id="gallery"></div>
-</div>
-
-<!-- TRACKER -->
-
-<div id="trackerTab" class="hidden">
-<div id="tracker"></div>
-</div>
-
-<!-- RATINGS -->
-
-<div id="ratingsTab" class="hidden">
-<div id="ratings"></div>
-</div>
-
-<!-- USERS PHOTO -->
-
-<div id="usersPhotoTab" class="hidden">
-<div id="usersPhoto"></div>
-</div>
-
-</div>
-
-<script>
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
-    authDomain: "shifplatter-e0449.firebaseapp.com",
-    databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "shifplatter-e0449",
-    storageBucket: "shifplatter-e0449.firebasestorage.app",
-    messagingSenderId: "873786528833",
-    appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
-  };
-
-firebase.initializeApp(firebaseConfig);
-
-const db=firebase.database();
-
-function showTab(tabId,btn){
-
-document
-.querySelectorAll(
-"#uploadTab,#galleryTab,#trackerTab,#ratingsTab,#usersPhotoTab"
-)
-.forEach((tab)=>{
-
-tab.classList.add("hidden");
-
-});
-
-document
-.getElementById(tabId)
-.classList.remove("hidden");
-
-document
-.querySelectorAll(".tab-btn")
-.forEach((b)=>{
-
-b.classList.remove("active-tab");
-
-});
-
-btn.classList.add("active-tab");
-
-}
-
-function uploadFood(){
-
-const imageFile=
-document
-.getElementById("foodImage")
-.files[0];
-
-const restaurant=
-document
-.getElementById("restaurant")
-.value;
-
-const foodname=
-document
-.getElementById("foodName")
-.value;
-
-const details=
-document
-.getElementById("foodDetails")
-.value;
-
-if(
-!imageFile ||
-!restaurant ||
-!foodname ||
-!details
-){
-
-alert("Please fill all details");
-
-return;
-
-}
-
-const reader=new FileReader();
-
-reader.onload=function(){
-
-const foodData={
-
-image:reader.result,
-restaurant,
-foodname,
-details,
-ratings:[],
-comments:{},
-time:Date.now()
-
-};
-
-db.ref("foods")
-.push(foodData)
-.then(()=>{
-
-alert("Food uploaded successfully");
-
-document
-.getElementById("foodImage")
-.value="";
-
-document
-.getElementById("restaurant")
-.value="";
-
-document
-.getElementById("foodName")
-.value="";
-
-document
-.getElementById("foodDetails")
-.value="";
-
-loadAllData();
-
-});
-
-};
-
-reader.readAsDataURL(imageFile);
-
-}
-
-function loadAllData(){
-
-loadGallery();
-loadTracker();
-loadRatings();
-loadUsersPhotos();
-
-}
-
-function loadGallery(){
-
-const gallery=
-document.getElementById("gallery");
-
-gallery.innerHTML="";
-
-db.ref("foods")
-.once("value")
-.then((snapshot)=>{
-
-const data=snapshot.val();
-
-if(!data){
-
-gallery.innerHTML=`
-<div class="card">
-No food uploaded
-</div>
-`;
-
-return;
-
-}
-
-Object.values(data)
-.reverse()
-.forEach((item)=>{
-
-gallery.innerHTML+=`
-
-<div class="card">
-
-<img
-src="${item.image}"
-class="food-image"
-onclick="openImage('${item.image}')"
->
-
-<h2>${item.foodname}</h2>
-
-<p>
-<b>${item.restaurant}</b>
-</p>
-
-<p>${item.details}</p>
-
-</div>
-
-`;
-
-});
-
-});
-
-}
-
-function loadTracker(){
-
-const tracker=
-document.getElementById("tracker");
-
-tracker.innerHTML="";
-
-db.ref("foods")
-.once("value")
-.then((snapshot)=>{
-
-const data=snapshot.val();
-
-if(!data){
-
-return;
-
-}
-
-Object.values(data)
-.forEach((item)=>{
-
-let total=0;
-
-let count=0;
-
-if(item.ratings){
-
-item.ratings.forEach((r)=>{
-
-total+=Number(r.rating||0);
-
-count++;
-
-});
-
-}
-
-let avg=0;
-
-if(count>0){
-
-avg=total/count;
-
-}
-
-tracker.innerHTML+=`
-
-<div class="card">
-
-<h2>${item.foodname}</h2>
-
-<p>${item.restaurant}</p>
-
-<div class="gauge">
-
-<div
-class="gauge-fill"
-style="width:${avg*20}%">
-</div>
-
-</div>
-
-<p style="
-margin-top:12px;
-font-weight:bold;
-">
-⭐ ${avg.toFixed(1)} / 5
-</p>
-
-</div>
-
-`;
-
-});
-
-});
-
-}
-
-function loadRatings(){
-
-const ratings=
-document.getElementById("ratings");
-
-ratings.innerHTML="";
-
-db.ref("foods")
-.once("value")
-.then((snapshot)=>{
-
-const data=snapshot.val();
-
-if(!data){
-
-return;
-
-}
-
-Object.values(data)
-.forEach((item)=>{
-
-ratings.innerHTML+=`
-
-<div class="card">
-
-<h2>${item.foodname}</h2>
-
-<p>
-<b>${item.restaurant}</b>
-</p>
-
-<table class="rating-table">
-
-<tr>
-
-<th>User</th>
-
-<th>Name</th>
-
-<th>Rating</th>
-
-</tr>
-
-${
-item.ratings
-?
-item.ratings.map((r)=>`
-
-<tr>
-
-<td>${r.user||"-"}</td>
-
-<td>${r.name||"-"}</td>
-
-<td>⭐ ${r.rating}</td>
-
-</tr>
-
-`).join("")
-:
-""
-}
-
-</table>
-
-</div>
-
-`;
-
-});
-
-});
-
-}
-
-function loadUsersPhotos(){
-
-const usersPhoto=
-document.getElementById("usersPhoto");
-
-usersPhoto.innerHTML="";
-
-db.ref("userUploads")
-.once("value")
-.then((snapshot)=>{
-
-const data=snapshot.val();
-
-if(!data){
-
-usersPhoto.innerHTML=`
-
-<div class="card">
-No user uploaded photos
-</div>
-
-`;
-
-return;
-
-}
-
-Object.values(data)
-.reverse()
-.forEach((item)=>{
-
-usersPhoto.innerHTML+=`
-
-<div class="card">
-
-<img
-src="${item.image}"
-class="food-image"
-onclick="openImage('${item.image}')"
->
-
-<h2>${item.foodname}</h2>
-
-<p>
-<b>${item.restaurant}</b>
-</p>
-
-<p>${item.details}</p>
-
-<p>
-<b>Uploaded By:</b>
-${item.uploadedBy}
-</p>
-
-<p>
-<b>Name:</b>
-${item.uploadedEmail}
-</p>
-
-<a
-href="${item.image}"
-download="food-image.png"
->
-
-<button class="download-btn">
-Download HD Image
-</button>
-
-</a>
-
-</div>
-
-`;
-
-});
-
-});
-
-}
-
-function openImage(src){
-
-const win=window.open("");
-
-win.document.write(`
-
-<html>
-
-<head>
-
-<title>Food Image</title>
-
-<style>
-
-body{
-margin:0;
-background:black;
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
+
+z-index:99999;
+
 }
 
-img{
-max-width:100%;
-max-height:100%;
+.modal-image{
+
+max-width:95%;
+max-height:95%;
+
+object-fit:contain;
+
+}
+
+.close-modal{
+
+position:absolute;
+
+top:20px;
+right:25px;
+
+font-size:45px;
+font-weight:900;
+
+cursor:pointer;
+
+}
+
+.hidden{
+
+display:none !important;
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.admin-title{
+
+font-size:26px;
+
+}
+
+.upload-image{
+
+height:250px;
+
+}
+
+.food-name{
+
+font-size:22px;
+
+}
+
+.stat-number{
+
+font-size:32px;
+
+}
+
 }
 
 </style>
@@ -827,19 +406,613 @@ max-height:100%;
 
 <body>
 
-<img src="${src}">
+<!-- HEADER -->
 
-</body>
+<div class="admin-header glass">
 
-</html>
+<div class="logo-area">
 
-`);
+<img
+src="logo.png"
+class="logo">
+
+<div>
+
+<div class="admin-title">
+ShifPlatter Admin
+</div>
+
+<div class="admin-sub">
+Manage user uploads, ratings & comments
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- DASHBOARD -->
+
+<div class="stats-grid">
+
+<div class="stat-card glass">
+
+<div
+class="stat-number"
+id="totalFoods">
+0
+</div>
+
+<div class="stat-label">
+Total Foods
+</div>
+
+</div>
+
+<div class="stat-card glass">
+
+<div
+class="stat-number"
+id="totalUsers">
+0
+</div>
+
+<div class="stat-label">
+Total Uploaders
+</div>
+
+</div>
+
+<div class="stat-card glass">
+
+<div
+class="stat-number"
+id="totalRatings">
+0
+</div>
+
+<div class="stat-label">
+Total Ratings
+</div>
+
+</div>
+
+<div class="stat-card glass">
+
+<div
+class="stat-number"
+id="totalComments">
+0
+</div>
+
+<div class="stat-label">
+Total Comments
+</div>
+
+</div>
+
+</div>
+
+<!-- SEARCH -->
+
+<div class="search-card glass">
+
+<input
+type="text"
+id="searchInput"
+class="search-box"
+placeholder="Search food, restaurant or user...">
+
+</div>
+
+<!-- UPLOADS -->
+
+<div
+id="uploadsContainer"
+class="uploads-grid">
+</div>
+
+<!-- IMAGE VIEWER -->
+
+<div
+id="imageModal"
+class="image-modal hidden">
+
+<span
+class="close-modal"
+onclick="closeViewer()">
+✕
+</span>
+<img
+id="modalImage"
+class="modal-image">
+
+</div>
+<script>
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
+authDomain: "shifplatter-e0449.firebaseapp.com",
+databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId: "shifplatter-e0449",
+storageBucket: "shifplatter-e0449.firebasestorage.app",
+messagingSenderId: "873786528833",
+appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+let allFoods = [];
+
+/* LOAD DATA */
+
+loadFoods();
+
+function loadFoods(){
+
+db.ref("foods").on("value",(snapshot)=>{
+
+const data = snapshot.val();
+
+allFoods = [];
+
+const users = new Set();
+
+let totalRatings = 0;
+let totalComments = 0;
+
+if(!data){
+
+document.getElementById(
+"uploadsContainer"
+).innerHTML = `
+<h2>No uploads found</h2>
+`;
+
+document.getElementById(
+"totalFoods"
+).innerText = 0;
+
+document.getElementById(
+"totalUsers"
+).innerText = 0;
+
+document.getElementById(
+"totalRatings"
+).innerText = 0;
+
+document.getElementById(
+"totalComments"
+).innerText = 0;
+
+return;
 
 }
 
-loadAllData();
+Object.keys(data).forEach((id)=>{
+
+const item = data[id];
+
+let ratingCount = 0;
+let commentCount = 0;
+
+if(item.ratings){
+
+ratingCount =
+Object.keys(item.ratings).length;
+
+}
+
+if(item.comments){
+
+commentCount =
+Object.keys(item.comments).length;
+
+}
+
+totalRatings += ratingCount;
+totalComments += commentCount;
+
+if(item.uploadedBy){
+
+users.add(item.uploadedBy);
+
+}
+
+allFoods.push({
+
+id:id,
+
+foodname:
+item.foodname || "",
+
+restaurant:
+item.restaurant || "",
+
+details:
+item.details || "",
+
+image:
+item.image || "",
+
+uploadedBy:
+item.uploadedBy || "Unknown",
+
+uploadTime:
+item.uploadTime || 0,
+
+ratingCount:
+ratingCount,
+
+commentCount:
+commentCount
+
+});
+
+});
+
+/* newest first */
+
+allFoods.sort((a,b)=>
+b.uploadTime - a.uploadTime
+);
+
+document.getElementById(
+"totalFoods"
+).innerText =
+allFoods.length;
+
+document.getElementById(
+"totalUsers"
+).innerText =
+users.size;
+
+document.getElementById(
+"totalRatings"
+).innerText =
+totalRatings;
+
+document.getElementById(
+"totalComments"
+).innerText =
+totalComments;
+
+renderFoods(allFoods);
+
+});
+
+}
+
+/* RENDER */
+
+function renderFoods(list){
+
+const container =
+document.getElementById(
+"uploadsContainer"
+);
+
+container.innerHTML = "";
+
+if(list.length===0){
+
+container.innerHTML = `
+<h2>No matching uploads found</h2>
+`;
+
+return;
+
+}
+
+list.forEach((item)=>{
+
+container.innerHTML += `
+
+<div class="upload-card glass">
+
+<img
+src="${item.image}"
+class="upload-image"
+onclick="openViewer('${item.image}')">
+
+<div class="upload-content">
+
+<div class="food-name">
+${item.foodname}
+</div>
+
+<div class="restaurant">
+📍 ${item.restaurant}
+</div>
+
+<div class="uploader">
+
+<strong>
+@${item.uploadedBy}
+</strong>
+
+</div>
+
+<div class="details">
+${item.details}
+</div>
+
+<div class="badges">
+
+<div class="badge">
+⭐ ${item.ratingCount} Ratings
+</div>
+
+<div class="badge">
+💬 ${item.commentCount} Comments
+</div>
+
+</div>
+
+<div class="actions">
+
+<button
+class="download-btn"
+onclick="downloadImage(
+'${item.image}',
+'${item.foodname}'
+)">
+⬇ Download
+</button>
+
+<button
+class="delete-btn"
+onclick="deleteFood(
+'${item.id}'
+)">
+🗑 Delete
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+/* SEARCH */
+
+document
+.getElementById("searchInput")
+.addEventListener("input",function(){
+
+const value =
+this.value.toLowerCase();
+
+const filtered =
+allFoods.filter(item =>
+
+item.foodname
+.toLowerCase()
+.includes(value)
+
+||
+
+item.restaurant
+.toLowerCase()
+.includes(value)
+
+||
+
+item.uploadedBy
+.toLowerCase()
+.includes(value)
+
+);
+
+renderFoods(filtered);
+
+});
+
+</script>
+
+<script>
+
+/* IMAGE VIEWER */
+
+function openViewer(imageUrl){
+
+const modal =
+document.getElementById(
+"imageModal"
+);
+
+const img =
+document.getElementById(
+"modalImage"
+);
+
+img.src = imageUrl;
+
+modal.classList.remove(
+"hidden"
+);
+
+}
+
+function closeViewer(){
+
+document.getElementById(
+"imageModal"
+).classList.add(
+"hidden"
+);
+
+}
+
+/* CLOSE WHEN CLICKING OUTSIDE IMAGE */
+
+document
+.getElementById("imageModal")
+.addEventListener("click",(e)=>{
+
+if(e.target.id==="imageModal"){
+
+closeViewer();
+
+}
+
+});
+
+/* DOWNLOAD IMAGE */
+
+function downloadImage(
+imageUrl,
+fileName
+){
+
+try{
+
+const a =
+document.createElement("a");
+
+a.href = imageUrl;
+
+a.download =
+(fileName || "food")
+.replace(/[^a-z0-9]/gi,"_")
++ ".jpg";
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+showToast(
+"⬇ Download Started"
+);
+
+}catch(error){
+
+alert(
+"Download failed"
+);
+
+}
+
+}
+
+/* DELETE FOOD */
+
+function deleteFood(foodId){
+
+const confirmDelete =
+confirm(
+"Delete this food post permanently?"
+);
+
+if(!confirmDelete){
+return;
+}
+
+db.ref(
+`foods/${foodId}`
+)
+.remove()
+.then(()=>{
+
+showToast(
+"🗑 Food Deleted"
+);
+
+})
+.catch(()=>{
+
+alert(
+"Delete failed"
+);
+
+});
+
+}
+
+/* TOAST */
+
+function showToast(text){
+
+const toast =
+document.createElement("div");
+
+toast.innerHTML = text;
+
+toast.style.position =
+"fixed";
+
+toast.style.bottom =
+"20px";
+
+toast.style.left =
+"50%";
+
+toast.style.transform =
+"translateX(-50%)";
+
+toast.style.background =
+"#FFD700";
+
+toast.style.color =
+"black";
+
+toast.style.padding =
+"14px 24px";
+
+toast.style.borderRadius =
+"14px";
+
+toast.style.fontWeight =
+"bold";
+
+toast.style.zIndex =
+"999999";
+
+document.body.appendChild(
+toast
+);
+
+setTimeout(()=>{
+
+toast.remove();
+
+},2000);
+
+}
+
+/* ESC KEY CLOSE */
+
+document
+.addEventListener(
+"keydown",
+(e)=>{
+
+if(e.key==="Escape"){
+
+closeViewer();
+
+}
+
+}
+);
 
 </script>
 
 </body>
 </html>
+    
