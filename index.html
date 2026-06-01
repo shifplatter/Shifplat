@@ -1,207 +1,1247 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Food Rating App</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    body {
-      background: #f4f4f4;
-      color: #222;
-    }
+<title>Shif Platter</title>
 
-    header {
-      background: black;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 20px;
-    }
+<style>
 
-    .upload-box {
-      background: white;
-      padding: 20px;
-      border-radius: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
 
-    .upload-box h2 {
-      margin-bottom: 15px;
-    }
+body{
+background:#f6f7fb;
+color:#222;
+min-height:100vh;
+}
 
-    input, textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 12px;
-      border: 1px solid #ccc;
-    }
+/* LOGIN */
 
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 15px;
-      border: none;
-      border-radius: 12px;
-      background: black;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
+#loginScreen{
+position:fixed;
+inset:0;
+background:white;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
 
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
+.login-box{
+width:90%;
+max-width:400px;
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 5px 25px rgba(0,0,0,.1);
+}
 
-    .card {
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
+.login-box h1{
+text-align:center;
+margin-bottom:20px;
+}
 
-    .card img {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-    }
+.login-box input{
+width:100%;
+padding:14px;
+margin-bottom:12px;
+border:1px solid #ddd;
+border-radius:10px;
+}
 
-    .card-content {
-      padding: 20px;
-    }
+.login-box button{
+width:100%;
+padding:14px;
+background:#111827;
+color:white;
+border:none;
+border-radius:10px;
+font-weight:700;
+cursor:pointer;
+}
 
-    .stars {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
+/* HEADER */
 
-    .star {
-      font-size: 28px;
-      cursor: pointer;
-      color: gray;
-    }
+header{
+background:#111827;
+color:white;
+padding:18px;
+text-align:center;
+font-size:24px;
+font-weight:700;
+}
 
-    .star.active {
-      color: gold;
-    }
+/* TABS */
 
-    .rating-text {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #666;
-    }
-  </style>
+.tabs{
+display:flex;
+background:white;
+position:sticky;
+top:0;
+z-index:100;
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.tab-btn{
+flex:1;
+padding:14px;
+border:none;
+background:white;
+font-size:13px;
+font-weight:600;
+cursor:pointer;
+}
+
+.tab-btn.active{
+background:#111827;
+color:white;
+}
+
+.tab-content{
+display:none;
+padding:20px;
+}
+
+.tab-content.active{
+display:block;
+}
+
+.section-title{
+font-size:22px;
+font-weight:700;
+margin-bottom:15px;
+}
+
+/* GALLERY */
+
+.gallery-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+gap:20px;
+}
+
+.food-card{
+background:white;
+border-radius:16px;
+overflow:hidden;
+box-shadow:0 3px 15px rgba(0,0,0,.08);
+}
+
+.food-card img{
+width:100%;
+height:220px;
+object-fit:cover;
+}
+
+.food-info{
+padding:15px;
+}
+
+.restaurant{
+font-size:14px;
+color:#666;
+margin-bottom:5px;
+}
+
+.food-name{
+font-size:18px;
+font-weight:700;
+margin-bottom:12px;
+}
+
+/* STARS */
+
+.star-row{
+display:flex;
+gap:5px;
+margin-top:10px;
+}
+
+.star{
+font-size:28px;
+cursor:pointer;
+color:#d1d5db;
+}
+
+.star.active{
+color:#FFD700;
+}
+
+/* OVERALL RATINGS */
+
+.rating-card{
+background:white;
+padding:20px;
+border-radius:16px;
+margin-bottom:15px;
+box-shadow:0 3px 15px rgba(0,0,0,.08);
+}
+
+.progress{
+width:100%;
+height:16px;
+background:#e5e7eb;
+border-radius:30px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.progress-fill{
+height:100%;
+background:#10b981;
+}
+
+/* LEADERBOARD */
+
+.leaderboard-wrap{
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+.rank-card{
+background:white;
+padding:20px;
+border-radius:18px;
+box-shadow:0 3px 15px rgba(0,0,0,.08);
+text-align:center;
+}
+
+.rank-card img{
+width:100%;
+max-height:250px;
+object-fit:cover;
+border-radius:12px;
+margin-top:10px;
+margin-bottom:10px;
+}
+
+.rank-title{
+font-size:28px;
+font-weight:700;
+}
+
+/* UPLOAD */
+
+.upload-box{
+background:white;
+padding:20px;
+border-radius:16px;
+box-shadow:0 3px 15px rgba(0,0,0,.08);
+}
+
+.upload-box input{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:10px;
+margin-bottom:12px;
+}
+
+.upload-btn{
+width:100%;
+padding:14px;
+border:none;
+background:#10b981;
+color:white;
+font-size:16px;
+font-weight:700;
+border-radius:10px;
+cursor:pointer;
+}
+
+.loading{
+text-align:center;
+padding:30px;
+font-weight:600;
+}
+
+@media(max-width:768px){
+
+.tabs{
+overflow-x:auto;
+}
+
+.tab-btn{
+min-width:140px;
+font-size:12px;
+}
+
+}
+
+</style>
 </head>
 <body>
 
-<header>
-  <h1>🍔 Food Rating App</h1>
-  <p>Upload food photos and let people rate them</p>
-</header>
+<!-- LOGIN SCREEN -->
 
-<div class="container">
+<div id="loginScreen">
 
-  <div class="upload-box">
-    <h2>➕ Upload Food Photo</h2>
+<div class="login-box">
 
-    <input type="text" id="restaurant" placeholder="Restaurant Name" />
+<h1>🍽️ Shif Platter</h1>
 
-    <input type="text" id="food" placeholder="Food Name" />
+<input
+type="text"
+id="userName"
+placeholder="Your Name">
 
-    <textarea id="details" placeholder="Food Details"></textarea>
+<input
+type="text"
+id="instagramId"
+placeholder="@instagram_username">
 
-    <input type="file" id="imageUpload" accept="image/*" />
-
-    <button onclick="uploadFood()">Upload Food</button>
-  </div>
-
-  <div class="gallery" id="gallery"></div>
+<button onclick="loginUser()">
+Enter
+</button>
 
 </div>
 
-<script>
-  function uploadFood() {
-    const restaurant = document.getElementById('restaurant').value;
-    const food = document.getElementById('food').value;
-    const details = document.getElementById('details').value;
-    const imageInput = document.getElementById('imageUpload');
+</div>
 
-    if (!imageInput.files[0]) {
-      alert('Please upload an image');
-      return;
-    }
+<header>
+🍽️ SHIF PLATTER
+</header>
 
-    const reader = new FileReader();
+<div class="tabs">
 
-    reader.onload = function(e) {
-      const imageUrl = e.target.result;
+<button
+class="tab-btn active"
+onclick="openTab('galleryTab',this)">
+Gallery
+</button>
 
-      const card = document.createElement('div');
-      card.className = 'card';
+<button
+class="tab-btn"
+onclick="openTab('overallTab',this)">
+Overall Ratings
+</button>
 
-      card.innerHTML = `
-        <img src="${imageUrl}" />
+<button
+class="tab-btn"
+onclick="openTab('leaderboardTab',this)">
+Leaderboard
+</button>
 
-        <div class="card-content">
-          <h2>${food}</h2>
-          <h4>${restaurant}</h4>
-          <p>${details}</p>
+<button
+class="tab-btn"
+onclick="openTab('uploadTab',this)">
+Upload Images
+</button>
 
-          <div class="rating-text">
-            ⭐ Rate this food and photo from 1 to 5
-          </div>
+</div>
 
-          <div class="stars">
-            <span class="star">★</span>
-            <span class="star">★</span>
-            <span class="star">★</span>
-            <span class="star">★</span>
-            <span class="star">★</span>
-          </div>
-        </div>
-      `;
+<!-- GALLERY -->
 
-      const stars = card.querySelectorAll('.star');
+<section
+id="galleryTab"
+class="tab-content active">
 
-      stars.forEach((star, index) => {
-        star.addEventListener('click', () => {
-          stars.forEach((s, i) => {
-            if (i <= index) {
-              s.classList.add('active');
-            } else {
-              s.classList.remove('active');
-            }
-          });
-        });
-      });
+<h2 class="section-title">
+Gallery
+</h2>
 
-      document.getElementById('gallery').prepend(card);
+<div
+id="galleryContainer"
+class="gallery-grid">
 
-      document.getElementById('restaurant').value = '';
-      document.getElementById('food').value = '';
-      document.getElementById('details').value = '';
-      document.getElementById('imageUpload').value = '';
-    };
+<div class="loading">
+Loading Gallery...
+</div>
 
-    reader.readAsDataURL(imageInput.files[0]);
-  }
+</div>
+
+</section>
+
+<!-- OVERALL RATINGS -->
+
+<section
+id="overallTab"
+class="tab-content">
+
+<h2 class="section-title">
+Overall Ratings
+</h2>
+
+<div id="overallContainer">
+
+<div class="loading">
+Loading Ratings...
+</div>
+
+</div>
+
+</section>
+
+<!-- LEADERBOARD -->
+
+<section
+id="leaderboardTab"
+class="tab-content">
+
+<h2 class="section-title">
+🏆 Leaderboard
+</h2>
+
+<div
+id="leaderboardContainer"
+class="leaderboard-wrap">
+
+<div class="loading">
+Loading Leaderboard...
+</div>
+
+</div>
+
+</section>
+
+<!-- UPLOAD TAB -->
+
+<section
+id="uploadTab"
+class="tab-content">
+
+<h2 class="section-title">
+Upload Food Image
+</h2>
+
+<div class="upload-box">
+
+<input
+type="text"
+id="restaurantName"
+placeholder="Restaurant / Cafe Name">
+
+<input
+type="text"
+id="foodName"
+placeholder="Food Name">
+
+<input
+type="file"
+id="foodImage"
+accept="image/*">
+
+<button
+class="upload-btn"
+onclick="uploadUserImage()">
+Upload
+</button>
+
+</div>
+
+</section>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+doc,
+getDocs,
+getDoc,
+setDoc,
+addDoc,
+query,
+orderBy,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+getStorage,
+ref,
+uploadBytes,
+getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+/* FIREBASE */
+
+const firebaseConfig = {
+apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
+authDomain: "shifplatter-e0449.firebaseapp.com",
+databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId: "shifplatter-e0449",
+storageBucket: "shifplatter-e0449.firebasestorage.app",
+messagingSenderId: "873786528833",
+appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+const storage = getStorage(app);
+
+/* GLOBALS */
+
+window.db = db;
+window.storage = storage;
+
+/* LOGIN */
+
+window.loginUser = function(){
+
+const name =
+document
+.getElementById("userName")
+.value
+.trim();
+
+const insta =
+document
+.getElementById("instagramId")
+.value
+.trim();
+
+if(!name){
+alert("Enter your name");
+return;
+}
+
+if(!insta){
+alert("Enter Instagram username");
+return;
+}
+
+localStorage.setItem(
+"sp_user_name",
+name
+);
+
+localStorage.setItem(
+"sp_instagram",
+insta
+);
+
+document
+.getElementById("loginScreen")
+.style.display = "none";
+
+};
+
+if(
+localStorage.getItem("sp_user_name") &&
+localStorage.getItem("sp_instagram")
+){
+document
+.getElementById("loginScreen")
+.style.display = "none";
+}
+
+/* TABS */
+
+window.openTab = function(tabId,btn){
+
+document
+.querySelectorAll(".tab-content")
+.forEach(el=>{
+el.classList.remove("active");
+});
+
+document
+.querySelectorAll(".tab-btn")
+.forEach(el=>{
+el.classList.remove("active");
+});
+
+document
+.getElementById(tabId)
+.classList.add("active");
+
+btn.classList.add("active");
+
+};
+
+/* LOAD GALLERY */
+
+window.loadGallery = async function(){
+
+const container =
+document.getElementById(
+"galleryContainer"
+);
+
+container.innerHTML =
+`
+<div class="loading">
+Loading Gallery...
+</div>
+`;
+
+try{
+
+const snap =
+await getDocs(
+query(
+collection(db,"foods"),
+orderBy("createdAt","desc")
+)
+);
+
+let html = "";
+
+for(const item of snap.docs){
+
+const food = item.data();
+
+html += `
+
+<div class="food-card">
+
+<img src="${food.imageUrl}">
+
+<div class="food-info">
+
+<div class="restaurant">
+${food.restaurantName || ""}
+</div>
+
+<div class="food-name">
+${food.foodName || ""}
+</div>
+
+<div
+class="star-row"
+id="stars-${item.id}">
+
+<span class="star"
+onclick="rateFood('${item.id}',1)">
+★
+</span>
+
+<span class="star"
+onclick="rateFood('${item.id}',2)">
+★
+</span>
+
+<span class="star"
+onclick="rateFood('${item.id}',3)">
+★
+</span>
+
+<span class="star"
+onclick="rateFood('${item.id}',4)">
+★
+</span>
+
+<span class="star"
+onclick="rateFood('${item.id}',5)">
+★
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+if(html===""){
+
+html =
+`
+<div class="loading">
+No Food Photos Yet
+</div>
+`;
+
+}
+
+container.innerHTML = html;
+
+loadExistingRatings();
+
+}
+catch(error){
+
+console.error(error);
+
+container.innerHTML =
+`
+<div class="loading">
+Unable To Load Gallery
+</div>
+`;
+
+}
+
+};
+
+/* RATE FOOD */
+
+window.rateFood =
+async function(foodId,rating){
+
+try{
+
+const insta =
+localStorage.getItem(
+"sp_instagram"
+);
+
+const name =
+localStorage.getItem(
+"sp_user_name"
+);
+
+if(!insta){
+alert("Login required");
+return;
+}
+
+const stars =
+document
+.querySelectorAll(
+`#stars-${foodId} .star`
+);
+
+stars.forEach((star,index)=>{
+
+if(index < rating){
+star.classList.add("active");
+}
+else{
+star.classList.remove("active");
+}
+
+});
+
+await setDoc(
+doc(
+db,
+"ratings",
+`${foodId}_${insta}`
+),
+{
+foodId: foodId,
+instagramId: insta,
+userName: name,
+rating: rating,
+createdAt: serverTimestamp()
+}
+);
+
+loadOverallRatings();
+loadLeaderboard();
+
+}
+catch(error){
+
+console.error(error);
+
+alert(error.message);
+
+}
+
+};
+
+/* LOAD USER'S EXISTING RATINGS */
+
+window.loadExistingRatings =
+async function(){
+
+try{
+
+const insta =
+localStorage.getItem(
+"sp_instagram"
+);
+
+if(!insta) return;
+
+const ratingsSnap =
+await getDocs(
+collection(db,"ratings")
+);
+
+ratingsSnap.forEach(docSnap=>{
+
+const data =
+docSnap.data();
+
+if(
+data.instagramId === insta
+){
+
+const stars =
+document.querySelectorAll(
+`#stars-${data.foodId} .star`
+);
+
+stars.forEach((star,index)=>{
+
+if(index < data.rating){
+star.classList.add("active");
+}
+
+});
+
+}
+
+});
+
+}
+catch(error){
+
+console.error(error);
+
+}
+
+};
+/* OVERALL RATINGS */
+
+window.loadOverallRatings = async function(){
+
+const container =
+document.getElementById(
+"overallContainer"
+);
+
+container.innerHTML =
+`
+<div class="loading">
+Loading Ratings...
+</div>
+`;
+
+try{
+
+const foodsSnap =
+await getDocs(
+collection(db,"foods")
+);
+
+const ratingsSnap =
+await getDocs(
+collection(db,"ratings")
+);
+
+const ratingsMap = {};
+
+ratingsSnap.forEach(docSnap=>{
+
+const rating =
+docSnap.data();
+
+if(!ratingsMap[rating.foodId]){
+ratingsMap[rating.foodId] = [];
+}
+
+ratingsMap[rating.foodId]
+.push(rating.rating);
+
+});
+
+let html = "";
+
+foodsSnap.forEach(foodDoc=>{
+
+const food =
+foodDoc.data();
+
+const foodRatings =
+ratingsMap[foodDoc.id] || [];
+
+const totalVotes =
+foodRatings.length;
+
+const average =
+totalVotes
+? (
+foodRatings.reduce(
+(a,b)=>a+b,
+0
+) / totalVotes
+).toFixed(1)
+: "0.0";
+
+const percentage =
+(
+(Number(average)/5)*100
+).toFixed(0);
+
+html += `
+
+<div class="rating-card">
+
+<h3>
+${food.foodName}
+</h3>
+
+<p>
+${food.restaurantName}
+</p>
+
+<br>
+
+<b>${average}/5 ⭐</b>
+
+<br><br>
+
+${percentage}%
+
+<div class="progress">
+
+<div
+class="progress-fill"
+style="width:${percentage}%">
+</div>
+
+</div>
+
+<br>
+
+${totalVotes} Votes
+
+</div>
+
+`;
+
+});
+
+if(html===""){
+
+html =
+`
+<div class="loading">
+No Ratings Available
+</div>
+`;
+
+}
+
+container.innerHTML = html;
+
+}
+catch(error){
+
+console.error(error);
+
+container.innerHTML =
+`
+<div class="loading">
+Unable To Load Ratings
+</div>
+`;
+
+}
+
+};
+
+/* LEADERBOARD */
+
+window.loadLeaderboard =
+async function(){
+
+const container =
+document.getElementById(
+"leaderboardContainer"
+);
+
+container.innerHTML =
+`
+<div class="loading">
+Loading Leaderboard...
+</div>
+`;
+
+try{
+
+const foodsSnap =
+await getDocs(
+collection(db,"foods")
+);
+
+const ratingsSnap =
+await getDocs(
+collection(db,"ratings")
+);
+
+const ratingsMap = {};
+
+ratingsSnap.forEach(docSnap=>{
+
+const rating =
+docSnap.data();
+
+if(!ratingsMap[rating.foodId]){
+ratingsMap[rating.foodId] = [];
+}
+
+ratingsMap[rating.foodId]
+.push(rating.rating);
+
+});
+
+const leaderboard = [];
+
+foodsSnap.forEach(foodDoc=>{
+
+const food =
+foodDoc.data();
+
+const ratings =
+ratingsMap[foodDoc.id] || [];
+
+const avg =
+ratings.length
+?
+ratings.reduce(
+(a,b)=>a+b,
+0
+)/ratings.length
+:
+0;
+
+leaderboard.push({
+id: foodDoc.id,
+foodName: food.foodName,
+restaurantName:
+food.restaurantName,
+imageUrl: food.imageUrl,
+average: avg
+});
+
+});
+
+leaderboard.sort(
+(a,b)=>
+b.average-a.average
+);
+
+const top3 =
+leaderboard.slice(0,3);
+
+const medals = [
+"👑 #1",
+"🥈 #2",
+"🥉 #3"
+];
+
+let html = "";
+
+top3.forEach((item,index)=>{
+
+html += `
+
+<div class="rank-card">
+
+<div class="rank-title">
+${medals[index]}
+</div>
+
+<img src="${item.imageUrl}">
+
+<h2>
+${item.foodName}
+</h2>
+
+<p>
+${item.restaurantName}
+</p>
+
+<br>
+
+<b>
+${item.average.toFixed(1)}
+⭐
+</b>
+
+</div>
+
+`;
+
+});
+
+if(html===""){
+
+html =
+`
+<div class="loading">
+No Rankings Yet
+</div>
+`;
+
+}
+
+container.innerHTML = html;
+
+}
+catch(error){
+
+console.error(error);
+
+container.innerHTML =
+`
+<div class="loading">
+Unable To Load Leaderboard
+</div>
+`;
+
+}
+
+};
+
+/* USER IMAGE UPLOAD */
+
+window.uploadUserImage =
+async function(){
+
+try{
+
+const restaurant =
+document
+.getElementById("restaurantName")
+.value
+.trim();
+
+const foodName =
+document
+.getElementById("foodName")
+.value
+.trim();
+
+const image =
+document
+.getElementById("foodImage")
+.files[0];
+
+if(!restaurant){
+alert("Enter Restaurant Name");
+return;
+}
+
+if(!foodName){
+alert("Enter Food Name");
+return;
+}
+
+if(!image){
+alert("Select Image");
+return;
+}
+
+const btn =
+document.querySelector(
+".upload-btn"
+);
+
+btn.innerText =
+"Uploading...";
+
+btn.disabled = true;
+
+const imageRef =
+ref(
+storage,
+`userUploads/${Date.now()}_${image.name}`
+);
+
+await uploadBytes(
+imageRef,
+image
+);
+
+const imageUrl =
+await getDownloadURL(
+imageRef
+);
+
+await addDoc(
+collection(
+db,
+"userUploads"
+),
+{
+restaurantName:
+restaurant,
+
+foodName:
+foodName,
+
+imageUrl:
+imageUrl,
+
+userName:
+localStorage.getItem(
+"sp_user_name"
+),
+
+instagramId:
+localStorage.getItem(
+"sp_instagram"
+),
+
+createdAt:
+serverTimestamp()
+}
+);
+
+document.getElementById(
+"restaurantName"
+).value="";
+
+document.getElementById(
+"foodName"
+).value="";
+
+document.getElementById(
+"foodImage"
+).value="";
+
+btn.innerText =
+"Upload";
+
+btn.disabled = false;
+
+alert(
+"Image Submitted Successfully"
+);
+
+}
+catch(error){
+
+console.error(error);
+
+alert(error.message);
+
+const btn =
+document.querySelector(
+".upload-btn"
+);
+
+btn.innerText =
+"Upload";
+
+btn.disabled = false;
+
+}
+
+};
+
+/* INITIAL LOAD */
+
+loadGallery();
+
+loadOverallRatings();
+
+loadLeaderboard();
+
 </script>
 
 </body>
 </html>
+
+  
