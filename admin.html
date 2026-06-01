@@ -3,195 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShiftPlatter</title>
+<title>ShifPlatter Admin</title>
 
-<!-- FIREBASE -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
-
-body{
-  margin:0;
-  padding:0;
-  background:#f5f5f5;
-  font-family:Arial,sans-serif;
-}
-
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:20px;
-}
-
-.card{
-  background:white;
-  padding:20px;
-  border-radius:24px;
-  margin-bottom:20px;
-  box-shadow:0 2px 10px rgba(0,0,0,0.08);
-}
-
-input{
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid #ddd;
-  margin-top:12px;
-  box-sizing:border-box;
-}
-
-button{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  background:black;
-  color:white;
-  margin-top:15px;
-  font-size:16px;
-  cursor:pointer;
-}
-
-img{
-  width:100%;
-  border-radius:18px;
-  margin-top:12px;
-}
-
-.hidden{
-  display:none;
-}
-
-.tabs{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
-}
-
-.tab-btn{
-  flex:1;
-  padding:14px;
-  border:none;
-  border-radius:14px;
-  background:#e5e5e5;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.active-tab{
-  background:black;
-  color:white;
-}
-
-.stars{
-  display:flex;
-  gap:10px;
-  margin-top:15px;
-}
-
-.star{
-  font-size:36px;
-  color:#ccc;
-  cursor:pointer;
-  transition:0.2s;
-}
-
-.star.active{
-  color:gold;
-}
-
-.rating-bar{
-  width:100%;
-  height:20px;
-  background:#ddd;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:12px;
-}
-
-.rating-fill{
-  height:100%;
-  background:black;
-}
-
-.rating-score{
-  font-size:38px;
-  font-weight:bold;
-  margin-top:15px;
-}
-
-h1,h2,h3{
-  margin-top:0;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+body{background:#111;color:white;min-height:100vh;}
+.container{max-width:1200px;margin:auto;padding:16px;}
+.topbar{display:flex;align-items:center;gap:16px;padding:16px;margin-bottom:24px;}
+.top-logo{width:70px;height:70px;border-radius:18px;object-fit:contain;background:white;padding:5px;}
+.top-title{font-size:28px;font-weight:900;color:#FFD700;}
+.card{background:rgba(255,255,255,0.08);padding:22px;border-radius:28px;margin-bottom:24px;}
+.user-image{width:100%;height:300px;object-fit:cover;border-radius:20px;}
+.user-details{margin-top:12px;}
+.user-details b{color:#FFD700;}
+h1{text-align:center;margin-bottom:24px;font-size:42px;}
+.stars{display:flex;gap:6px;margin-top:8px;}
+.star{font-size:28px;color:#FFD700;}
+@media(max-width:768px){.user-image{height:180px;}}
 </style>
-
 </head>
 <body>
 
 <div class="container">
 
-  <!-- LOGIN -->
-  <div class="card" id="loginPage">
+<div class="topbar">
+<img src="logo.png" class="top-logo">
+<div class="top-title">ShifPlatter Admin Panel</div>
+</div>
 
-    <h1>ShiftPlatter</h1>
+<h1>👁️ User Uploaded Photos</h1>
 
-    <p>
-      Rate your favorite food photos and share your likes
-    </p>
-
-    <input
-      type="text"
-      id="username"
-      placeholder="Enter Username"
-    >
-
-    <input
-      type="email"
-      id="email"
-      placeholder="Enter Email Address"
-    >
-
-    <button onclick="loginUser()">
-      Continue
-    </button>
-
-  </div>
-
-  <!-- MAIN APP -->
-  <div id="mainApp" class="hidden">
-
-    <!-- TABS -->
-    <div class="tabs">
-
-      <button class="tab-btn active-tab"
-        onclick="showTab('galleryTab',this)">
-        Food Gallery
-      </button>
-
-      <button class="tab-btn"
-        onclick="showTab('ratingsTab',this)">
-        Overall Ratings
-      </button>
-
-    </div>
-
-    <!-- FOOD GALLERY -->
-    <div id="galleryTab">
-
-      <div id="gallery"></div>
-
-    </div>
-
-    <!-- OVERALL RATINGS -->
-    <div id="ratingsTab" class="hidden">
-
-      <div id="overallRatings"></div>
-
-    </div>
-
-  </div>
+<div id="userUploadsContainer"></div>
 
 </div>
 
@@ -205,303 +51,48 @@ const firebaseConfig = {
     messagingSenderId: "873786528833",
     appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
   };
-
 firebase.initializeApp(firebaseConfig);
-
 const db = firebase.database();
 
-let currentUser = "";
-let currentEmail = "";
+// Load all user uploaded images
+function loadUserUploads(){
+  const container = document.getElementById("userUploadsContainer");
+  container.innerHTML = "";
 
-function loginUser(){
-
-  const username =
-    document.getElementById("username")
-    .value
-    .trim();
-
-  const email =
-    document.getElementById("email")
-    .value
-    .trim();
-
-  if(!username || !email){
-
-    alert("Please enter details");
-
-    return;
-
-  }
-
-  // ADMIN BLOCK
-  if(
-    username.toUpperCase() === "SHIFPLATTER" &&
-    email.toUpperCase() === "SHIVIK@2030"
-  ){
-
-    alert(
-      "Admin should login through admin.html"
-    );
-
-    return;
-
-  }
-
-  currentUser = username;
-
-  currentEmail = email;
-
-  document
-    .getElementById("loginPage")
-    .classList
-    .add("hidden");
-
-  document
-    .getElementById("mainApp")
-    .classList
-    .remove("hidden");
-
-  loadFoods();
-
-}
-
-function showTab(tabId,btn){
-
-  document
-    .querySelectorAll("#galleryTab,#ratingsTab")
-    .forEach((tab)=>{
-
-      tab.classList.add("hidden");
-
-    });
-
-  document
-    .getElementById(tabId)
-    .classList
-    .remove("hidden");
-
-  document
-    .querySelectorAll(".tab-btn")
-    .forEach((b)=>{
-
-      b.classList.remove("active-tab");
-
-    });
-
-  btn.classList.add("active-tab");
-
-}
-
-function loadFoods(){
-
-  db.ref("foods").on("value",function(snapshot){
-
+  db.ref("userUploads").on("value", snapshot=>{
     const data = snapshot.val();
-
-    const gallery =
-      document.getElementById("gallery");
-
-    const overall =
-      document.getElementById("overallRatings");
-
-    gallery.innerHTML = "";
-
-    overall.innerHTML = "";
+    container.innerHTML = "";
 
     if(!data){
-
-      gallery.innerHTML = `
-        <div class="card">
-          No Food Uploaded Yet
-        </div>
-      `;
-
+      container.innerHTML = "<p>No user uploads yet.</p>";
       return;
-
     }
 
-    Object.keys(data).forEach((id)=>{
-
+    Object.keys(data).forEach(id=>{
       const item = data[id];
+      const avgRating = item.ratings ? (Object.values(item.ratings).reduce((a,b)=>a+(b.rating||0),0)/Object.values(item.ratings).length).toFixed(1) : "0";
 
-      if(!item.ratings){
-
-        item.ratings = [];
-
-      }
-
-      let total = 0;
-
-      item.ratings.forEach((r)=>{
-
-        total += Number(r.rating);
-
-      });
-
-      let avg = 0;
-
-      if(item.ratings.length > 0){
-
-        avg = total / item.ratings.length;
-
-      }
-
-      // FOOD CARD
       const card = document.createElement("div");
-
       card.className = "card";
-
       card.innerHTML = `
-
-        <img src="${item.image}">
-
-        <h2>${item.foodname}</h2>
-
-        <p>
-          <b>Restaurant:</b>
-          ${item.restaurant}
-        </p>
-
-        <p>${item.details}</p>
-
-        <div class="stars">
-
-          <span class="star">☆</span>
-          <span class="star">☆</span>
-          <span class="star">☆</span>
-          <span class="star">☆</span>
-          <span class="star">☆</span>
-
-        </div>
-
-      `;
-
-      const stars = card.querySelectorAll(".star");
-
-      stars.forEach((star,index)=>{
-
-        star.addEventListener("click",function(){
-
-          rateFood(
-            id,
-            index + 1,
-            stars
-          );
-
-        });
-
-      });
-
-      gallery.appendChild(card);
-
-      // OVERALL RATING CARD
-      overall.innerHTML += `
-
-        <div class="card">
-
-          <img src="${item.image}">
-
-          <h2>${item.foodname}</h2>
-
-          <p>
-            <b>Restaurant:</b>
-            ${item.restaurant}
+        <img src="${item.image}" class="user-image">
+        <div class="user-details">
+          <p><b>Uploaded By:</b> ${item.uploadedName} (${item.uploadedBy})</p>
+          <p><b>Restaurant:</b> ${item.restaurant}</p>
+          <p><b>Food Name:</b> ${item.foodname}</p>
+          <p><b>Details:</b> ${item.details}</p>
+          <p><b>Rating:</b> ${avgRating} / 5
+            <span class="stars">${'★'.repeat(Math.round(avgRating))}</span>
           </p>
-
-          <div class="rating-score">
-            ⭐ ${avg.toFixed(1)}/5
-          </div>
-
-          <div class="rating-bar">
-
-            <div class="rating-fill"
-              style="width:${avg*20}%">
-            </div>
-
-          </div>
-
-          <p style="margin-top:15px;">
-            Total Ratings:
-            ${item.ratings.length}
-          </p>
-
         </div>
-
       `;
-
+      container.appendChild(card);
     });
-
   });
-
 }
 
-function rateFood(foodId,rating,stars){
-
-  // RESET STARS
-  stars.forEach((star)=>{
-
-    star.innerHTML = "☆";
-
-    star.classList.remove("active");
-
-  });
-
-  // FILL STARS
-  for(let i=0;i<rating;i++){
-
-    stars[i].innerHTML = "★";
-
-    stars[i].classList.add("active");
-
-  }
-
-  db.ref("foods/" + foodId)
-  .once("value",function(snapshot){
-
-    const item = snapshot.val();
-
-    if(!item.ratings){
-
-      item.ratings = [];
-
-    }
-
-    const alreadyRated =
-      item.ratings.find((r)=>{
-
-        return r.email === currentEmail;
-
-      });
-
-    if(alreadyRated){
-
-      alert(
-        "You already rated this food"
-      );
-
-      return;
-
-    }
-
-    item.ratings.push({
-
-      user:currentUser,
-      email:currentEmail,
-      rating:rating
-
-    });
-
-    db.ref("foods/" + foodId)
-    .set(item);
-
-    alert(
-      "Your rating has been successfully saved"
-    );
-
-  });
-
-}
-
+// Initialize
+loadUserUploads();
 </script>
 
 </body>
