@@ -807,7 +807,16 @@ ${item.foodname}
 </div>
 
 <div class="food-sub">
-${item.restaurant}
+📍 ${item.restaurant}
+</div>
+
+<div style="
+margin-top:8px;
+font-size:14px;
+color:#FFD700;
+font-weight:bold;
+">
+Uploaded by @${item.uploadedBy || "Unknown"}
 </div>
 
 <div class="food-desc">
@@ -1169,14 +1178,14 @@ const reader = new FileReader();
 
 reader.onload = function(e){
 
-db.ref("foods")
-.push({
-
-restaurant,
-foodname,
-details,
-image:e.target.result
-
+db.ref("foods").push({
+    restaurant,
+    foodname,
+    details,
+    image:e.target.result,
+    uploadedBy: currentUser,
+    uploaderName: currentName,
+    uploadTime: Date.now()
 });
 
 showToast("✅ Food Uploaded");
