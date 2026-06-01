@@ -1,1 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>ShifPlatter</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f4f4;
+color:#222;
+}
+
+header{
+background:black;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+.container{
+max-width:1300px;
+margin:auto;
+padding:20px;
+}
+
+.tabs{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:20px;
+}
+
+.tab{
+padding:12px 18px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:white;
+font-weight:bold;
+}
+
+.tab.active{
+background:black;
+color:white;
+}
+
+.panel{
+display:none;
+}
+
+.panel.show{
+display:block;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:20px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+margin-bottom:20px;
+}
+
+.gallery{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(280px,1fr));
+gap:20px;
+}
+
+.food-card{
+background:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.food-card img{
+width:100%;
+height:250px;
+object-fit:cover;
+}
+
+.food-content{
+padding:15px;
+}
+
+input,
+textarea{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:12px;
+border:1px solid #ccc;
+}
+
+button{
+padding:12px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:black;
+color:white;
+}
+
+.stars{
+display:flex;
+gap:5px;
+margin-top:10px;
+}
+
+.star{
+font-size:28px;
+cursor:pointer;
+color:#bbb;
+}
+
+.star.active{
+color:gold;
+}
+
+.rating-bar{
+width:100%;
+height:20px;
+background:#ddd;
+border-radius:20px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.rating-fill{
+height:100%;
+background:black;
+width:0%;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>🍔 ShifPlatter</h1>
+
+<p>
+Rate Food & Upload Photos
+</p>
+
+</header>
+
+<div class="container">
+
+<div class="tabs">
+
+<button
+class="tab active"
+onclick="openTab('gallery',this)">
+Gallery
+</button>
+
+<button
+class="tab"
+onclick="openTab('upload',this)">
+Upload Images
+</button>
+
+<button
+class="tab"
+onclick="openTab('ratings',this)">
+Overall Ratings
+</button>
+
+</div>
+
+<!-- Gallery -->
+
+<div
+id="gallery"
+class="panel show">
+
+<div
+id="galleryGrid"
+class="gallery">
+
+</div>
+
+</div>
+
+<!-- Upload User Photo -->
+
+<div
+id="upload"
+class="panel">
+
+<div class="card">
+
+<h2>
+Upload Food Photo
+</h2>
+
+<input
+id="userName"
+placeholder="Your Name">
+
+<input
+id="restaurant"
+placeholder="Restaurant Name">
+
+<input
+id="foodName"
+placeholder="Food Name">
+
+<textarea
+id="details"
+placeholder="Food Details">
+</textarea>
+
+<input
+id="userImage"
+type="file">
+
+<button
+onclick="uploadUserPhoto()"
+style="margin-top:15px;">
+Upload Photo
+</button>
+
+</div>
+
+</div>
+
+<!-- Overall Ratings -->
+
+<div
+id="ratings"
+class="panel">
+
+<div
+id="ratingsGallery"
+class="gallery">
+
+</div>
+
+</div>
+
+<script>
+
+function openTab(id,btn){
+
+document
+.querySelectorAll('.panel')
+.forEach(panel=>{
+
+panel.classList.remove('show');
+
+});
+
+document
+.getElementById(id)
+.classList.add('show');
+
+document
+.querySelectorAll('.tab')
+.forEach(tab=>{
+
+tab.classList.remove('active');
+
+});
+
+btn.classList.add('active');
+
+}
+
+</script>
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs,
+onSnapshot
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+getStorage,
+ref,
+uploadBytes,
+getDownloadURL
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
+
+authDomain:
+"shifplatter-e0449.firebaseapp.com",
+
+databaseURL:
+"https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+projectId:
+"shifplatter-e0449",
+
+storageBucket:
+"shifplatter-e0449.firebasestorage.app",
+
+messagingSenderId:
+"873786528833",
+
+appId:
+"1:873786528833:web:e72394fec2ce9f8b52a2c0"
+
+};
+
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getFirestore(app);
+
+const storage =
+getStorage(app);
+
+window.db = db;
+window.storage = storage;
+
+window.collection = collection;
+window.addDoc = addDoc;
+window.getDocs = getDocs;
+window.onSnapshot = onSnapshot;
+
+window.ref = ref;
+window.uploadBytes = uploadBytes;
+window.getDownloadURL = getDownloadURL;
+function loadFoods(){
+
+const gallery =
+document.getElementById(
+"galleryGrid"
+);
+
+onSnapshot(
+collection(db,"foods"),
+
+(snapshot)=>{
+
+gallery.innerHTML = "";
+
+snapshot.forEach(
+(foodDoc)=>{
+
+const data =
+foodDoc.data();
+
+const card =
+document.createElement(
+"div"
+);
+
+card.className =
+"food-card";
+
+card.innerHTML = `
+
+<img
+src="${data.imageUrl}">
+
+<div class="food-content">
+
+<h2>
+${data.food}
+</h2>
+
+<h4>
+${data.restaurant}
+</h4>
+
+<p>
+${data.details}
+</p>
+
+<div
+class="rating-bar">
+
+<div
+class="rating-fill"
+id="bar-${foodDoc.id}">
+</div>
+
+</div>
+
+<p
+id="avg-${foodDoc.id}">
+Average Rating: 0
+</p>
+
+<input
+id="user-${foodDoc.id}"
+placeholder="Your Name"
+style="
+margin-top:10px;
+">
+
+<div
+class="stars">
+
+<span
+class="star"
+onclick="
+rateFood(
+'${foodDoc.id}',
+1
+)
+">
+★
+</span>
+
+<span
+class="star"
+onclick="
+rateFood(
+'${foodDoc.id}',
+2
+)
+">
+★
+</span>
+
+<span
+class="star"
+onclick="
+rateFood(
+'${foodDoc.id}',
+3
+)
+">
+★
+</span>
+
+<span
+class="star"
+onclick="
+rateFood(
+'${foodDoc.id}',
+4
+)
+">
+★
+</span>
+
+<span
+class="star"
+onclick="
+rateFood(
+'${foodDoc.id}',
+5
+)
+">
+★
+</span>
+
+</div>
+
+</div>
+
+`;
+
+gallery.appendChild(
+card
+);
+
+loadFoodAverage(
+foodDoc.id
+);
+
+});
+
+}
+);
+
+}
+
+window.rateFood =
+async function(
+foodId,
+rating
+){
+
+const userName =
+document.getElementById(
+"user-" + foodId
+).value;
+
+if(!userName){
+
+alert(
+"Enter your name"
+);
+
+return;
+
+}
+
+try{
+
+await addDoc(
+collection(
+db,
+"ratings"
+),
+{
+foodId,
+foodName:
+foodId,
+userName,
+rating,
+createdAt:
+Date.now()
+}
+);
+
+alert(
+"Rating Submitted"
+);
+
+}
+catch(error){
+
+console.error(error);
+
+alert(
+"Rating Failed"
+);
+
+}
+
+}
+async function loadFoodAverage(foodId){
+
+onSnapshot(
+collection(db,"ratings"),
+
+(snapshot)=>{
+
+let total = 0;
+let count = 0;
+
+snapshot.forEach((ratingDoc)=>{
+
+const data =
+ratingDoc.data();
+
+if(
+data.foodId === foodId
+){
+
+total += Number(
+data.rating || 0
+);
+
+count++;
+
+}
+
+});
+
+const avg =
+count > 0
+?
+(total / count)
+:
+0;
+
+const percent =
+(avg / 5) * 100;
+
+const avgElement =
+document.getElementById(
+"avg-" + foodId
+);
+
+if(avgElement){
+
+avgElement.innerText =
+"Average Rating: " +
+avg.toFixed(1) +
+"/5";
+
+}
+
+const bar =
+document.getElementById(
+"bar-" + foodId
+);
+
+if(bar){
+
+bar.style.width =
+percent + "%";
+
+}
+
+});
+
+}
+
+function loadOverallRatings(){
+
+const ratingsGallery =
+document.getElementById(
+"ratingsGallery"
+);
+
+onSnapshot(
+collection(db,"foods"),
+
+(foodSnapshot)=>{
+
+ratingsGallery.innerHTML="";
+
+foodSnapshot.forEach(
+(foodDoc)=>{
+
+const food =
+foodDoc.data();
+
+const card =
+document.createElement(
+"div"
+);
+
+card.className =
+"food-card";
+
+card.innerHTML = `
+
+<img
+src="${food.imageUrl}">
+
+<div
+class="food-content">
+
+<h2>
+${food.food}
+</h2>
+
+<h4>
+${food.restaurant}
+</h4>
+
+<p>
+Overall Rating
+</p>
+
+<div
+class="rating-bar">
+
+<div
+class="rating-fill"
+id="overall-bar-${foodDoc.id}">
+</div>
+
+</div>
+
+<p
+id="overall-text-${foodDoc.id}">
+0%
+</p>
+
+</div>
+
+`;
+
+ratingsGallery.appendChild(
+card
+);
+
+calculateOverall(
+foodDoc.id
+);
+
+});
+
+});
+
+}
+
+function calculateOverall(
+foodId
+){
+
+onSnapshot(
+collection(db,"ratings"),
+
+(snapshot)=>{
+
+let total = 0;
+let count = 0;
+
+snapshot.forEach(
+(doc)=>{
+
+const data =
+doc.data();
+
+if(
+data.foodId === foodId
+){
+
+total += Number(
+data.rating || 0
+);
+
+count++;
+
+}
+
+});
+
+const avg =
+count > 0
+?
+(total / count)
+:
+0;
+
+const percent =
+Math.round(
+(avg / 5) * 100
+);
+
+const bar =
+document.getElementById(
+"overall-bar-" +
+foodId
+);
+
+if(bar){
+
+bar.style.width =
+percent + "%";
+
+}
+
+const text =
+document.getElementById(
+"overall-text-" +
+foodId
+);
+
+if(text){
+
+text.innerText =
+percent + "%";
+
+}
+
+});
+
+}
+async function loadFoodAverage(foodId){
+
+onSnapshot(
+collection(db,"ratings"),
+
+(snapshot)=>{
+
+let total = 0;
+let count = 0;
+
+snapshot.forEach((ratingDoc)=>{
+
+const data =
+ratingDoc.data();
+
+if(
+data.foodId === foodId
+){
+
+total += Number(
+data.rating || 0
+);
+
+count++;
+
+}
+
+});
+
+const avg =
+count > 0
+?
+(total / count)
+:
+0;
+
+const percent =
+(avg / 5) * 100;
+
+const avgElement =
+document.getElementById(
+"avg-" + foodId
+);
+
+if(avgElement){
+
+avgElement.innerText =
+"Average Rating: " +
+avg.toFixed(1) +
+"/5";
+
+}
+
+const bar =
+document.getElementById(
+"bar-" + foodId
+);
+
+if(bar){
+
+bar.style.width =
+percent + "%";
+
+}
+
+});
+
+}
+
+function loadOverallRatings(){
+
+const ratingsGallery =
+document.getElementById(
+"ratingsGallery"
+);
+
+onSnapshot(
+collection(db,"foods"),
+
+(foodSnapshot)=>{
+
+ratingsGallery.innerHTML="";
+
+foodSnapshot.forEach(
+(foodDoc)=>{
+
+const food =
+foodDoc.data();
+
+const card =
+document.createElement(
+"div"
+);
+
+card.className =
+"food-card";
+
+card.innerHTML = `
+
+<img
+src="${food.imageUrl}">
+
+<div
+class="food-content">
+
+<h2>
+${food.food}
+</h2>
+
+<h4>
+${food.restaurant}
+</h4>
+
+<p>
+Overall Rating
+</p>
+
+<div
+class="rating-bar">
+
+<div
+class="rating-fill"
+id="overall-bar-${foodDoc.id}">
+</div>
+
+</div>
+
+<p
+id="overall-text-${foodDoc.id}">
+0%
+</p>
+
+</div>
+
+`;
+
+ratingsGallery.appendChild(
+card
+);
+
+calculateOverall(
+foodDoc.id
+);
+
+});
+
+});
+
+}
+
+function calculateOverall(
+foodId
+){
+
+onSnapshot(
+collection(db,"ratings"),
+
+(snapshot)=>{
+
+let total = 0;
+let count = 0;
+
+snapshot.forEach(
+(doc)=>{
+
+const data =
+doc.data();
+
+if(
+data.foodId === foodId
+){
+
+total += Number(
+data.rating || 0
+);
+
+count++;
+
+}
+
+});
+
+const avg =
+count > 0
+?
+(total / count)
+:
+0;
+
+const percent =
+Math.round(
+(avg / 5) * 100
+);
+
+const bar =
+document.getElementById(
+"overall-bar-" +
+foodId
+);
+
+if(bar){
+
+bar.style.width =
+percent + "%";
+
+}
+
+const text =
+document.getElementById(
+"overall-text-" +
+foodId
+);
+
+if(text){
+
+text.innerText =
+percent + "%";
+
+}
+
+});
+
+}
+loadFoods();
+
+loadOverallRatings();
+
+</script>
+
+</body>
+
+</html>
