@@ -1862,8 +1862,7 @@ let foods = [];
 Object.keys(foodsCache)
 .forEach(id=>{
 
-const item =
-foodsCache[id];
+const item = foodsCache[id];
 
 let avg = 0;
 
@@ -1901,46 +1900,57 @@ rating:avg
 });
 
 foods.sort(
-(a,b)=>
-b.rating-a.rating
+(a,b)=>b.rating-a.rating
 );
 
-foods.slice(0,3)
-.forEach((food,index)=>{
+const top3 =
+foods.slice(0,3);
 
-let rankClass =
-"rank-3";
+const order = [
+top3[1],
+top3[0],
+top3[2]
+];
 
-if(index===0)
-rankClass="rank-1";
+const positions = [
+"second-place",
+"first-place",
+"third-place"
+];
 
-if(index===1)
-rankClass="rank-2";
+const rankNumbers = [
+2,
+1,
+3
+];
+
+order.forEach((food,index)=>{
+
+if(!food) return;
 
 container.innerHTML += `
 
-<div class="rank-card ${rankClass}">
+<div class="leaderboard-box ${positions[index]}">
+
+${rankNumbers[index]===1 ? `
+<div class="crown">👑</div>
+` : ``}
 
 <img
 src="${food.image}"
 class="rank-image">
 
-<h2 style="
-margin-top:15px;
-">
-
+<div class="rank-food">
 ${food.name}
+</div>
 
-</h2>
-
-<p style="
-font-weight:bold;
-margin-top:10px;
-">
-
+<div class="rank-rating">
 ⭐ ${food.rating.toFixed(1)}
+</div>
 
-</p>
+<div class="rank-number">
+${rankNumbers[index]}
+</div>
 
 </div>
 
@@ -1949,6 +1959,8 @@ margin-top:10px;
 });
 
 }
+
+
 
 /* CLOSE IMAGE MODAL WHEN BACKGROUND CLICKED */
 
