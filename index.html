@@ -1187,25 +1187,39 @@ let userRatings = {};
 
 function googleLogin(){
 
-console.log("Button clicked");
+alert("Button clicked");
 
 auth.signInWithPopup(provider)
 
 .then((result)=>{
 
-console.log("Login success");
+alert("Login Success");
 
 const user = result.user;
 
-alert("Logged in as " + user.displayName);
+currentUser = user.email;
+currentName = user.displayName;
+
+document.getElementById("loginPage")
+.classList.add("hidden");
+
+document.getElementById("app")
+.classList.remove("hidden");
+
+loadFoods();
 
 })
 
 .catch((error)=>{
 
-console.log(error);
+alert(
+"ERROR: " +
+error.code +
+"\n\n" +
+error.message
+);
 
-alert(error.message);
+console.log(error);
 
 });
 
