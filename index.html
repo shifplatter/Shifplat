@@ -16,6 +16,7 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <style>
 
@@ -468,26 +469,17 @@ ShifPlatter
 </div>
 
 <div class="login-sub">
-Share Your Food • Get Rated • Be Featured
+Share Your Food • Get Rated • Be Featured<button
+class="primary-btn"
+onclick="googleLogin()">
+
+🔐 Continue With Google
+
+</button>
 </div>
 
 <input
-type="text"
-id="username"
-placeholder="@instagram_username">
 
-<input
-type="text"
-id="name"
-placeholder="Your Name">
-
-<button
-class="primary-btn"
-onclick="loginUser()">
-
-Continue
-
-</button>
 
 </div>
 
@@ -1174,8 +1166,14 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 
+const auth = firebase.auth();
+
+const provider =
+new firebase.auth.GoogleAuthProvider();
+
 let currentUser = "";
 let currentName = "";
+let currentPhoto = "";
 
 let foodsCache = {};
 let userRatings = {};
@@ -1186,25 +1184,22 @@ let userRatings = {};
 
 /* LOGIN */
 
-function loginUser(){
+function googleLogin(){
 
-const username =
-document.getElementById("username")
-.value.trim();
+auth.signInWithPopup(provider)
 
-const name =
-document.getElementById("name")
-.value.trim();
+.then((result)=>{
 
-if(!username || !name){
+const user = result.user;
 
-alert("Enter your details");
-return;
+currentUser =
+user.email;
 
-}
+currentName =
+user.displayName;
 
-currentUser = username;
-currentName = name;
+currentPhoto =
+user.photoURL;
 
 document
 .getElementById("loginPage")
@@ -1215,6 +1210,14 @@ document
 .classList.remove("hidden");
 
 loadFoods();
+
+})
+
+.catch((error)=>{
+
+alert(error.message);
+
+});
 
 }
 
@@ -1394,13 +1397,24 @@ ${item.details || ""}
 
 <div class="uploader">
 
-<div class="avatar">
+${
+item.userPhoto
+?
 
+`<img
+src="${item.userPhoto}"
+class="avatar"
+style="object-fit:cover;">`
+
+:
+
+`<div class="avatar">
 ${(item.uploadedBy || "U")
 .charAt(0)
 .toUpperCase()}
+</div>`
 
-</div>
+}
 
 <div>
 
@@ -1723,8 +1737,9 @@ details,
 
 image:e.target.result,
 
-uploadedBy:currentUser,
-uploaderName:currentName,
+uploadedBy:currentName,
+userEmail:currentUser,
+userPhoto:currentPhoto,
 
 uploadTime:Date.now()
 
