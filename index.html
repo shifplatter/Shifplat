@@ -469,7 +469,8 @@ ShifPlatter
 </div>
 
 <div class="login-sub">
-Share Your Food • Get Rated • Be Featured<button
+Share Your Food • Get Rated • Be Featured
+<button
 class="primary-btn"
 onclick="googleLogin()">
 
@@ -1186,34 +1187,23 @@ let userRatings = {};
 
 function googleLogin(){
 
+console.log("Button clicked");
+
 auth.signInWithPopup(provider)
 
 .then((result)=>{
 
+console.log("Login success");
+
 const user = result.user;
 
-currentUser =
-user.email;
-
-currentName =
-user.displayName;
-
-currentPhoto =
-user.photoURL;
-
-document
-.getElementById("loginPage")
-.classList.add("hidden");
-
-document
-.getElementById("app")
-.classList.remove("hidden");
-
-loadFoods();
+alert("Logged in as " + user.displayName);
 
 })
 
 .catch((error)=>{
+
+console.log(error);
 
 alert(error.message);
 
