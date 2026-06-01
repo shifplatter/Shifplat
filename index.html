@@ -1218,13 +1218,17 @@ const reader = new FileReader();
 reader.onload = function(e){
 
 db.ref("foods").push({
-    restaurant,
-    foodname,
-    details,
-    image:e.target.result,
-    uploadedBy: currentUser,
-    uploaderName: currentName,
-    uploadTime: Date.now()
+
+restaurant,
+foodname,
+details,
+image:e.target.result,
+
+uploadedBy: currentUser,
+uploaderName: currentName,
+
+uploadTime: Date.now()
+
 });
 
 showToast("✅ Food Uploaded");
