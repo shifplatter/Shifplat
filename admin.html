@@ -3,805 +3,504 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShiftPlatter</title>
 
-<title>Shif Platter Admin</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
-
 body{
-background:#f6f7fb;
-color:#222;
-min-height:100vh;
+  margin:0;
+  padding:0;
+  background:#f5f5f5;
+  font-family:Arial,sans-serif;
 }
 
-header{
-background:#111827;
-color:white;
-padding:18px;
-text-align:center;
-font-size:24px;
-font-weight:700;
-letter-spacing:1px;
-box-shadow:0 2px 10px rgba(0,0,0,.1);
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:24px;
+  margin-bottom:20px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+input{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #ddd;
+  margin-top:12px;
+  box-sizing:border-box;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:black;
+  color:white;
+  margin-top:15px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+img{
+  width:100%;
+  border-radius:18px;
+  margin-top:12px;
+}
+
+.hidden{
+  display:none;
 }
 
 .tabs{
-display:flex;
-width:100%;
-background:white;
-position:sticky;
-top:0;
-z-index:100;
-box-shadow:0 2px 10px rgba(0,0,0,.08);
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
 }
 
 .tab-btn{
-flex:1;
-padding:15px;
-border:none;
-background:white;
-font-size:14px;
-font-weight:600;
-cursor:pointer;
-transition:.3s;
+  flex:1;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:#e5e5e5;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-.tab-btn.active{
-background:#111827;
-color:white;
+.active-tab{
+  background:black;
+  color:white;
 }
 
-.tab-content{
-display:none;
-padding:20px;
+.stars{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
 }
 
-.tab-content.active{
-display:block;
+.star{
+  font-size:36px;
+  color:#ccc;
+  cursor:pointer;
+  transition:0.2s;
 }
 
-.section-title{
-font-size:20px;
-font-weight:700;
-margin-bottom:15px;
+.star.active{
+  color:gold;
 }
 
-.gallery-grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-gap:20px;
+.rating-bar{
+  width:100%;
+  height:20px;
+  background:#ddd;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:12px;
 }
 
-.food-card{
-background:white;
-border-radius:16px;
-overflow:hidden;
-box-shadow:0 3px 15px rgba(0,0,0,.08);
+.rating-fill{
+  height:100%;
+  background:black;
 }
 
-.food-card img{
-width:100%;
-height:220px;
-object-fit:cover;
+.rating-score{
+  font-size:38px;
+  font-weight:bold;
+  margin-top:15px;
 }
 
-.food-info{
-padding:15px;
-}
-
-.restaurant{
-font-size:14px;
-color:#666;
-margin-bottom:6px;
-}
-
-.food-name{
-font-size:18px;
-font-weight:700;
-margin-bottom:10px;
-}
-
-.delete-btn{
-width:100%;
-padding:12px;
-border:none;
-background:#ef4444;
-color:white;
-cursor:pointer;
-font-weight:600;
-border-radius:10px;
-margin-top:10px;
-}
-
-.upload-box{
-background:white;
-padding:20px;
-border-radius:16px;
-box-shadow:0 3px 15px rgba(0,0,0,.08);
-max-width:700px;
-margin:auto;
-}
-
-.form-group{
-margin-bottom:15px;
-}
-
-.form-group label{
-display:block;
-margin-bottom:8px;
-font-weight:600;
-}
-
-.form-group input{
-width:100%;
-padding:12px;
-border:1px solid #ddd;
-border-radius:10px;
-outline:none;
-}
-
-.upload-btn{
-width:100%;
-padding:14px;
-border:none;
-background:#10b981;
-color:white;
-font-size:16px;
-font-weight:700;
-border-radius:10px;
-cursor:pointer;
-}
-
-.upload-btn:hover{
-opacity:.9;
-}
-
-.user-photo-card{
-background:white;
-padding:15px;
-border-radius:16px;
-box-shadow:0 3px 15px rgba(0,0,0,.08);
-margin-bottom:20px;
-}
-
-.user-photo-card img{
-width:100%;
-max-height:300px;
-object-fit:cover;
-border-radius:12px;
-margin-top:10px;
-margin-bottom:10px;
-}
-
-.user-details{
-margin-bottom:10px;
-line-height:1.8;
-}
-
-.download-btn{
-background:#2563eb;
-color:white;
-border:none;
-padding:10px 15px;
-border-radius:8px;
-cursor:pointer;
-margin-right:10px;
-}
-
-.remove-btn{
-background:#ef4444;
-color:white;
-border:none;
-padding:10px 15px;
-border-radius:8px;
-cursor:pointer;
-}
-
-.loading{
-text-align:center;
-padding:30px;
-font-weight:600;
-}
-
-@media(max-width:768px){
-
-.tabs{
-overflow-x:auto;
-}
-
-.tab-btn{
-font-size:12px;
-min-width:140px;
-}
-
+h1,h2,h3{
+  margin-top:0;
 }
 
 </style>
+
 </head>
 <body>
 
-<header>
-🍽️ SHIF PLATTER ADMIN
-</header>
+<div class="container">
 
-<div class="tabs">
+  <!-- LOGIN -->
+  <div class="card" id="loginPage">
 
-<button class="tab-btn active"
-onclick="openTab('galleryTab',this)">
-Gallery
-</button>
+    <h1>ShiftPlatter</h1>
 
-<button class="tab-btn"
-onclick="openTab('uploadTab',this)">
-Upload Images Of Users
-</button>
+    <p>
+      Rate your favorite food photos and share your likes
+    </p>
 
-<button class="tab-btn"
-onclick="openTab('usersPhotoTab',this)">
-Users Photo
-</button>
+    <input
+      type="text"
+      id="username"
+      placeholder="Enter Username"
+    >
 
-</div>
+    <input
+      type="email"
+      id="email"
+      placeholder="Enter Email Address"
+    >
 
-<!-- GALLERY TAB -->
+    <button onclick="loginUser()">
+      Continue
+    </button>
 
-<section id="galleryTab"
-class="tab-content active">
+  </div>
 
-<h2 class="section-title">
-Gallery
-</h2>
+  <!-- MAIN APP -->
+  <div id="mainApp" class="hidden">
 
-<div id="galleryContainer"
-class="gallery-grid">
+    <!-- TABS -->
+    <div class="tabs">
 
-<div class="loading">
-Loading Gallery...
-</div>
+      <button class="tab-btn active-tab"
+        onclick="showTab('galleryTab',this)">
+        Food Gallery
+      </button>
 
-</div>
+      <button class="tab-btn"
+        onclick="showTab('ratingsTab',this)">
+        Overall Ratings
+      </button>
 
-</section>
+    </div>
 
-<!-- UPLOAD TAB -->
+    <!-- FOOD GALLERY -->
+    <div id="galleryTab">
 
-<section id="uploadTab"
-class="tab-content">
+      <div id="gallery"></div>
 
-<h2 class="section-title">
-Upload Images Of Users
-</h2>
+    </div>
 
-<div class="upload-box">
+    <!-- OVERALL RATINGS -->
+    <div id="ratingsTab" class="hidden">
 
-<div class="form-group">
-<label>Restaurant / Cafe Name</label>
-<input
-type="text"
-id="restaurantName"
-placeholder="Enter Restaurant Name">
-</div>
+      <div id="overallRatings"></div>
 
-<div class="form-group">
-<label>Food Name</label>
-<input
-type="text"
-id="foodName"
-placeholder="Enter Food Name">
-</div>
+    </div>
 
-<div class="form-group">
-<label>Food Image</label>
-<input
-type="file"
-id="foodImage"
-accept="image/*">
-</div>
-
-<button
-class="upload-btn"
-onclick="uploadFood()">
-Upload Food
-</button>
+  </div>
 
 </div>
 
-</section>
-
-<!-- USERS PHOTO TAB -->
-
-<section id="usersPhotoTab"
-class="tab-content">
-
-<h2 class="section-title">
-Users Photo
-</h2>
-
-<div id="usersPhotoContainer">
-
-<div class="loading">
-Loading User Uploads...
-</div>
-
-</div>
-
-</section>
-
-<!-- Firebase SDK -->
-
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-getDocs,
-addDoc,
-deleteDoc,
-doc,
-serverTimestamp,
-query,
-orderBy
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-import {
-getStorage,
-ref,
-uploadBytes,
-getDownloadURL
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-
-/* Firebase Config */
-
+<script>
 const firebaseConfig = {
-apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
-authDomain: "shifplatter-e0449.firebaseapp.com",
-databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
-projectId: "shifplatter-e0449",
-storageBucket: "shifplatter-e0449.firebasestorage.app",
-messagingSenderId: "873786528833",
-appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
-};
+    apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
+    authDomain: "shifplatter-e0449.firebaseapp.com",
+    databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "shifplatter-e0449",
+    storageBucket: "shifplatter-e0449.firebasestorage.app",
+    messagingSenderId: "873786528833",
+    appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
+  };
 
-/* Firebase Init */
+firebase.initializeApp(firebaseConfig);
 
-const app = initializeApp(firebaseConfig);
+const db = firebase.database();
 
-const db = getFirestore(app);
+let currentUser = "";
+let currentEmail = "";
 
-const storage = getStorage(app);
+function loginUser(){
 
-/* Make globally available */
+  const username =
+    document.getElementById("username")
+    .value
+    .trim();
 
-window.db = db;
-window.storage = storage;
+  const email =
+    document.getElementById("email")
+    .value
+    .trim();
 
-window.collection = collection;
-window.getDocs = getDocs;
-window.addDoc = addDoc;
-window.deleteDoc = deleteDoc;
-window.doc = doc;
-window.serverTimestamp = serverTimestamp;
-window.query = query;
-window.orderBy = orderBy;
+  if(!username || !email){
 
-window.ref = ref;
-window.uploadBytes = uploadBytes;
-window.getDownloadURL = getDownloadURL;
+    alert("Please enter details");
 
-/* Tab Switching */
+    return;
 
-window.openTab = function(tabId, button){
+  }
 
-document
-.querySelectorAll(".tab-content")
-.forEach(tab=>{
-tab.classList.remove("active");
-});
+  // ADMIN BLOCK
+  if(
+    username.toUpperCase() === "SHIFPLATTER" &&
+    email.toUpperCase() === "SHIVIK@2030"
+  ){
 
-document
-.querySelectorAll(".tab-btn")
-.forEach(btn=>{
-btn.classList.remove("active");
-});
+    alert(
+      "Admin should login through admin.html"
+    );
 
-document
-.getElementById(tabId)
-.classList.add("active");
+    return;
 
-button.classList.add("active");
+  }
 
-}
+  currentUser = username;
 
-/* Upload Food */
+  currentEmail = email;
 
-window.uploadFood = async function(){
+  document
+    .getElementById("loginPage")
+    .classList
+    .add("hidden");
 
-try{
+  document
+    .getElementById("mainApp")
+    .classList
+    .remove("hidden");
 
-const restaurant =
-document
-.getElementById("restaurantName")
-.value
-.trim();
-
-const foodName =
-document
-.getElementById("foodName")
-.value
-.trim();
-
-const imageFile =
-document
-.getElementById("foodImage")
-.files[0];
-
-if(!restaurant){
-alert("Enter Restaurant Name");
-return;
-}
-
-if(!foodName){
-alert("Enter Food Name");
-return;
-}
-
-if(!imageFile){
-alert("Select Image");
-return;
-}
-
-const btn =
-document.querySelector(".upload-btn");
-
-btn.innerText = "Uploading...";
-btn.disabled = true;
-
-/* Upload to Storage */
-
-const imageRef =
-ref(
-storage,
-`foods/${Date.now()}_${imageFile.name}`
-);
-
-await uploadBytes(
-imageRef,
-imageFile
-);
-
-const imageUrl =
-await getDownloadURL(imageRef);
-
-/* Save Firestore */
-
-await addDoc(
-collection(db,"foods"),
-{
-restaurantName: restaurant,
-foodName: foodName,
-imageUrl: imageUrl,
-createdAt: serverTimestamp()
-}
-);
-
-alert("Food Uploaded Successfully");
-
-document.getElementById("restaurantName").value="";
-document.getElementById("foodName").value="";
-document.getElementById("foodImage").value="";
-
-btn.innerText = "Upload Food";
-btn.disabled = false;
-
-loadGallery();
-
-}
-catch(error){
-
-console.error(error);
-
-alert(error.message);
-
-const btn =
-document.querySelector(".upload-btn");
-
-btn.innerText = "Upload Food";
-btn.disabled = false;
+  loadFoods();
 
 }
 
-};
+function showTab(tabId,btn){
 
-/* Gallery Loader */
+  document
+    .querySelectorAll("#galleryTab,#ratingsTab")
+    .forEach((tab)=>{
 
-window.loadGallery = async function(){
+      tab.classList.add("hidden");
 
-const container =
-document.getElementById(
-"galleryContainer"
-);
+    });
 
-container.innerHTML =
-`
-<div class="loading">
-Loading Gallery...
-</div>
-`;
+  document
+    .getElementById(tabId)
+    .classList
+    .remove("hidden");
 
-try{
+  document
+    .querySelectorAll(".tab-btn")
+    .forEach((b)=>{
 
-const snapshot =
-await getDocs(
-query(
-collection(db,"foods"),
-orderBy("createdAt","desc")
-)
-);
+      b.classList.remove("active-tab");
 
-let html = "";
+    });
 
-snapshot.forEach(docSnap=>{
-
-const data =
-docSnap.data();
-
-html += `
-<div class="food-card">
-
-<img src="${data.imageUrl}">
-
-<div class="food-info">
-
-<div class="restaurant">
-${data.restaurantName || ""}
-</div>
-
-<div class="food-name">
-${data.foodName || ""}
-</div>
-
-<button
-class="delete-btn"
-onclick="deleteFood('${docSnap.id}')">
-Delete
-</button>
-
-</div>
-
-</div>
-`;
-
-});
-
-if(html===""){
-html=`
-<div class="loading">
-No Food Images Found
-</div>
-`;
-}
-
-container.innerHTML = html;
-
-}
-catch(error){
-
-console.error(error);
-
-container.innerHTML =
-`
-<div class="loading">
-Failed To Load Gallery
-</div>
-`;
+  btn.classList.add("active-tab");
 
 }
 
-};
-/* Load User Uploads */
+function loadFoods(){
 
-window.loadUserUploads = async function(){
+  db.ref("foods").on("value",function(snapshot){
 
-const container =
-document.getElementById(
-"usersPhotoContainer"
-);
+    const data = snapshot.val();
 
-container.innerHTML =
-`
-<div class="loading">
-Loading User Uploads...
-</div>
-`;
+    const gallery =
+      document.getElementById("gallery");
 
-try{
+    const overall =
+      document.getElementById("overallRatings");
 
-const snapshot =
-await getDocs(
-query(
-collection(db,"userUploads"),
-orderBy("createdAt","desc")
-)
-);
+    gallery.innerHTML = "";
 
-let html = "";
+    overall.innerHTML = "";
 
-snapshot.forEach(docSnap=>{
+    if(!data){
 
-const data = docSnap.data();
+      gallery.innerHTML = `
+        <div class="card">
+          No Food Uploaded Yet
+        </div>
+      `;
 
-html += `
+      return;
 
-<div class="user-photo-card">
+    }
 
-<div class="user-details">
+    Object.keys(data).forEach((id)=>{
 
-<b>Restaurant:</b>
-${data.restaurantName || "-"}
+      const item = data[id];
 
-<br>
+      if(!item.ratings){
 
-<b>Food:</b>
-${data.foodName || "-"}
+        item.ratings = [];
 
-<br>
+      }
 
-<b>User:</b>
-${data.userName || "-"}
+      let total = 0;
 
-<br>
+      item.ratings.forEach((r)=>{
 
-<b>Instagram:</b>
-${data.instagramId || "-"}
+        total += Number(r.rating);
 
-</div>
+      });
 
-<img src="${data.imageUrl}">
+      let avg = 0;
 
-<br>
+      if(item.ratings.length > 0){
 
-<a
-href="${data.imageUrl}"
-download
-target="_blank">
+        avg = total / item.ratings.length;
 
-<button class="download-btn">
-Download Image
-</button>
+      }
 
-</a>
+      // FOOD CARD
+      const card = document.createElement("div");
 
-<button
-class="remove-btn"
-onclick="deleteUserUpload('${docSnap.id}')">
+      card.className = "card";
 
-Delete
+      card.innerHTML = `
 
-</button>
+        <img src="${item.image}">
 
-</div>
+        <h2>${item.foodname}</h2>
 
-`;
+        <p>
+          <b>Restaurant:</b>
+          ${item.restaurant}
+        </p>
 
-});
+        <p>${item.details}</p>
 
-if(html===""){
+        <div class="stars">
 
-html =
-`
-<div class="loading">
-No User Uploads Found
-</div>
-`;
+          <span class="star">☆</span>
+          <span class="star">☆</span>
+          <span class="star">☆</span>
+          <span class="star">☆</span>
+          <span class="star">☆</span>
 
-}
+        </div>
 
-container.innerHTML = html;
+      `;
 
-}
-catch(error){
+      const stars = card.querySelectorAll(".star");
 
-console.error(error);
+      stars.forEach((star,index)=>{
 
-container.innerHTML =
-`
-<div class="loading">
-Unable To Load User Uploads
-</div>
-`;
+        star.addEventListener("click",function(){
 
-}
+          rateFood(
+            id,
+            index + 1,
+            stars
+          );
 
-};
+        });
 
-/* Delete Gallery Food */
+      });
 
-window.deleteFood = async function(id){
+      gallery.appendChild(card);
 
-const confirmDelete =
-confirm(
-"Delete this food item?"
-);
+      // OVERALL RATING CARD
+      overall.innerHTML += `
 
-if(!confirmDelete){
-return;
-}
+        <div class="card">
 
-try{
+          <img src="${item.image}">
 
-await deleteDoc(
-doc(db,"foods",id)
-);
+          <h2>${item.foodname}</h2>
 
-alert("Food Deleted");
+          <p>
+            <b>Restaurant:</b>
+            ${item.restaurant}
+          </p>
 
-loadGallery();
+          <div class="rating-score">
+            ⭐ ${avg.toFixed(1)}/5
+          </div>
 
-}
-catch(error){
+          <div class="rating-bar">
 
-console.error(error);
+            <div class="rating-fill"
+              style="width:${avg*20}%">
+            </div>
 
-alert(error.message);
+          </div>
+
+          <p style="margin-top:15px;">
+            Total Ratings:
+            ${item.ratings.length}
+          </p>
+
+        </div>
+
+      `;
+
+    });
+
+  });
 
 }
 
-};
+function rateFood(foodId,rating,stars){
 
-/* Delete User Upload */
+  // RESET STARS
+  stars.forEach((star)=>{
 
-window.deleteUserUpload =
-async function(id){
+    star.innerHTML = "☆";
 
-const confirmDelete =
-confirm(
-"Delete this user upload?"
-);
+    star.classList.remove("active");
 
-if(!confirmDelete){
-return;
+  });
+
+  // FILL STARS
+  for(let i=0;i<rating;i++){
+
+    stars[i].innerHTML = "★";
+
+    stars[i].classList.add("active");
+
+  }
+
+  db.ref("foods/" + foodId)
+  .once("value",function(snapshot){
+
+    const item = snapshot.val();
+
+    if(!item.ratings){
+
+      item.ratings = [];
+
+    }
+
+    const alreadyRated =
+      item.ratings.find((r)=>{
+
+        return r.email === currentEmail;
+
+      });
+
+    if(alreadyRated){
+
+      alert(
+        "You already rated this food"
+      );
+
+      return;
+
+    }
+
+    item.ratings.push({
+
+      user:currentUser,
+      email:currentEmail,
+      rating:rating
+
+    });
+
+    db.ref("foods/" + foodId)
+    .set(item);
+
+    alert(
+      "Your rating has been successfully saved"
+    );
+
+  });
+
 }
-
-try{
-
-await deleteDoc(
-doc(db,"userUploads",id)
-);
-
-alert("Upload Deleted");
-
-loadUserUploads();
-
-}
-catch(error){
-
-console.error(error);
-
-alert(error.message);
-
-}
-
-};
-
-/* Initial Load */
-
-loadGallery();
-
-loadUserUploads();
 
 </script>
 
