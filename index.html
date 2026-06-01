@@ -1183,8 +1183,6 @@ let userRatings = {};
 
 function googleLogin(){
 
-alert("Button clicked");
-
 auth.signInWithPopup(provider)
 
 .then((result)=>{
@@ -1977,6 +1975,749 @@ ${rankNumbers[index]}
 
 
 
+/* CLOSE IMAGE MODAL WHEN BACKGROUND CLICKED */
+function googleLogin(){
+
+auth.signInWithRedirect(provider);
+
+}
+
+auth.getRedirectResult()
+.then((result)=>{
+
+if(result.user){
+
+currentUser =
+result.user.email.split("@")[0];
+
+currentName =
+result.user.displayName || "User";
+
+document
+.getElementById("loginPage")
+.classList.add("hidden");
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+loadFoods();
+
+}
+
+})
+.catch((error)=>{
+
+console.error(error);
+
+alert(error.message);
+
+});
+I see this
+Where is getting started I cannot see
+I got this after I selected get starred in 
+Why I get that text at the top
+Can u Upgrade the UI as per the photos shown for each tab
+Can u make the leadboard look like this but a lillte big image it should be visible in straight line in phone as well
+
+That behavior—white screen for a moment and then back to the login page—usually means the Google popup is being blocked, the domain is not authorized, or there is a JavaScript error.
+
+Let's check the fastest things first.
+
+Step 1: Tell me how you're opening the app
+
+Are you opening it from:
+
+GitHub Pages (https://...github.io/...)
+Firebase Hosting
+Opening index.html directly from your phone storage
+Something else
+
+This is important because Google Sign-In will not work reliably from a local HTML file.
+
+Step 2: Check Firebase Authentication
+
+Go to:
+
+Firebase Console → Authentication
+
+Do you see Authentication already set up?
+
+Then go to:
+
+Authentication → Sign-in method
+
+Is Google enabled?
+
+Step 3: Check Authorized Domains
+
+Go to:
+
+Authentication → Settings → Authorized domains
+
+If your site is on GitHub Pages, you should see something like:
+
+yourusername.github.io
+
+listed there.
+
+Step 4: Add a test alert
+
+At the very start of your googleLogin() function, add:
+
+alert("Google button clicked");
+
+Example:
+
+function googleLogin(){
+
+alert("Google button clicked");
+
+// rest of code...
+}
+
+Now click the button.
+
+If the alert does not appear, the button is not connected correctly.
+If the alert appears, the function is running and we need the Firebase error.
+Step 5: Show me these two things
+
+Please send screenshots of:
+
+Firebase → Authentication → Sign-in method
+The complete googleLogin() function from your code
+
+With those two screenshots, I can usually identify the exact issue in one step.
+
+The screenshot you sent is not Firebase Authentication. It looks like your hosting provider's authentication settings (possibly Vercel).
+
+For your app, we need the Firebase Console settings.
+
+Please go to:
+
+Firebase Console
+Select your ShifPlatter project
+Click Authentication in the left menu
+Take a screenshot of:
+Sign-in method page
+Or Settings → Authorized domains
+
+Also, based on your symptom ("white screen then back"), there is another likely issue:
+
+Check if Auth SDK is loaded
+
+In your index.html, confirm you have:
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+If the third line is missing, Google login will fail.
+
+Quick test
+
+Add this button temporarily anywhere on the login page:
+
+<button onclick="alert(typeof auth)">
+Test Auth
+</button>
+
+When you tap it:
+
+If it shows "object" → Auth loaded.
+If it shows "undefined" → Auth SDK or initialization is missing.
+One more thing
+
+Your current Firebase config in the code you pasted contains:
+
+storageBucket: "shifplatter-e0449.firebasestorage.app"
+
+That's not related to login, but I want to verify the rest of the setup is correct.
+
+Please paste:
+
+Your complete googleLogin() function.
+The lines where you define:
+const auth = ...
+const provider = ...
+
+Those three snippets will reveal the exact problem.
+
+You're in the correct Firebase page.
+
+Right now Google Sign-In is NOT enabled, which is why the login opens a white screen and returns back.
+
+Do this:
+Click the Google box in the middle.
+Turn Enable ON.
+Select a support email:
+shifplatter@gmail.com
+Click Save.
+Then go to:
+
+Authentication → Settings → Authorized domains
+
+Make sure these domains exist:
+
+localhost
+shifplatter-e0449.firebaseapp.com
+
+If your GitHub Pages URL is:
+
+https://shifplatter.github.io/Shifplat/
+
+add:
+
+shifplatter.github.io
+
+and save.
+
+Also check your index.html
+
+You must have these 3 SDKs:
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+I noticed earlier your page only had:
+
+firebase-app-compat.js
+firebase-database-compat.js
+
+and was missing:
+
+firebase-auth-compat.js
+
+Without that, Google login cannot work.
+
+Also remove the blank white button
+
+Search for:
+
+<input
+type="text"
+id="username"
+placeholder="@instagram_username">
+
+and
+
+<input
+type="text"
+id="name"
+placeholder="Your Name">
+
+Delete both if you're using Google Sign-In.
+
+That white rectangle in your screenshot is one of those input fields.
+
+After you enable Google in Firebase, send me a screenshot of the Google provider settings page (after clicking Google), and I'll verify that everything is configured correctly.
+
+Perfect. Google Sign-In is now enabled in Firebase. ✅
+
+The issue is likely in your index.html code, not Firebase.
+
+1. Check that this SDK exists
+
+Near the top of your file, add this between firebase-app and firebase-database:
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+Without firebase-auth-compat.js, Google login cannot work.
+
+2. After
+const db = firebase.database();
+
+add:
+
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+3. Replace your Google login function with:
+function signInWithGoogle(){
+
+auth.signInWithPopup(provider)
+
+.then((result)=>{
+
+const user = result.user;
+
+currentUser =
+user.email.split("@")[0];
+
+currentName =
+user.displayName || "User";
+
+document
+.getElementById("loginPage")
+.classList.add("hidden");
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+loadFoods();
+
+})
+
+.catch((error)=>{
+
+console.log(error);
+
+alert(
+"Google Login Error: " +
+error.message
+);
+
+});
+
+}
+4. If using GitHub Pages
+
+Go to:
+
+Firebase Console → Authentication → Settings → Authorized Domains
+
+Add:
+
+shifplatter.github.io
+
+If it isn't there already.
+
+5. Important
+
+signInWithPopup() often fails on mobile browsers and in-app browsers.
+
+For Android/mobile, use:
+
+auth.signInWithRedirect(provider);
+
+instead of:
+
+auth.signInWithPopup(provider);
+
+Then add:
+
+auth.getRedirectResult()
+.then((result)=>{
+
+if(result.user){
+
+currentUser =
+result.user.email.split("@")[0];
+
+currentName =
+result.user.displayName;
+
+document
+.getElementById("loginPage")
+.classList.add("hidden");
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+loadFoods();
+
+}
+
+});
+
+This is usually much more reliable on phones.
+
+Can you show me the exact HTML for your Google button and the current signInWithGoogle() function? That will let me pinpoint why you're getting the white screen and returning to the login page.
+
+Where to write this 2. After
+
+
+In your code, find this section near the bottom:
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+let currentUser = "";
+let currentName = "";
+
+let foodsCache = {};
+let userRatings = {};
+
+Replace it with:
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+/* GOOGLE AUTH */
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+
+let currentUser = "";
+let currentName = "";
+
+let foodsCache = {};
+let userRatings = {};
+
+So the new lines:
+
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+
+go immediately below:
+
+const db = firebase.database();
+
+Also make sure you added this SDK at the top of your HTML:
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+between:
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+and
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+If Google login still doesn't work after that, send me:
+
+Your Google button HTML.
+Your current signInWithGoogle() function.
+
+I can then tell you exactly what to replace.
+
+The screenshot actually reveals the problem. 👍
+
+Your button is not running Google Sign-In at all.
+
+When you tap Continue With Google, it shows:
+
+Button clicked
+
+That means your button is still connected to a test function like:
+
+function signInWithGoogle(){
+  alert("Button clicked");
+}
+
+or
+
+<button onclick="alert('Button clicked')">
+Find this in your code
+
+Search for:
+
+Button clicked
+
+or
+
+alert("Button clicked")
+
+Delete it.
+
+Then replace your entire signInWithGoogle() function with:
+function signInWithGoogle(){
+
+auth.signInWithRedirect(provider);
+
+}
+Then add this near the bottom of your script (only once):
+auth.getRedirectResult()
+.then((result)=>{
+
+if(result.user){
+
+currentUser =
+result.user.email.split("@")[0];
+
+currentName =
+result.user.displayName || "User";
+
+document
+.getElementById("loginPage")
+.classList.add("hidden");
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+loadFoods();
+
+}
+
+})
+.catch((error)=>{
+
+console.log(error);
+
+alert(error.message);
+
+});
+Also make sure your button looks like:
+<button
+class="primary-btn"
+onclick="signInWithGoogle()">
+
+🔐 Continue With Google
+
+</button>
+
+and not:
+
+<button onclick="alert('Button clicked')">
+
+or
+
+<button onclick="loginUser()">
+
+The fact that the popup says "Button clicked" means Firebase authentication isn't even being reached yet. Once you remove that test alert and connect the button to signInWithGoogle(), Google Sign-In should start opening the Google account chooser.
+
+If you're unsure where the alert is, paste your current Google button code and your signInWithGoogle() function exactly as they are.
+
+signInWithGoogle where is this 
+
+In the large index.html you pasted earlier, I do not see a signInWithGoogle() function at all.
+
+That means the Google button was probably added later and is still connected to a test alert.
+
+Search your index.html for:
+Button clicked
+
+or
+
+alert("Button clicked")
+
+or
+
+alert('Button clicked')
+
+You should find something like:
+
+function signInWithGoogle(){
+    alert("Button clicked");
+}
+
+or
+
+<button onclick="alert('Button clicked')">
+If you cannot find it
+
+Search for:
+
+Continue With Google
+
+and paste that entire button code here.
+
+For example, I need to see something like:
+
+<button
+class="primary-btn"
+onclick="????">
+
+🔐 Continue With Google
+
+</button>
+
+The onclick="????" part will tell us exactly what function is being called.
+
+Also
+
+From your screenshot, there is still a white text box under the Google button. That means the old username input is still present somewhere in the login page.
+
+Paste only the login section (from <div id="loginPage" down to the Google button) and I'll show you exactly what to replace.
+
+<!-- LOGIN -->
+
+<div id="loginPage" class="login-screen">
+
+<div class="login-card">
+
+<img
+src="logo.png"
+class="login-logo">
+
+<div class="login-title">
+ShifPlatter
+</div>
+
+<div class="login-sub">
+Share Your Food • Get Rated • Be Featured
+<button
+class="primary-btn"
+onclick="googleLogin()">
+
+🔐 Continue With Google
+
+</button>
+</div>
+
+<input
+
+
+</div>
+
+</div>
+
+I can see the problem.
+
+Your button calls:
+
+onclick="googleLogin()"
+
+So your code is looking for a function named:
+
+function googleLogin()
+
+but in the code you pasted earlier there is no googleLogin() function.
+
+Add this near the bottom of your JavaScript
+
+Place it above:
+
+/* CLOSE IMAGE MODAL WHEN BACKGROUND CLICKED */
+
+Add:
+
+function googleLogin(){
+
+auth.signInWithRedirect(provider);
+
+}
+Then add this immediately after that:
+auth.getRedirectResult()
+.then((result)=>{
+
+if(result.user){
+
+currentUser =
+result.user.email.split("@")[0];
+
+currentName =
+result.user.displayName || "User";
+
+document
+.getElementById("loginPage")
+.classList.add("hidden");
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+loadFoods();
+
+}
+
+})
+.catch((error)=>{
+
+console.error(error);
+
+alert(error.message);
+
+});
+Also make sure you have:
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+
+right after:
+
+const db = firebase.database();
+And add the Auth SDK
+
+At the top of the page, you should have:
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+One more thing: your HTML is malformed. The button is currently inside:
+
+<div class="login-sub">
+
+A cleaner version is:
+
+<div class="login-sub">
+Share Your Food • Get Rated • Be Featured
+</div>
+
+<button
+class="primary-btn"
+onclick="googleLogin()">
+🔐 Continue With Google
+</button>
+
+After making those changes, redeploy on Vercel and test again. If it still doesn't work, send the section around:
+
+const db = firebase.database();
+
+and I'll verify the Firebase Auth setup.
+
+Where to add this function googleLogin(){
+
+auth.signInWithRedirect(provider);
+
+}
+
+In your index.html, scroll all the way down to the last <script> block.
+
+Find this section:
+
+/* CLOSE IMAGE MODAL WHEN BACKGROUND CLICKED */
+
+document
+.getElementById("imageModal")
+.addEventListener("click",(e)=>{
+
+if(
+e.target.id==="imageModal"
+){
+
+closeImageViewer();
+
+}
+
+});
+
+Paste the googleLogin() function immediately ABOVE that section, like this:
+
+function googleLogin(){
+
+auth.signInWithRedirect(provider);
+
+}
+
+auth.getRedirectResult()
+.then((result)=>{
+
+if(result.user){
+
+currentUser =
+result.user.email.split("@")[0];
+
+currentName =
+result.user.displayName || "User";
+
+document
+.getElementById("loginPage")
+.classList.add("hidden");
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+loadFoods();
+
+}
+
+})
+.catch((error)=>{
+
+console.error(error);
+
+alert(error.message);
+
+});
 /* CLOSE IMAGE MODAL WHEN BACKGROUND CLICKED */
 
 document
