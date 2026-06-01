@@ -409,72 +409,6 @@ Get rated, climb the leaderboard and get featured.
 
 </div>
 
-<div class="feature-grid">
-
-<div class="feature-card">
-
-<div class="feature-icon">
-📸
-</div>
-
-<h3>Upload</h3>
-
-<p>
-Share food photos
-</p>
-
-</div>
-
-<div class="feature-card">
-
-<div class="feature-icon">
-⭐
-</div>
-
-<h3>Ratings</h3>
-
-<p>
-Get community ratings
-</p>
-
-</div>
-
-<div class="feature-card">
-
-<div class="feature-icon">
-🏆
-</div>
-
-<h3>Leaderboard</h3>
-
-<p>
-Compete weekly
-</p>
-
-</div>
-
-<div class="feature-card">
-
-<div class="feature-icon">
-🎖
-</div>
-
-<h3>Featured</h3>
-
-<p>
-Top creators get featured
-</p>
-
-</div>
-
-</div>
-
-<div class="announcement">
-
-✨ Top rated photos may be featured weekly with full credit to the creator.
-
-</div>
-
 <!-- NAVIGATION -->
 
 <div class="bottom-nav">
@@ -538,19 +472,11 @@ margin-bottom:25px;
 backdrop-filter:blur(20px);
 
 }
-
 .food-image{
-
 width:100%;
-
 aspect-ratio:1/1;
-
-object-fit:cover;
-
-cursor:pointer;
-
-transition:.25s;
-
+object-fit:contain;
+background:#111;
 }
 
 .food-image:hover{
@@ -979,19 +905,130 @@ cursor:pointer;
 color:var(--gold);
 }
 
+
 @media(max-width:768px){
 
+/* LOGIN */
+
+.login-title{
+font-size:32px;
+}
+
+.login-sub{
+font-size:13px;
+}
+
+/* HERO */
+
+.hero-logo{
+width:80px;
+}
+
+.hero-title{
+font-size:28px;
+}
+
+.hero-subtitle{
+font-size:14px;
+line-height:1.6;
+padding:0 10px;
+}
+
+/* FOOD CARDS */
+
+.food-content{
+padding:14px;
+}
+
 .food-title{
+font-size:18px;
+}
+
+.food-sub{
+font-size:13px;
+}
+
+.food-desc{
+font-size:13px;
+line-height:1.5;
+}
+
+/* STARS */
+
+.star{
+font-size:30px !important;
+}
+
+/* UPLOADER */
+
+.avatar{
+width:34px;
+height:34px;
+font-size:14px;
+}
+
+/* COMMENTS */
+
+.comment{
+font-size:13px;
+}
+
+/* BUTTONS */
+
+.primary-btn,
+.comment-btn{
+padding:13px;
+font-size:14px;
+}
+
+/* UPLOAD PAGE */
+
+.upload-card{
+padding:18px;
+}
+
+.upload-card h2{
 font-size:22px;
+}
+
+/* RATINGS */
+
+.rating-card h3{
+font-size:18px;
+}
+
+/* LEADERBOARD */
+
+.leaderboard-title{
+font-size:26px;
 }
 
 .rank-card{
 width:100%;
-max-width:320px;
+max-width:280px;
+padding:15px;
+}
+
+.rank-image{
+width:90px;
+height:90px;
+}
+
+/* NAVIGATION */
+
+.bottom-nav{
+height:65px;
+}
+
+.nav-btn{
+font-size:11px;
+}
+
+.nav-btn div{
+font-size:18px;
 }
 
 }
-
 </style>
 
 <!-- GALLERY TAB -->
