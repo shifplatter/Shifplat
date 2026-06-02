@@ -478,7 +478,7 @@ backdrop-filter:blur(20px);
 }
 .food-image{
 width:100%;
-aspect-ratio:1/1;
+max-height:300px;
 object-fit:contain;
 background:#111;
 }
@@ -740,12 +740,12 @@ margin-bottom:40px;
 .leaderboard-grid{
 
 display:flex;
-justify-content:center;
-align-items:flex-end;
+justify-content:space-between;
+align-items:flex-start;
 
-gap:20px;
+gap:8px;
 
-flex-wrap:wrap;
+flex-wrap:nowrap;
 
 }
 
@@ -909,130 +909,209 @@ cursor:pointer;
 color:var(--gold);
 }
 
-
 @media(max-width:768px){
-
-/* LOGIN */
-
-.login-title{
-font-size:32px;
-}
-
-.login-sub{
-font-size:13px;
-}
 
 /* HERO */
 
+.hero{
+margin-top:5px;
+margin-bottom:10px;
+}
+
 .hero-logo{
-width:80px;
+width:60px;
 }
 
 .hero-title{
-font-size:28px;
+font-size:18px;
+margin-top:8px;
 }
 
 .hero-subtitle{
-font-size:14px;
-line-height:1.6;
-padding:0 10px;
+font-size:11px;
+line-height:1.4;
+margin-top:5px;
 }
 
 /* FOOD CARDS */
 
+.food-card{
+margin-bottom:12px;
+border-radius:18px;
+}
+
+.food-image{
+max-height:220px;
+object-fit:contain;
+}
+
 .food-content{
-padding:14px;
+padding:10px;
 }
 
 .food-title{
-font-size:18px;
+font-size:16px;
 }
 
 .food-sub{
-font-size:13px;
+font-size:12px;
+margin-bottom:6px;
 }
 
 .food-desc{
-font-size:13px;
-line-height:1.5;
-}
-
-/* STARS */
-
-.star{
-font-size:30px !important;
+font-size:12px;
+line-height:1.4;
 }
 
 /* UPLOADER */
 
+.uploader{
+padding:8px;
+margin-top:10px;
+}
+
 .avatar{
-width:34px;
-height:34px;
-font-size:14px;
+width:28px;
+height:28px;
+font-size:12px;
+}
+
+/* STARS */
+
+.stars{
+margin-top:8px;
+gap:4px;
+}
+
+.star{
+font-size:24px !important;
+}
+
+/* BUTTONS */
+
+.comment-btn,
+.primary-btn{
+padding:10px;
+font-size:13px;
+margin-top:10px;
 }
 
 /* COMMENTS */
 
 .comment{
-font-size:13px;
+padding:8px;
+font-size:12px;
 }
 
-/* BUTTONS */
+/* RATINGS */
 
-.primary-btn,
-.comment-btn{
-padding:13px;
-font-size:14px;
+.rating-card{
+padding:12px;
+margin-bottom:12px;
+}
+
+.rating-card img{
+width:60px !important;
+height:60px !important;
+}
+
+.rating-card h3{
+font-size:15px;
+}
+
+.rating-bar{
+height:10px;
 }
 
 /* UPLOAD PAGE */
 
 .upload-card{
-padding:18px;
+padding:12px;
 }
 
 .upload-card h2{
-font-size:22px;
+font-size:20px !important;
+margin-bottom:10px !important;
 }
 
-/* RATINGS */
+.upload-area{
+padding:18px;
+margin-bottom:10px;
+}
 
-.rating-card h3{
-font-size:18px;
+.upload-area div{
+font-size:32px !important;
+}
+
+/* INPUTS */
+
+input,
+textarea{
+padding:10px;
+font-size:13px;
+margin-top:10px;
+}
+
+textarea{
+min-height:70px;
 }
 
 /* LEADERBOARD */
 
 .leaderboard-title{
-font-size:26px;
+font-size:22px;
+margin-bottom:15px;
 }
 
+.leaderboard-grid{
+gap:10px;
+}
+
+/* SHOW TOP 3 IN ONE SCREEN */
+
 .rank-card{
-width:100%;
-max-width:280px;
-padding:15px;
+width:31%;
+padding:10px;
+border-radius:18px;
 }
 
 .rank-image{
-width:90px;
-height:90px;
+width:55px;
+height:55px;
+border-width:3px;
 }
 
-/* NAVIGATION */
+.rank-card h2{
+font-size:11px;
+margin-top:8px;
+}
+
+.rank-card p{
+font-size:10px;
+}
+
+.rank-card div:first-child{
+width:32px !important;
+height:32px !important;
+font-size:16px !important;
+}
+
+/* NAV */
 
 .bottom-nav{
-height:65px;
+height:58px;
 }
 
 .nav-btn{
-font-size:11px;
+font-size:10px;
 }
 
 .nav-btn div{
-font-size:18px;
+font-size:16px;
 }
 
 }
+
 </style>
 
 <!-- GALLERY TAB -->
