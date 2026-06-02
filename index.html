@@ -1924,6 +1924,7 @@ avg = total / arr.length;
 foods.push({
 
 name:item.foodname,
+restaurant:item.restaurant,
 image:item.image,
 rating:avg
 
@@ -1952,17 +1953,38 @@ container.innerHTML += `
 
 <div class="rank-card ${rankClass}">
 
+<div style="
+position:absolute;
+top:-15px;
+left:50%;
+transform:translateX(-50%);
+width:50px;
+height:50px;
+border-radius:50%;
+background:#FFD700;
+color:black;
+font-size:24px;
+font-weight:900;
+display:flex;
+align-items:center;
+justify-content:center;
+">
+
+${index + 1}
+
+</div>
+
 <img
 src="${food.image}"
 class="rank-image">
 
-<h2 style="
-margin-top:15px;
-">
-
+<h2 style="margin-top:15px;">
 ${food.name}
-
 </h2>
+
+<p>
+${food.restaurant || ""}
+</p>
 
 <p style="
 font-weight:bold;
