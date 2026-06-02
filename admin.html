@@ -1,1 +1,230 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>ShifPlatter Admin</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins,sans-serif;
+background:#111;
+color:white;
+}
+
+.header{
+padding:20px;
+font-size:32px;
+font-weight:900;
+text-align:center;
+background:#000;
+border-bottom:1px solid #333;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:#1c1c1c;
+border-radius:20px;
+overflow:hidden;
+}
+
+.card img{
+width:100%;
+height:260px;
+object-fit:cover;
+}
+
+.content{
+padding:15px;
+}
+
+.food{
+font-size:22px;
+font-weight:800;
+}
+
+.restaurant{
+color:#FFD700;
+margin-top:5px;
+}
+
+.user{
+margin-top:10px;
+font-size:14px;
+color:#ccc;
+}
+
+.actions{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.btn{
+flex:1;
+border:none;
+padding:12px;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.download{
+background:#FFD700;
+color:black;
+}
+
+.delete{
+background:#ff3b30;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+🍽 ShifPlatter Admin Panel
+</div>
+
+<div id="foodsGrid" class="grid"></div>
+
+<script>
+
+/* FIREBASE */
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCQ0YG2sulip67LaN7SBm4Bw6WduRchJTE",
+    authDomain: "shifplatter-e0449.firebaseapp.com",
+    databaseURL: "https://shifplatter-e0449-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "shifplatter-e0449",
+    storageBucket: "shifplatter-e0449.firebasestorage.app",
+    messagingSenderId: "873786528833",
+    appId: "1:873786528833:web:e72394fec2ce9f8b52a2c0"
+  };
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+loadFoods();
+
+function loadFoods(){
+
+db.ref("foods").on("value",(snapshot)=>{
+
+const data = snapshot.val() || {};
+
+const grid =
+document.getElementById("foodsGrid");
+
+grid.innerHTML="";
+
+Object.keys(data)
+.reverse()
+.forEach(id=>{
+
+const item=data[id];
+
+grid.innerHTML += `
+
+<div class="card">
+
+<img src="${item.image}">
+
+<div class="content">
+
+<div class="food">
+${item.foodname || ""}
+</div>
+
+<div class="restaurant">
+${item.restaurant || ""}
+</div>
+
+<div class="user">
+Uploaded by:
+@${item.uploadedBy || ""}
+</div>
+
+<div class="actions">
+
+<button
+class="btn download"
+onclick="downloadImage('${item.image}')">
+
+Download
+
+</button>
+
+<button
+class="btn delete"
+onclick="deleteFood('${id}')">
+
+Delete
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+});
+
+}
+
+function downloadImage(url){
+
+const a =
+document.createElement("a");
+
+a.href = url;
+a.download = "food-image";
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+}
+
+function deleteFood(id){
+
+if(
+!confirm(
+"Delete this image?"
+)
+)return;
+
+db.ref("foods/"+id)
+.remove();
+
+}
+
+</script>
+
+</body>
+</html>
