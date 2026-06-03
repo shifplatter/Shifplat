@@ -460,6 +460,7 @@ border-radius:16px;
 font-weight:900;
 z-index:9999;
 }
+
 /* IMAGE VIEWER */
 
 #imageViewer{
@@ -468,7 +469,7 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.92);
+background:rgba(0,0,0,0.95);
 display:flex;
 justify-content:center;
 align-items:center;
@@ -481,10 +482,30 @@ display:none;
 
 #viewerImage{
 max-width:95%;
-max-height:95%;
-border-radius:20px;
+max-height:90%;
 object-fit:contain;
+border-radius:20px;
 }
+
+#closeViewer{
+position:absolute;
+top:20px;
+right:20px;
+width:50px;
+height:50px;
+border:none;
+border-radius:50%;
+background:white;
+color:black;
+font-size:28px;
+font-weight:bold;
+cursor:pointer;
+z-index:100000;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
 
 /* MOBILE */
 
@@ -493,7 +514,13 @@ object-fit:contain;
 .food-image{
 height:220px;
 }
-
+#closeViewer{
+top:15px;
+right:15px;
+width:65px;
+height:65px;
+font-size:36px;
+}
 .food-title{
 font-size:24px;
 }
