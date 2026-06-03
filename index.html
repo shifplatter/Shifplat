@@ -871,13 +871,24 @@ class="comments-list hidden">
 
 `;
 
+
 ratings.innerHTML += `
 
 <div class="card glass">
 
+<img
+src="${item.image}"
+class="food-image"
+style="height:220px;margin-bottom:15px;">
+
 <h2>${item.foodname}</h2>
 
-<p>${item.restaurant}</p>
+<p style="
+margin-top:6px;
+color:#ddd;
+">
+${item.restaurant}
+</p>
 
 <div class="gauge">
 
