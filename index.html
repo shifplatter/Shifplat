@@ -623,6 +623,17 @@ Leaderboard
 <div id="galleryTab">
 <div id="gallery"></div>
 </div>
+<div id="imageViewer" class="hidden">
+
+<button
+id="closeViewer"
+onclick="closeImageViewer()">
+✕
+</button>
+
+<img id="viewerImage">
+
+</div>
 
 <!-- RATINGS -->
 
@@ -825,7 +836,9 @@ gallery.innerHTML += `
 
 <img
 src="${item.image}"
-class="food-image">
+class="food-image"
+onclick="openImageViewer('${item.image}')"
+style="cursor:pointer;">
 
 <div class="food-title">
 ${item.foodname}
@@ -900,16 +913,11 @@ ratings.innerHTML += `
 
 <div class="card glass">
 
+
 <img
 src="${item.image}"
 class="food-image"
-onclick="openImageViewer('${item.image}')"
-style="cursor:pointer;">
-style="
-height:260px;
-border-radius:20px;
-margin-bottom:15px;
-">
+>
 
 <div class="food-title">
 ${item.foodname}
