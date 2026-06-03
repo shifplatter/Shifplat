@@ -871,7 +871,6 @@ class="comments-list hidden">
 
 `;
 
-
 ratings.innerHTML += `
 
 <div class="card glass">
@@ -879,16 +878,19 @@ ratings.innerHTML += `
 <img
 src="${item.image}"
 class="food-image"
-style="height:220px;margin-bottom:15px;">
-
-<h2>${item.foodname}</h2>
-
-<p style="
-margin-top:6px;
-color:#ddd;
+style="
+height:260px;
+border-radius:20px;
+margin-bottom:15px;
 ">
+
+<div class="food-title">
+${item.foodname}
+</div>
+
+<div class="food-sub">
 ${item.restaurant}
-</p>
+</div>
 
 <div class="gauge">
 
@@ -900,9 +902,9 @@ style="width:${avg*20}%">
 </div>
 
 <p style="
-margin-top:12px;
-font-size:18px;
-font-weight:bold;
+margin-top:14px;
+font-size:22px;
+font-weight:900;
 ">
 ⭐ ${avg.toFixed(1)}/5
 </p>
