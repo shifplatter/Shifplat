@@ -235,7 +235,7 @@ flex-wrap:wrap;
 font-size:58px;
 cursor:pointer;
 color:#ccc;
-transition:0.2s;
+transition:0.15s ease;
 user-select:none;
 }
 
@@ -983,15 +983,13 @@ font-weight:900;
 
 /* RATE FOOD */
 
+
 function rateFood(el,foodId,rating){
 
-const starsContainer =
-el.parentElement;
+const starsContainer = el.parentElement;
+const stars = starsContainer.querySelectorAll(".star");
 
-const stars =
-starsContainer.querySelectorAll(".star");
-
-userRatings[foodId] = rating;
+/* INSTANT UI UPDATE */
 
 stars.forEach((star,index)=>{
 
@@ -1007,6 +1005,10 @@ star.classList.remove("active-star");
 
 });
 
+userRatings[foodId] = rating;
+
+/* SAVE TO FIREBASE IN BACKGROUND */
+
 db.ref(`foods/${foodId}/ratings`)
 .push({
 
@@ -1014,12 +1016,20 @@ user: currentUser,
 name: currentName,
 rating: rating
 
-});
+})
+.then(()=>{
 
 showToast("⭐ Rating Saved");
 
-}
+})
+.catch(()=>{
 
+showToast("❌ Rating Failed");
+
+});
+
+}
+    
 /* COMMENT BOX */
 
 function openCommentBox(foodId){
