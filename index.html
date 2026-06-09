@@ -571,18 +571,13 @@ ShifPlatter
 </div>
 
 <div class="sub-title">
-Login with your Instagram username
+Enter your name to continue 
 </div>
 
 <input
 type="text"
-id="username"
-placeholder="@instagram_username">
-
-<input
-type="text"
 id="name"
-placeholder="Your Name">
+placeholder="Enter Your Name">
 
 <button
 class="main-btn"
@@ -751,24 +746,20 @@ const userRatings={};
 /* LOGIN */
 
 function loginUser(){
-
-const username =
-document.getElementById("username")
-.value.trim();
-
 const name =
 document.getElementById("name")
 .value.trim();
 
-if(!username || !name){
+if(!name){
 
-alert("Enter details");
+alert("Enter your name");
 return;
 
 }
 
-currentUser=username;
-currentName=name;
+currentUser = name.toLowerCase().replace(/\s+/g,'_');
+currentName = name;
+
 
 document.getElementById("loginPage")
 .classList.add("hidden");
