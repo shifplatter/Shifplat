@@ -1265,7 +1265,15 @@ image:e.target.result
 });
 
 showToast("✅ Food Uploaded");
+/* CLEAR FORM */
 
+document.getElementById("foodImage").value = "";
+
+document.getElementById("restaurant").value = "";
+
+document.getElementById("foodname").value = "";
+
+document.getElementById("details").value = "";
 };
 
 reader.readAsDataURL(file);
