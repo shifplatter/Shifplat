@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title> ShifPlatter </title>
-    
+
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -286,7 +286,6 @@ color:black;
 .view-btn:hover{
 transform:scale(1.03);
 }
-
 
 /* COMMENT BOX */
 
@@ -571,13 +570,18 @@ ShifPlatter
 </div>
 
 <div class="sub-title">
-Enter your name to continue 
+Login with your Instagram username
 </div>
 
 <input
 type="text"
+id="username"
+placeholder="@instagram_username">
+
+<input
+type="text"
 id="name"
-placeholder="Enter Your Name">
+placeholder="Your Name">
 
 <button
 class="main-btn"
@@ -591,7 +595,6 @@ Continue
 
 <div id="mainApp" class="hidden">
 
-    
 <!-- TOPBAR -->
 
 <div class="topbar glass">
@@ -738,28 +741,32 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
-firebase.database().goOnline();
 
 let currentUser="";
 let currentName="";
 const userRatings={};
 
 /* LOGIN */
+
 function loginUser(){
+
+const username =
+document.getElementById("username")
+.value.trim();
 
 const name =
 document.getElementById("name")
 .value.trim();
 
-if(!name){
+if(!username || !name){
 
-alert("Enter your name");
+alert("Enter details");
 return;
 
 }
 
-currentUser = name;
-currentName = name;
+currentUser=username;
+currentName=name;
 
 document.getElementById("loginPage")
 .classList.add("hidden");
@@ -767,10 +774,15 @@ document.getElementById("loginPage")
 document.getElementById("mainApp")
 .classList.remove("hidden");
 
+// Show gallery immediately
+showTab(
+    "galleryTab",
+    document.querySelector(".tab-btn")
+);
+
 loadFoods();
 
 }
-
 
 /* TAB SWITCH */
 
@@ -799,13 +811,14 @@ btn.classList.add("active-tab");
 }
 
 /* LOAD FOODS */
+
 function loadFoods(){
 
 db.ref("foods")
-.on("value",(snapshot)=>{
+.once("value")
+.then((snapshot)=>{
 
 const data = snapshot.val();
-
 
 const gallery =
 document.getElementById("gallery");
@@ -825,11 +838,8 @@ loadLeaderboard(data);
 Object.keys(data).reverse().forEach((id)=>{
 
 const item = data[id];
-if(item.ratings && item.ratings[currentUser]){
-userRatings[id] = item.ratings[currentUser].rating;
-}
-//const img = new Image();
-//img.src = item.image;
+const img = new Image();
+img.src = item.image;
     
 let ratingsArray = [];
 
@@ -882,7 +892,7 @@ font-size:14px;
 color:#FFD700;
 font-weight:bold;
 ">
-👤 Uploaded by ${item.uploadedByName || item.uploadedBy || "Unknown"}
+👤 Uploaded by @${item.uploadedBy || "unknown"}
 </div>
 
 <div class="food-desc">
@@ -988,53 +998,37 @@ font-weight:900;
 
 });
 
+});
+
 }
 
 /* RATE FOOD */
 function rateFood(el, foodId, rating){
 
-    db.ref(`foods/${foodId}/ratings/${currentUser}`)
-    .once("value")
-    .then((snapshot)=>{
+    userRatings[foodId] = rating;
 
-        if(snapshot.exists()){
+    const starsContainer = el.parentElement;
+    const stars = starsContainer.querySelectorAll(".star");
 
-            showToast("⭐ You already rated this food");
-            return;
+    stars.forEach((star,index)=>{
+        if(index < rating){
+            star.classList.add("active-star");
+        }else{
+            star.classList.remove("active-star");
         }
-
-        userRatings[foodId] = rating;
-
-        const starsContainer = el.parentElement;
-        const stars = starsContainer.querySelectorAll(".star");
-
-        stars.forEach((star,index)=>{
-            if(index < rating){
-                star.classList.add("active-star");
-            }else{
-                star.classList.remove("active-star");
-            }
-        });
-
-        return db.ref(`foods/${foodId}/ratings/${currentUser}`)
-        .set({
-            user: currentUser,
-            name: currentName,
-            rating: rating,
-            time: Date.now()
-        });
-
-    })
-    .then(()=>{
-
-        showToast("⭐ Rating Saved");
-
-    })
-    .catch((err)=>{
-        console.error(err);
     });
 
+    db.ref(`foods/${foodId}/ratings/${currentUser}`)
+    .set({
+        user: currentUser,
+        name: currentName,
+        rating: rating,
+        time: Date.now()
+    });
+
+    showToast("⭐ Rating Saved");
 }
+
     
 /* COMMENT BOX */
 
@@ -1234,61 +1228,54 @@ Failed to load comments
 function uploadFood(){
 
 const file =
-document.getElementById("foodImage").files[0];
+document.getElementById("foodImage")
+.files[0];
 
 const restaurant =
-document.getElementById("restaurant").value;
+document.getElementById("restaurant")
+.value;
 
 const foodname =
-document.getElementById("foodname").value;
+document.getElementById("foodname")
+.value;
 
 const details =
-document.getElementById("details").value;
+document.getElementById("details")
+.value;
 
 if(!file){
+
 alert("Upload image");
 return;
+
 }
 
 const reader = new FileReader();
 
 reader.onload = function(e){
-
-const newFoodRef = db.ref("foods").push();
-
-const foodId = newFoodRef.key;
-
-newFoodRef.set({
+db.ref("foods")
+.push({
 
 restaurant,
 foodname,
 details,
 uploadedBy: currentUser,
-uploadedByName: currentName,
-image: e.target.result,
-timestamp: Date.now()
+image:e.target.result
 
 })
-.then(()=>{
+.then(() => {
 
 showToast("✅ Food Uploaded");
-
-/* INSTANT GALLERY UPDATE */
-
-const gallery =
-document.getElementById("gallery");
+const gallery = document.getElementById("gallery");
 
 gallery.insertAdjacentHTML("afterbegin", `
-
 <div class="card glass">
 
 <img
 src="${e.target.result}"
 class="food-image"
-loading="lazy"
-decoding="async"
-onclick="openImageViewer('${e.target.result}')"
-style="cursor:pointer;">
+style="cursor:pointer;"
+onclick="openImageViewer('${e.target.result}')">
 
 <div class="food-title">
 ${foodname}
@@ -1304,91 +1291,27 @@ font-size:14px;
 color:#FFD700;
 font-weight:bold;
 ">
-👤 Uploaded by ${currentName}
+👤 Uploaded by @${currentUser}
 </div>
 
 <div class="food-desc">
 ${details}
 </div>
 
-<div class="stars">
-
-${[1,2,3,4,5].map(num => `
-<span
-class="star"
-onclick="rateFood(this,'${foodId}',${num})">
-★
-</span>
-`).join("")}
-
 </div>
-
-<div class="action-row">
-
-<button
-class="comment-btn"
-onclick="openCommentBox('${foodId}')">
-💬 Comment
-</button>
-
-<button
-class="view-btn"
-onclick="toggleComments('${foodId}')">
-👀 View Comments
-</button>
-
-</div>
-
-<div
-id="commentBox-${foodId}"
-class="comment-box hidden">
-
-<textarea
-id="commentInput-${foodId}"
-placeholder="Write your comment...">
-</textarea>
-
-<button
-class="post-comment-btn"
-onclick="postComment('${foodId}')">
-Post Comment
-</button>
-
-</div>
-
-<div
-id="commentsList-${foodId}"
-class="comments-list hidden">
-</div>
-
-</div>
-
 `);
+
+});
 
 /* CLEAR FORM */
 
 document.getElementById("foodImage").value = "";
+
 document.getElementById("restaurant").value = "";
+
 document.getElementById("foodname").value = "";
+
 document.getElementById("details").value = "";
-
-/* OPTIONAL: AUTO SWITCH TO GALLERY */
-
-document.querySelectorAll(
-"#galleryTab,#ratingsTab,#uploadTab,#leaderboardTab"
-).forEach(tab=>tab.classList.add("hidden"));
-
-document.getElementById("galleryTab")
-.classList.remove("hidden");
-
-document.querySelectorAll(".tab-btn")
-.forEach(btn=>btn.classList.remove("active-tab"));
-
-document.querySelector(".tab-btn")
-.classList.add("active-tab");
-
-});
-
 };
 
 reader.readAsDataURL(file);
