@@ -862,6 +862,7 @@ gallery.innerHTML += `
 <div class="card glass">
 
 <img
+loading="lazy"
 src="${item.image}"
 class="food-image"
 onclick="openImageViewer('${item.image}')"
@@ -1009,8 +1010,8 @@ userRatings[foodId] = rating;
 
 /* SAVE TO FIREBASE IN BACKGROUND */
 
-db.ref(`foods/${foodId}/ratings`)
-.push({
+db.ref(`foods/${foodId}/ratings/${currentUser}`)
+.set({
 
 user: currentUser,
 name: currentName,
