@@ -745,8 +745,8 @@ let currentName="";
 const userRatings={};
 
 /* LOGIN */
-
 function loginUser(){
+
 const name =
 document.getElementById("name")
 .value.trim();
@@ -761,22 +761,16 @@ return;
 currentUser = name;
 currentName = name;
 
-
 document.getElementById("loginPage")
 .classList.add("hidden");
 
 document.getElementById("mainApp")
 .classList.remove("hidden");
 
-// Show gallery immediately
-showTab(
-    "galleryTab",
-    document.querySelector(".tab-btn")
-);
-
 loadFoods();
 
 }
+
 
 /* TAB SWITCH */
 
