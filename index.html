@@ -1228,54 +1228,60 @@ Failed to load comments
 function uploadFood(){
 
 const file =
-document.getElementById("foodImage")
-.files[0];
+document.getElementById("foodImage").files[0];
 
 const restaurant =
-document.getElementById("restaurant")
-.value;
+document.getElementById("restaurant").value;
 
 const foodname =
-document.getElementById("foodname")
-.value;
+document.getElementById("foodname").value;
 
 const details =
-document.getElementById("details")
-.value;
+document.getElementById("details").value;
 
 if(!file){
-
 alert("Upload image");
 return;
-
 }
 
 const reader = new FileReader();
 
 reader.onload = function(e){
-db.ref("foods")
-.push({
+
+const newFoodRef = db.ref("foods").push();
+
+const foodId = newFoodRef.key;
+
+newFoodRef.set({
 
 restaurant,
 foodname,
 details,
 uploadedBy: currentUser,
-image:e.target.result
+image: e.target.result,
+timestamp: Date.now()
 
 })
-.then(() => {
+.then(()=>{
 
 showToast("✅ Food Uploaded");
-const gallery = document.getElementById("gallery");
+
+/* INSTANT GALLERY UPDATE */
+
+const gallery =
+document.getElementById("gallery");
 
 gallery.insertAdjacentHTML("afterbegin", `
+
 <div class="card glass">
 
 <img
 src="${e.target.result}"
 class="food-image"
-style="cursor:pointer;"
-onclick="openImageViewer('${e.target.result}')">
+loading="lazy"
+decoding="async"
+onclick="openImageViewer('${e.target.result}')"
+style="cursor:pointer;">
 
 <div class="food-title">
 ${foodname}
@@ -1298,20 +1304,84 @@ font-weight:bold;
 ${details}
 </div>
 
-</div>
-`);
+<div class="stars">
 
-});
+${[1,2,3,4,5].map(num => `
+<span
+class="star"
+onclick="rateFood(this,'${foodId}',${num})">
+★
+</span>
+`).join("")}
+
+</div>
+
+<div class="action-row">
+
+<button
+class="comment-btn"
+onclick="openCommentBox('${foodId}')">
+💬 Comment
+</button>
+
+<button
+class="view-btn"
+onclick="toggleComments('${foodId}')">
+👀 View Comments
+</button>
+
+</div>
+
+<div
+id="commentBox-${foodId}"
+class="comment-box hidden">
+
+<textarea
+id="commentInput-${foodId}"
+placeholder="Write your comment...">
+</textarea>
+
+<button
+class="post-comment-btn"
+onclick="postComment('${foodId}')">
+Post Comment
+</button>
+
+</div>
+
+<div
+id="commentsList-${foodId}"
+class="comments-list hidden">
+</div>
+
+</div>
+
+`);
 
 /* CLEAR FORM */
 
 document.getElementById("foodImage").value = "";
-
 document.getElementById("restaurant").value = "";
-
 document.getElementById("foodname").value = "";
-
 document.getElementById("details").value = "";
+
+/* OPTIONAL: AUTO SWITCH TO GALLERY */
+
+document.querySelectorAll(
+"#galleryTab,#ratingsTab,#uploadTab,#leaderboardTab"
+).forEach(tab=>tab.classList.add("hidden"));
+
+document.getElementById("galleryTab")
+.classList.remove("hidden");
+
+document.querySelectorAll(".tab-btn")
+.forEach(btn=>btn.classList.remove("active-tab"));
+
+document.querySelector(".tab-btn")
+.classList.add("active-tab");
+
+});
+
 };
 
 reader.readAsDataURL(file);
