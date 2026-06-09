@@ -897,7 +897,7 @@ font-size:14px;
 color:#FFD700;
 font-weight:bold;
 ">
-👤 Uploaded by @${item.uploadedBy || "unknown"}
+👤 Uploaded by ${item.uploadedByName || item.uploadedBy || "Unknown"}
 </div>
 
 <div class="food-desc">
@@ -1281,6 +1281,7 @@ restaurant,
 foodname,
 details,
 uploadedBy: currentUser,
+uploadedByName: currentName,
 image: e.target.result,
 timestamp: Date.now()
 
@@ -1320,7 +1321,7 @@ font-size:14px;
 color:#FFD700;
 font-weight:bold;
 ">
-👤 Uploaded by @${currentUser}
+👤 Uploaded by ${currentName}
 </div>
 
 <div class="food-desc">
