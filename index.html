@@ -10,7 +10,7 @@
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <style>
 
 *{
@@ -740,7 +740,7 @@ const firebaseConfig = {
   };
 firebase.initializeApp(firebaseConfig);
 
-const db = firebase.database();
+const storage = firebase.storage();
 
 let currentUser="";
 let currentName="";
@@ -828,10 +828,15 @@ return;
 
 loadLeaderboard(data);
 
-Object.keys(data).forEach((id)=>{
+Object.entries(data)
 
-const item = data[id];
+.sort((a,b)=>{
 
+return (b[1].createdAt || 0) - (a[1].createdAt || 0);
+
+})
+
+.forEach(([id,item])=>{
 let ratingsArray = [];
 
 if(item.ratings){
@@ -862,6 +867,7 @@ gallery.innerHTML += `
 <div class="card glass">
 
 <img
+loading="lazy"
 src="${item.image}"
 class="food-image"
 onclick="openImageViewer('${item.image}')"
@@ -1009,8 +1015,8 @@ userRatings[foodId] = rating;
 
 /* SAVE TO FIREBASE IN BACKGROUND */
 
-db.ref(`foods/${foodId}/ratings`)
-.push({
+db.ref(`foods/${foodId}/ratings/${currentUser}`)
+.set({
 
 user: currentUser,
 name: currentName,
@@ -1228,20 +1234,16 @@ Failed to load comments
 function uploadFood(){
 
 const file =
-document.getElementById("foodImage")
-.files[0];
+document.getElementById("foodImage").files[0];
 
 const restaurant =
-document.getElementById("restaurant")
-.value;
+document.getElementById("restaurant").value.trim();
 
 const foodname =
-document.getElementById("foodname")
-.value;
+document.getElementById("foodname").value.trim();
 
 const details =
-document.getElementById("details")
-.value;
+document.getElementById("details").value.trim();
 
 if(!file){
 
@@ -1250,35 +1252,57 @@ return;
 
 }
 
-const reader = new FileReader();
+showToast("⏳ Uploading...");
 
-reader.onload = function(e){
+const fileName =
+Date.now() + "_" + file.name;
 
-db.ref("foods")
-.push({
+const storageRef =
+storage.ref("foods/" + fileName);
+
+storageRef.put(file)
+
+.then(snapshot=>{
+
+return snapshot.ref.getDownloadURL();
+
+})
+
+.then(downloadURL=>{
+
+return db.ref("foods").push({
 
 restaurant,
 foodname,
 details,
-image:e.target.result
+image: downloadURL,
+createdAt: Date.now()
 
 });
 
+})
+
+.then(()=>{
+
 showToast("✅ Food Uploaded");
-/* CLEAR FORM */
 
 document.getElementById("foodImage").value = "";
-
 document.getElementById("restaurant").value = "";
-
 document.getElementById("foodname").value = "";
-
 document.getElementById("details").value = "";
-};
 
-reader.readAsDataURL(file);
+})
+
+.catch(error=>{
+
+console.error(error);
+
+alert("Upload failed");
+
+});
 
 }
+
 
 /* LEADERBOARD */
 
