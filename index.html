@@ -840,6 +840,9 @@ loadLeaderboard(data);
 Object.keys(data).reverse().forEach((id)=>{
 
 const item = data[id];
+if(item.ratings && item.ratings[currentUser]){
+userRatings[id] = item.ratings[currentUser].rating;
+}
 const img = new Image();
 img.src = item.image;
     
@@ -1007,30 +1010,48 @@ font-weight:900;
 /* RATE FOOD */
 function rateFood(el, foodId, rating){
 
-    userRatings[foodId] = rating;
-
-    const starsContainer = el.parentElement;
-    const stars = starsContainer.querySelectorAll(".star");
-
-    stars.forEach((star,index)=>{
-        if(index < rating){
-            star.classList.add("active-star");
-        }else{
-            star.classList.remove("active-star");
-        }
-    });
-
     db.ref(`foods/${foodId}/ratings/${currentUser}`)
-    .set({
-        user: currentUser,
-        name: currentName,
-        rating: rating,
-        time: Date.now()
+    .once("value")
+    .then((snapshot)=>{
+
+        if(snapshot.exists()){
+
+            showToast("⭐ You already rated this food");
+            return;
+        }
+
+        userRatings[foodId] = rating;
+
+        const starsContainer = el.parentElement;
+        const stars = starsContainer.querySelectorAll(".star");
+
+        stars.forEach((star,index)=>{
+            if(index < rating){
+                star.classList.add("active-star");
+            }else{
+                star.classList.remove("active-star");
+            }
+        });
+
+        return db.ref(`foods/${foodId}/ratings/${currentUser}`)
+        .set({
+            user: currentUser,
+            name: currentName,
+            rating: rating,
+            time: Date.now()
+        });
+
+    })
+    .then(()=>{
+
+        showToast("⭐ Rating Saved");
+
+    })
+    .catch((err)=>{
+        console.error(err);
     });
 
-    showToast("⭐ Rating Saved");
 }
-
     
 /* COMMENT BOX */
 
