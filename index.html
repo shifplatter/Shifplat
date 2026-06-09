@@ -774,12 +774,6 @@ document.getElementById("loginPage")
 document.getElementById("mainApp")
 .classList.remove("hidden");
 
-document.getElementById("gallery").innerHTML = `
-<div class="card glass" style="text-align:center;">
-<h2>Loading foods...</h2>
-</div>
-`;
-
 loadFoods();
 
 }
@@ -865,14 +859,14 @@ avg = total / ratingsArray.length;
 }
 
 gallery.innerHTML += `
+
 <div class="card glass">
 
 <img
 src="${item.image}"
 class="food-image"
 onclick="openImageViewer('${item.image}')"
-style="cursor:pointer;"
-loading="lazy">
+style="cursor:pointer;">
 
 <div class="food-title">
 ${item.foodname}
@@ -951,7 +945,6 @@ ratings.innerHTML += `
 <img
 src="${item.image}"
 class="food-image"
-loading="lazy"
 >
 
 <div class="food-title">
@@ -1252,12 +1245,7 @@ image:e.target.result
 });
 
 showToast("✅ Food Uploaded");
-
 loadFoods();
-
-setTimeout(() => {
-    document.querySelector(".tab-btn").click();
-}, 300);
 /* CLEAR FORM */
 
 document.getElementById("foodImage").value = "";
