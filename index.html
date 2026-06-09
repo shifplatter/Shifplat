@@ -738,6 +738,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
+firebase.database().goOnline();
 
 let currentUser="";
 let currentName="";
@@ -804,14 +805,13 @@ btn.classList.add("active-tab");
 }
 
 /* LOAD FOODS */
-
 function loadFoods(){
 
 db.ref("foods")
-.once("value")
-.then((snapshot)=>{
+.on("value",(snapshot)=>{
 
 const data = snapshot.val();
+
 
 const gallery =
 document.getElementById("gallery");
@@ -834,8 +834,8 @@ const item = data[id];
 if(item.ratings && item.ratings[currentUser]){
 userRatings[id] = item.ratings[currentUser].rating;
 }
-const img = new Image();
-img.src = item.image;
+//const img = new Image();
+//img.src = item.image;
     
 let ratingsArray = [];
 
@@ -991,8 +991,6 @@ font-weight:900;
 </div>
 
 `;
-
-});
 
 });
 
