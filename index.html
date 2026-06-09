@@ -10,7 +10,6 @@
 <!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
 <style>
 
@@ -742,7 +741,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
-const storage = firebase.storage();
 
 let currentUser="";
 let currentName="";
@@ -811,7 +809,8 @@ btn.classList.add("active-tab");
 function loadFoods(){
 
 db.ref("foods")
-.on("value",(snapshot)=>{
+.once("value")
+.then((snapshot)=>{
 
 const data = snapshot.val();
 
@@ -864,7 +863,6 @@ gallery.innerHTML += `
 <div class="card glass">
 
 <img
-loading="lazy"
 src="${item.image}"
 class="food-image"
 onclick="openImageViewer('${item.image}')"
@@ -985,53 +983,32 @@ font-weight:900;
 }
 
 /* RATE FOOD */
+function rateFood(el, foodId, rating){
 
+    userRatings[foodId] = rating;
 
-function rateFood(el,foodId,rating){
+    const starsContainer = el.parentElement;
+    const stars = starsContainer.querySelectorAll(".star");
 
-const starsContainer = el.parentElement;
-const stars = starsContainer.querySelectorAll(".star");
+    stars.forEach((star,index)=>{
+        if(index < rating){
+            star.classList.add("active-star");
+        }else{
+            star.classList.remove("active-star");
+        }
+    });
 
-/* INSTANT UI UPDATE */
+    db.ref(`foods/${foodId}/ratings/${currentUser}`)
+    .set({
+        user: currentUser,
+        name: currentName,
+        rating: rating,
+        time: Date.now()
+    });
 
-stars.forEach((star,index)=>{
-
-if(index < rating){
-
-star.classList.add("active-star");
-
-}else{
-
-star.classList.remove("active-star");
-
+    showToast("⭐ Rating Saved");
 }
 
-});
-
-userRatings[foodId] = rating;
-
-/* SAVE TO FIREBASE IN BACKGROUND */
-
-db.ref(`foods/${foodId}/ratings/${currentUser}`)
-.set({
-
-user: currentUser,
-name: currentName,
-rating: rating
-
-})
-.then(()=>{
-
-showToast("⭐ Rating Saved");
-
-})
-.catch(()=>{
-
-showToast("❌ Rating Failed");
-
-});
-
-}
     
 /* COMMENT BOX */
 
@@ -1231,16 +1208,20 @@ Failed to load comments
 function uploadFood(){
 
 const file =
-document.getElementById("foodImage").files[0];
+document.getElementById("foodImage")
+.files[0];
 
 const restaurant =
-document.getElementById("restaurant").value.trim();
+document.getElementById("restaurant")
+.value;
 
 const foodname =
-document.getElementById("foodname").value.trim();
+document.getElementById("foodname")
+.value;
 
 const details =
-document.getElementById("details").value.trim();
+document.getElementById("details")
+.value;
 
 if(!file){
 
@@ -1249,54 +1230,34 @@ return;
 
 }
 
-showToast("⏳ Uploading...");
+const reader = new FileReader();
 
-const fileName =
-Date.now() + "_" + file.name;
+reader.onload = function(e){
 
-const storageRef =
-storage.ref("foods/" + fileName);
+db.ref("foods")
+.push({
 
-storageRef.put(file)
-
-.then((snapshot)=>{
-
-return snapshot.ref.getDownloadURL();
-
-})
-
-.then((downloadURL)=>{
-
-return db.ref("foods").push({
-
-restaurant: restaurant,
-foodname: foodname,
-details: details,
-image: downloadURL,
-createdAt: Date.now()
+restaurant,
+foodname,
+details,
+image:e.target.result
 
 });
-
-})
-
-.then(()=>{
 
 showToast("✅ Food Uploaded");
+loadFoods();
+/* CLEAR FORM */
 
 document.getElementById("foodImage").value = "";
+
 document.getElementById("restaurant").value = "";
+
 document.getElementById("foodname").value = "";
+
 document.getElementById("details").value = "";
+};
 
-})
-
-.catch((error)=>{
-
-console.error(error);
-
-alert("Upload failed");
-
-});
+reader.readAsDataURL(file);
 
 }
 
