@@ -1266,40 +1266,8 @@ image:e.target.result
 .then(() => {
 
 showToast("✅ Food Uploaded");
-const gallery = document.getElementById("gallery");
 
-gallery.insertAdjacentHTML("afterbegin", `
-<div class="card glass">
-
-<img
-src="${e.target.result}"
-class="food-image"
-style="cursor:pointer;"
-onclick="openImageViewer('${e.target.result}')">
-
-<div class="food-title">
-${foodname}
-</div>
-
-<div class="food-sub">
-📍 ${restaurant}
-</div>
-
-<div style="
-margin-top:6px;
-font-size:14px;
-color:#FFD700;
-font-weight:bold;
-">
-👤 Uploaded by @${currentUser}
-</div>
-
-<div class="food-desc">
-${details}
-</div>
-
-</div>
-`);
+loadFoods();
 
 });
 
