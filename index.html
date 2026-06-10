@@ -504,30 +504,9 @@ cursor:pointer;
 z-index:100000;
 }
 
-/* RESTAURANT SEARCH */
+/* MOBILE */
 
-#restaurantSuggestions{
-position:absolute;
-width:100%;
-background:white;
-color:black;
-border-radius:12px;
-overflow:hidden;
-z-index:9999;
-box-shadow:0 4px 15px rgba(0,0,0,0.2);
-max-height:250px;
-overflow-y:auto;
-}
-
-#restaurantSuggestions div{
-padding:12px;
-cursor:pointer;
-border-bottom:1px solid #eee;
-}
-
-#restaurantSuggestions div:hover{
-background:#f3f3f3;
-}
+@media(max-width:768px){
 
 /* MOBILE */
 
@@ -693,21 +672,10 @@ onclick="closeImageViewer()">
 
 <input type="file" id="foodImage">
 
-<div style="position:relative;">
-
 <input
 type="text"
 id="restaurant"
-placeholder="Restaurant / Cafe Name"
-autocomplete="off">
-
-<div id="restaurantSuggestions"></div>
-
-</div>
-
-<input
-type="hidden"
-id="restaurantAddress">
+placeholder="Restaurant / Cafe Name">
 
 <input
 type="text"
@@ -726,8 +694,7 @@ Upload Food
 
 </div>
 
-</div>    
-
+</div>
 
 <!-- LEADERBOARD -->
 
@@ -774,7 +741,6 @@ let currentName="";
 const userRatings={};
 
 /* LOGIN */
-
 function loginUser(){
 
 const name =
@@ -797,9 +763,16 @@ document.getElementById("loginPage")
 document.getElementById("mainApp")
 .classList.remove("hidden");
 
+// Show gallery immediately
+showTab(
+    "galleryTab",
+    document.querySelector(".tab-btn")
+);
+
 loadFoods();
 
 }
+
 /* TAB SWITCH */
 
 function showTab(tabId,btn){
@@ -900,15 +873,6 @@ ${item.foodname}
 <div class="food-sub">
 📍 ${item.restaurant}
 </div>
-
-<div style="
-font-size:13px;
-color:#ddd;
-margin-top:4px;
-">
-${item.address || ""}
-</div>
-
 
 <div style="
 margin-top:6px;
@@ -1267,11 +1231,6 @@ const details =
 document.getElementById("details")
 .value;
 
-const address =
-document.getElementById(
-"restaurantAddress"
-).value;
-
 if(!file){
 
 alert("Upload image");
@@ -1289,8 +1248,7 @@ restaurant,
 foodname,
 details,
 uploadedByName: currentName,
-image:e.target.result,
-timestamp: Date.now()
+image:e.target.result
 
 })
 .then(() => {
@@ -1442,70 +1400,6 @@ document.getElementById("imageViewer")
 .classList.add("hidden");
 
 }
-
-const restaurantInput =
-document.getElementById("restaurant");
-
-restaurantInput.addEventListener(
-"input",
-async function(){
-
-const query = this.value.trim();
-
-if(query.length < 3){
-
-document.getElementById(
-"restaurantSuggestions"
-).innerHTML = "";
-
-return;
-
-}
-
-const response =
-await fetch(
-`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
-);
-
-const places =
-await response.json();
-
-const suggestions =
-document.getElementById(
-"restaurantSuggestions"
-);
-
-suggestions.innerHTML = "";
-
-places.slice(0,5).forEach(place=>{
-
-const div =
-document.createElement("div");
-
-div.style.padding = "12px";
-div.style.cursor = "pointer";
-div.style.borderBottom =
-"1px solid #ddd";
-
-div.innerText =
-place.display_name;
-
-div.onclick = ()=>{
-
-restaurantInput.value =
-place.display_name;
-
-suggestions.innerHTML = "";
-
-};
-
-suggestions.appendChild(div);
-
-});
-
-});    
-
-    
 /* TOAST */
 
 function showToast(text){
@@ -1514,6 +1408,7 @@ const toast =
 document.createElement("div");
 
 toast.className = "toast";
+
 
 toast.innerHTML = text;
 
@@ -1527,11 +1422,7 @@ toast.remove();
 
 }
 
-
-});
-
-}
-
+</script>
 </script>
 
 <!-- IMAGE VIEWER -->
@@ -1541,7 +1432,6 @@ toast.remove();
 <img id="viewerImage">
 
 </div>
-
 
 </body>
 </html>
