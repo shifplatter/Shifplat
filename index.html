@@ -675,7 +675,12 @@ onclick="closeImageViewer()">
 <input
 type="text"
 id="restaurant"
-placeholder="Restaurant / Cafe Name">
+placeholder="Search Restaurant / Cafe"
+autocomplete="off">
+
+<input
+type="hidden"
+id="restaurantAddress">
 
 <input
 type="text"
@@ -873,6 +878,15 @@ ${item.foodname}
 <div class="food-sub">
 📍 ${item.restaurant}
 </div>
+
+<div style="
+font-size:13px;
+color:#ddd;
+margin-top:4px;
+">
+${item.address || ""}
+</div>
+
 
 <div style="
 margin-top:6px;
@@ -1231,6 +1245,11 @@ const details =
 document.getElementById("details")
 .value;
 
+const address =
+document.getElementById(
+"restaurantAddress"
+).value;
+
 if(!file){
 
 alert("Upload image");
@@ -1248,7 +1267,8 @@ restaurant,
 foodname,
 details,
 uploadedByName: currentName,
-image:e.target.result
+image:e.target.result,
+timestamp: Date.now()
 
 })
 .then(() => {
@@ -1409,7 +1429,6 @@ document.createElement("div");
 
 toast.className = "toast";
 
-
 toast.innerHTML = text;
 
 document.body.appendChild(toast);
@@ -1422,7 +1441,30 @@ toast.remove();
 
 }
 
-</script>
+/* GOOGLE PLACES AUTOCOMPLETE */
+
+function initAutocomplete() {
+
+const input =
+document.getElementById("restaurant");
+
+const autocomplete =
+new google.maps.places.Autocomplete(input,{
+    types:["establishment"]
+});
+
+autocomplete.addListener("place_changed",()=>{
+
+const place = autocomplete.getPlace();
+
+if(place.name){
+    input.value = place.name;
+}
+
+});
+
+}
+
 </script>
 
 <!-- IMAGE VIEWER -->
@@ -1433,6 +1475,11 @@ toast.remove();
 
 </div>
 
+<!-- Google Places Autocomplete -->
+<script
+src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initAutocomplete"
+async defer>
+</script>
+
 </body>
 </html>
-
