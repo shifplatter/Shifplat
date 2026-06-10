@@ -562,7 +562,6 @@ font-size:90px;
 <!-- LOGIN -->
 
 <div id="loginPage" class="login-card glass">
-
 <img src="logo.png" class="logo">
 
 <div class="main-title">
@@ -570,13 +569,8 @@ ShifPlatter
 </div>
 
 <div class="sub-title">
-Login with your Instagram username
+Enter your name to continue
 </div>
-
-<input
-type="text"
-id="username"
-placeholder="@instagram_username">
 
 <input
 type="text"
@@ -588,7 +582,6 @@ class="main-btn"
 onclick="loginUser()">
 Continue
 </button>
-
 </div>
 
 <!-- MAIN APP -->
@@ -747,26 +740,21 @@ let currentName="";
 const userRatings={};
 
 /* LOGIN */
-
 function loginUser(){
-
-const username =
-document.getElementById("username")
-.value.trim();
 
 const name =
 document.getElementById("name")
 .value.trim();
 
-if(!username || !name){
+if(!name){
 
-alert("Enter details");
+alert("Enter your name");
 return;
 
 }
 
-currentUser=username;
-currentName=name;
+currentUser = name;
+currentName = name;
 
 document.getElementById("loginPage")
 .classList.add("hidden");
@@ -1193,7 +1181,7 @@ list.innerHTML += `
 <div class="single-comment">
 
 <div class="comment-user">
-@${c.user}
+${c.user}
 </div>
 
 <div class="comment-text">
