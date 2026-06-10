@@ -826,8 +826,7 @@ loadLeaderboard(data);
 Object.keys(data).reverse().forEach((id)=>{
 
 const item = data[id];
-const img = new Image();
-img.src = item.image;
+
     
 let ratingsArray = [];
 
@@ -880,7 +879,7 @@ font-size:14px;
 color:#FFD700;
 font-weight:bold;
 ">
-👤 Uploaded by @${item.uploadedBy || "unknown"}
+👤 Uploaded by ${item.uploadedByName || item.uploadedBy || "Unknown"}
 </div>
 
 <div class="food-desc">
@@ -1247,7 +1246,7 @@ db.ref("foods")
 restaurant,
 foodname,
 details,
-uploadedBy: currentUser,
+uploadedByName: currentName,
 image:e.target.result
 
 })
