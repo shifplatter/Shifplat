@@ -774,6 +774,7 @@ let currentName="";
 const userRatings={};
 
 /* LOGIN */
+
 function loginUser(){
 
 const name =
@@ -796,16 +797,9 @@ document.getElementById("loginPage")
 document.getElementById("mainApp")
 .classList.remove("hidden");
 
-// Show gallery immediately
-showTab(
-    "galleryTab",
-    document.querySelector(".tab-btn")
-);
-
 loadFoods();
 
 }
-
 /* TAB SWITCH */
 
 function showTab(tabId,btn){
